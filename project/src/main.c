@@ -1,4 +1,5 @@
 #include "../include/utils.h"
+#include "utils.c"
 
 #define ERR_ARGS_COUNT (-1)
 #define ERR_WRONG_FLG (-2)
@@ -36,7 +37,7 @@ int main(int argc, const char** argv) {
         case TST_FOO_FIX: {
             int to = atoi(data);
             size_t ticks_count = timer_from(to);
-            printf("%d\n", ticks_count);
+            printf("%ld\n", ticks_count);
             break;
         }
         case TST_FOO_IMPL: {
