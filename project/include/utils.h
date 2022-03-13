@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #ifndef PROJECT_INCLUDE_UTILS_H_
-#define UTILS_H
+#define PROJECT_INCLUDE_UTILS_H_
 
 
 size_t timer_from(unsigned char from);
