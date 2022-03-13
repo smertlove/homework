@@ -9,11 +9,7 @@ size_t timer_from(unsigned char from) {
     return counter;
 }
 
-int main(int argc, char const *argv[])
-{
-    
-    return 0;
-}
+
 
 
 
