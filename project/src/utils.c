@@ -6,6 +6,7 @@ size_t timer_from(unsigned char from) {
         ++counter;
         printf("%c", i);
     }
+    printf("0\n");
     return counter;
 }
 

@@ -1,4 +1,5 @@
 #include "../include/utils.h"
+#include "../include/prime.h"
 
 #define ERR_ARGS_COUNT (-1)
 #define ERR_WRONG_FLG (-2)
@@ -52,11 +53,15 @@ int main(int argc, const char** argv) {
             }
         }
         case TST_MOD_IMPL: {
-            // int num = atoi(data);
-
+            int num = atoi(data);
+            
             // TODO(Kirill Soloshenko): Print to stdout `1` if `num` is prime number and `0` otherwise
             // This function MUST be implemented in
             // a separate C-module (not in `main` or `utils` module)
+            int res = is_prime(num);
+
+            printf("%i", res);
+            break;
         }
         default: {
             return ERR_WRONG_FLG;
