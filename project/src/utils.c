@@ -8,12 +8,10 @@ size_t timer_from(int from) {
         
         if (i > 0) {
           printf(" ");
-        }else{
+        } else{
           printf("\n");
         }
-        
     }
-    
     return counter;
 }
 
@@ -30,7 +28,6 @@ int custom_pow(int base, int power) {
       printf("%d", power);
       return 12;
     }
-    
   }
   return answ;
 }

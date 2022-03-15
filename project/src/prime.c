@@ -2,10 +2,9 @@
 
 int is_prime(int number) {
     for (int i = 2; i <= number - 1; i++) {
-        if ( number % i == 0) {
+        if (number % i == 0) {
             return 0;
-        }    
+        }
     }
-    return number < 2 ? 0 : 1; 
-    
+    return number < 2 ? 0 : 1;
 }
