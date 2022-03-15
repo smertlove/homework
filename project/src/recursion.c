@@ -1,4 +1,6 @@
 #include "recursion.h"
+#include <stdio.h>
+
 
 void recursive_print(int number) {
     if (number != 1) {

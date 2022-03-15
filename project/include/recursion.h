@@ -1,5 +1,3 @@
-#include <stdio.h>
-
 #ifndef PROJECT_INCLUDE_RECURSION_H_
 #define PROJECT_INCLUDE_RECURSION_H_
 
