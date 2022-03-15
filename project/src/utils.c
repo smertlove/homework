@@ -28,13 +28,13 @@ size_t timer_from(int from) {
 //
 int custom_pow(int base, int power) {
   int answ = 1;
-  while ( power > 0 ) {   
+  while ( power > 0 ) {
     if (power % 2 == 1) {
       answ *= base;
       power--;
     }
       power /= 2;
-      base *= base; 
+      base *= base;
   }
   return answ;
 }
