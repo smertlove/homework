@@ -4,7 +4,7 @@
 #define PROJECT_INCLUDE_UTILS_H_
 
 
-size_t timer_from(unsigned char from);
+size_t timer_from(int from);
 
 
 // TODO(Kirill Soloshenko): Implement `power of` function
