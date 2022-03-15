@@ -14,11 +14,27 @@ size_t timer_from(int from) {
     return counter;
 }
 
+//     OLD  IMPLIMENTATION O(n)
+//
+// int custom_pow(int base, int power) {
+//   int answ = 1;
+//   for (; power > 0; power--) {
+//     answ *= base;
+//   }
+//   return answ;
+// }
 
+//      NEW  IMPLIMENTATION O(log(n)) (( наверное... ))
+//
 int custom_pow(int base, int power) {
   int answ = 1;
-  for (; power > 0; power--) {
-    answ *= base;
+  while ( power > 0 ) {   
+    if (power % 2 == 1) {
+      answ *= base;
+      power--;
+    }
+      power /= 2;
+      base *= base; 
   }
   return answ;
 }
