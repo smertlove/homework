@@ -15,7 +15,6 @@ size_t timer_from(int from) {
 }
 
 
-// TODO(Kirill Soloshenko): Implement `power of` function
 int custom_pow(int base, int power) {
   int answ = 1;
   for (; power > 0; power--) {
