@@ -1,5 +1,6 @@
-#include "../include/utils.h"
-#include "../include/prime.h"
+#include "utils.h"
+#include "prime.h"
+#include "recursion.h"
 
 #define ERR_ARGS_COUNT (-1)
 #define ERR_WRONG_FLG (-2)
@@ -7,6 +8,7 @@
 #define TST_FOO_FIX     1
 #define TST_FOO_IMPL    2
 #define TST_MOD_IMPL    3
+#define TST_REC_IMPL    4
 
 
 /* NOTE(stitaevskiy):
@@ -61,6 +63,13 @@ int main(int argc, const char** argv) {
             int res = is_prime(num);
 
             printf("%i", res);
+            break;
+        }
+        case TST_REC_IMPL: {
+            int num = atoi(data);
+
+            recursive_print(num);
+
             break;
         }
         default: {
