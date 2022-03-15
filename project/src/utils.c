@@ -5,10 +5,9 @@ size_t timer_from(int from) {
     for (int i = from; i >= 0; --i) {
         ++counter;
         printf("%d", i);
-        
         if (i > 0) {
           printf(" ");
-        } else{
+        } else {
           printf("\n");
         }
     }
@@ -23,8 +22,7 @@ int custom_pow(int base, int power) {
   for (; power > 0; power--) {
     answ *= base;
     counter++;
-    if (counter > 400000)
-    {
+    if (counter > 400000) {
       printf("%d", power);
       return 12;
     }
