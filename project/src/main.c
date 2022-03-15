@@ -5,10 +5,10 @@
 #define ERR_ARGS_COUNT (-1)
 #define ERR_WRONG_FLG (-2)
 
-#define TST_FOO_FIX     1
-#define TST_FOO_IMPL    2
-#define TST_MOD_IMPL    3
-#define TST_REC_IMPL    4
+#define TST_TIMER_FIX            1
+#define TST_TIMER_IMPL           2
+#define TST_CUSTOM_POWER_IMPL    3
+#define TST_RECURSIVE_PRINT_IMPL 4
 
 
 int main(int argc, const char** argv) {
@@ -16,21 +16,21 @@ int main(int argc, const char** argv) {
         return ERR_ARGS_COUNT;
     }
 
-    int Test_case = atoi(argv[1]);
+    int Test_case = strtol(argv[1], NULL, 10);
     const char* data;
     data = argv[2];
 
     switch (Test_case) {
-        case TST_FOO_FIX: {
-            int to = atoi(data);
+        case TST_TIMER_FIX: {
+            int to = strtol(data, NULL, 10);
             size_t ticks_count = timer_from(to);
             printf("%zu\n", ticks_count);
             break;
         }
-        case TST_FOO_IMPL: {
+        case TST_TIMER_IMPL: {
             if (argc == 4) {
-                int base = atoi(data);
-                int pow =  atoi(argv[3]);
+                int base = strtol(data, NULL, 10);
+                int pow =  strtol(argv[3], NULL, 10);
                 int res = custom_pow(base, pow);
 
                 printf("%i\n", res);
@@ -39,16 +39,16 @@ int main(int argc, const char** argv) {
                 return ERR_ARGS_COUNT;
             }
         }
-        case TST_MOD_IMPL: {
-            int num = atoi(data);
-            
+        case TST_CUSTOM_POWER_IMPL: {
+            int num = strtol(data, NULL, 10);
+
             int res = is_prime(num);
 
             printf("%i", res);
             break;
         }
-        case TST_REC_IMPL: {
-            int num = atoi(data);
+        case TST_RECURSIVE_PRINT_IMPL: {
+            int num = strtol(data, NULL, 10);
 
             recursive_print(num);
 
