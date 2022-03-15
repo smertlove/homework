@@ -17,15 +17,9 @@ size_t timer_from(int from) {
 
 // TODO(Kirill Soloshenko): Implement `power of` function
 int custom_pow(int base, int power) {
-  long counter = 0;
   int answ = 1;
   for (; power > 0; power--) {
     answ *= base;
-    counter++;
-    if (counter > 400000) {
-      printf("%d", power);
-      return 12;
-    }
   }
   return answ;
 }
