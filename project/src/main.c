@@ -23,6 +23,7 @@ int main(int argc, const char** argv) {
     switch (Test_case) {
         case TST_TIMER_FIX: {
             int to = strtol(data, NULL, 10);
+            
             size_t ticks_count = timer_from(to);
             printf("%zu\n", ticks_count);
             break;
@@ -31,8 +32,8 @@ int main(int argc, const char** argv) {
             if (argc == 4) {
                 int base = strtol(data, NULL, 10);
                 int pow =  strtol(argv[3], NULL, 10);
-                int res = custom_pow(base, pow);
 
+                int res = custom_pow(base, pow);
                 printf("%i\n", res);
                 break;
             } else {
@@ -43,15 +44,13 @@ int main(int argc, const char** argv) {
             int num = strtol(data, NULL, 10);
 
             int res = is_prime(num);
-
             printf("%i", res);
             break;
         }
         case TST_RECURSIVE_PRINT_IMPL: {
             int num = strtol(data, NULL, 10);
-
+            
             recursive_print(num);
-
             break;
         }
         default: {
