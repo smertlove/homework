@@ -1,0 +1,6 @@
+#ifndef PROJECT_INCLUDE_RECURSIVE_PRINT_H_
+#define PROJECT_INCLUDE_RECURSIVE_PRINT_H_
+
+void recursive_print(int number);
+
+#endif  // PROJECT_INCLUDE_RECURSIVE_PRINT_H_
