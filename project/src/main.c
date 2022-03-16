@@ -1,6 +1,6 @@
 #include "utils.h"
-#include "prime.h"
-#include "recursion.h"
+#include "is_prime.h"
+#include "recursive_print.h"
 
 #define ERR_ARGS_COUNT (-1)
 #define ERR_WRONG_FLG (-2)
