@@ -1,6 +1,6 @@
 #include "utils.h"
 #include "is_prime.h"
-#include "recursive_print.h"
+#include "print_ints_from_n_to_1.h"
 
 #define ERR_ARGS_COUNT (-1)
 #define ERR_WRONG_FLG (-2)
@@ -46,7 +46,7 @@ int main(int argc, const char** argv) {
         }
         case TST_RECURSIVE_PRINT_IMPL: {
             int num = strtol(data, NULL, 10);
-            recursive_print(num);
+            print_ints_from_n_to_1(num);
             break;
         }
         default: {
