@@ -22,7 +22,6 @@ typedef  struct  masterRecord Data;
 
 int main(void){
 	int choice = 0;
-	
 	FILE *Ptr, *Ptr_2 , *blackrecord;
 	Data client_data, transfer;
 	printf("%s", "please enter action\n1 enter data client:\n2 enter data transaction:\n3 update base\n");
@@ -31,49 +30,50 @@ int main(void){
 		switch(choice) {
 			case Test_1: {
 				Ptr = fopen("record.dat", "r+" );
-					if(Ptr == NULL) {
+				if (Ptr == NULL) {
+					puts("Not acess");
+				} else {
+					masterWrite(Ptr, client_data);
+					fclose(Ptr);
+				}
+				break;
+			}
+			case Test_2: {
+				Ptr = fopen(filename, "r+");
+					if (Ptr == NULL) {
 					puts("Not acess");
 					}
 				else{
-						masterWrite(Ptr, client_data);
-						fclose(Ptr);
-						}
+					transactionWrite(Ptr, transfer);
+					fclose(Ptr);
+				}
 				break;
 			}
-		case Test_2: {
-			Ptr = fopen(filename, "r+");
-				if(Ptr == NULL) {
-				puts("Not acess");
+			case Test_3: {
+				Ptr = fopen("record.dat", "r");
+				Ptr_2 = fopen("transaction.dat", "r");
+				blackrecord = fopen("blackrecord.dat", "w");
+				if (Ptr == NULL || Ptr_2 == NULL || blackRecord == NULL) {
+					puts("exit");
+				} else {
+					blackRecord(Ptr, Ptr_2, blackrecord, client_data, transfer);
+					free(Ptr);
+					fclose(Ptr);
+					fclose(Ptr_2);
+					fclose(blackrecord);
 				}
-			else{
-				transactionWrite( Ptr, transfer     );
-				fclose(Ptr);
+				break;
 			}
-			break;
+			default: {
+				puts("error");
+				break;
+			}
 		}
-		case Test_3:
-			Ptr = fopen( "record.dat", "r"  );
-			Ptr_2 = fopen("transaction.dat", "r" );
-			blackrecord = fopen("blackrecord.dat", "w" );
-		if(	Ptr == NULL ||  	Ptr_2 == NULL ||  		blackRecord == NULL      ){
-				puts("exit");
-			}
-			else{
-			blackRecord( Ptr, Ptr_2 , blackrecord  , client_data  ,    transfer );
-			free(Ptr)
-			fclose(Ptr);
-			fclose(Ptr_2);
-			fclose(blackrecord);
-			}
-			break;
-			default:
-			puts("error");
-			break ;
-		}
-printf("%s", "please enter action\n1 enter data client:\n2 enter data transaction:\n3 update base\n" );
-}
+	printf("%s", "please enter action\n1 enter data client:\n2 enter data transaction:\n3 update base\n");
+	}
 	return 0;
 }
+
 void masterWrite(FILE *ofPTR , Data   Client       )  {
 printf("%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n\n",
 		"1 Number account: ",
