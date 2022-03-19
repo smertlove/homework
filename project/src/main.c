@@ -4,6 +4,7 @@
 
 #define ERR_ARGS_COUNT          -1
 #define ERR_WRONG_FLG           -2
+#define ERR_WRONG_ARG			-3
 
 #define TST_TIMER_FIX            1
 #define TST_TIMER_IMPL           2
@@ -15,12 +16,12 @@ int main(int argc, const char** argv) {
     if (argc < 3) {
         return ERR_ARGS_COUNT;
     }
-
-    int Test_case = strtol(argv[1], NULL, 10);
+    
+    int test_case = strtol(argv[1], NULL, 10);
     const char* data;
     data = argv[2];
 
-    switch (Test_case) {
+    switch (test_case) {
         case TST_TIMER_FIX: {
             int to = strtol(data, NULL, 10);
             size_t ticks_count = timer_from(to);
