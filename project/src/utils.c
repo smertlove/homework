@@ -6,35 +6,23 @@ size_t timer_from(int from) {
         ++counter;
         printf("%d", i);
         if (i > 0) {
-          printf(" ");
+            printf(" ");
         } else {
-          printf("\n");
+            printf("\n");
         }
     }
     return counter;
 }
 
-//     OLD  IMPLIMENTATION O(n)
-//
-// int custom_pow(int base, int power) {
-//   int answ = 1;
-//   for (; power > 0; power--) {
-//     answ *= base;
-//   }
-//   return answ;
-// }
-
-//      NEW  IMPLIMENTATION O(log(n)) (( наверное... ))
-//
 int custom_pow(int base, int power) {
-  int answer = 1;
-  while ( power > 0 ) {
-    if (power % 2 == 1) {
-      answer *= base;
-      power--;
+    int answer = 1;
+    while ( power > 0 ) {
+        if (power % 2 == 1) {
+            answer *= base;
+            power--;
+        }
+        power /= 2;
+        base *= base;
     }
-      power /= 2;
-      base *= base;
-  }
-  return answer;
+    return answer;
 }
