@@ -8,6 +8,5 @@ void print_from_n_to_1(int number) {
         printf(" %i", number);
     } else {
         printf("1");
-        return;
     }
 }
