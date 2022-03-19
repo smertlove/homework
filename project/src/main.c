@@ -21,7 +21,6 @@ int main(int argc, const char** argv) {
     if (*end != '\0') {
         return ERR_STRTOL_FAIL;
     }
-    
     const char* data;
     data = argv[2];
 
