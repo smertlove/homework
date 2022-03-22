@@ -1,6 +1,6 @@
-#include "print_from_n_to_1.h"
 #include <stdio.h>
 
+#include "print_from_n_to_1.h"
 
 void print_from_n_to_1(int number) {
     if (number != 1) {

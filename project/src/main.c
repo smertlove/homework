@@ -1,7 +1,8 @@
+#include <stdio.h>
+
 #include "utils.h"
 #include "is_prime.h"
 #include "print_from_n_to_1.h"
-#include <stdio.h>
 
 #define ERR_ARGS_COUNT          -1
 #define ERR_WRONG_FLG           -2
