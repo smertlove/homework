@@ -8,7 +8,7 @@ enum Test_case {
 	Test_3
 };
 
-struct masterRecord{
+struct Client_data {
 	int			Number;
 	char		Name[20];
 	char		Surname[20];
@@ -18,12 +18,12 @@ struct masterRecord{
 	double		credit_limit;
 	double		cash_payments;
 };
-typedef  struct  masterRecord Data;
+typedef struct Client_data Client_data;
 
 int main(void){
 	int choice = 0;
 	FILE *Ptr, *Ptr_2 , *blackrecord;
-	Data client_data, transfer;
+	Client_data client_data, transfer;
 	printf("%s", "please enter action\n1 enter data client:\n2 enter data transaction:\n3 update base\n");
 
 	while (scanf("%d", &choice) != -1) {
@@ -74,7 +74,7 @@ int main(void){
 	return 0;
 }
 
-void masterWrite(FILE *ofPTR, Data Client) {
+void masterWrite(FILE *ofPTR, Client_data Client) {
 	printf("%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n\n",
 			"1 Number account: ",
 			"2 Client name: ",
@@ -116,7 +116,7 @@ void masterWrite(FILE *ofPTR, Data Client) {
 	}
 }
 
-void transactionWrite(FILE *ofPtr, Data transfer) {
+void transactionWrite(FILE *ofPtr, Client_data transfer) {
 	printf("%s\n%s\n",
 		   "1 Number account: ",
 		   "2 Client cash payments: ");
@@ -128,7 +128,7 @@ void transactionWrite(FILE *ofPtr, Data transfer) {
 	}
 }
 
-void blackRecord(FILE *ofPTR, FILE  *ofPTR_2, FILE *blackrecord, Data client_data, Data transfer) {
+void blackRecord(FILE *ofPTR, FILE  *ofPTR_2, FILE *blackrecord, Client_data client_data, Client_data transfer) {
     int count = 0;
     int ccount = 0;
 	while((fscanf(ofPTR,
