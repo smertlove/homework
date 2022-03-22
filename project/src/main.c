@@ -129,7 +129,9 @@ void transactionWrite(FILE *ofPtr, Data transfer) {
 }
 
 void blackRecord(FILE *ofPTR, FILE  *ofPTR_2, FILE *blackrecord, Data client_data, Data transfer) {
-	while(fscanf(ofPTR,
+    int count = 0;
+    int ccount = 0;
+	while((fscanf(ofPTR,
 		"%d%s%s%s%s%lf%lf%lf",
 		&client_data.Number,
 		client_data.Name,
@@ -138,10 +140,11 @@ void blackRecord(FILE *ofPTR, FILE  *ofPTR_2, FILE *blackrecord, Data client_dat
 		client_data.TelNumber,
 		&client_data.indebtedness,
 		&client_data.credit_limit,
-		&client_data.cash_payments) != -1) {
-			while (fscanf(ofPTR_2, "%d %lf", &transfer.Number, &transfer.cash_payments) != -1) {
+		&client_data.cash_payments) != -1) && count < 100) {
+			while ((fscanf(ofPTR_2, "%d %lf", &transfer.Number, &transfer.cash_payments) != -1) && ccount < 100) {
 				if(client_data.Number == transfer.Number && transfer.cash_payments != 0) {
 					client_data.credit_limit += transfer.cash_payments;
+                    count++;
 				}
 			}
 		fprintf(blackrecord,
@@ -155,5 +158,6 @@ void blackRecord(FILE *ofPTR, FILE  *ofPTR_2, FILE *blackrecord, Data client_dat
 				client_data.credit_limit ,
 				client_data.cash_payments);
 		rewind(ofPTR_2);
+        count++;
 		}
 }
