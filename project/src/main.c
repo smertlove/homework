@@ -4,7 +4,7 @@
 
 #define ERR_ARGS_COUNT          -1
 #define ERR_WRONG_FLG           -2
-#define ERR_STRTOL_FAIL			-3
+#define ERR_STRTOL_FAIL         -3
 
 #define TST_TIMER_FIX            1
 #define TST_TIMER_IMPL           2
