@@ -18,7 +18,7 @@ size_t timer_from(int from) {
 
 int custom_pow(int base, int power) {
     if ((-2 < base) && (base < 2)) {
-        return (power % 2 == 1) && (base < 0) ? -base : base;
+        return (power % 2 == 0) && (base < 0) ? -base : base;
     }    
     int answer = 1;
     while ( power > 0 ) {
