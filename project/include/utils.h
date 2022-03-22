@@ -1,6 +1,8 @@
 #ifndef ROJECT_INCLUDE_UTILS_H_
 #define ROJECT_INCLUDE_UTILS_H_
 
+#include <stdio.h>
+
 #define filename "transaction.dat"
 
 void masterWrite(FILE *ofPTR, Data Client),
