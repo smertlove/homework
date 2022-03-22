@@ -17,7 +17,7 @@ size_t timer_from(int from) {
 }
 
 int custom_pow(int base, int power) {
-    if (base == < 2) {
+    if (base < 2) {
         return base;
     }
     
