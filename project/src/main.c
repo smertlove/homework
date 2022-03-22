@@ -2,13 +2,14 @@
 
 
 
-enum Test_case {
-	Test_1 = 1,
-	Test_2,
-	Test_3
+enum Action {
+	ENTER_CLIENT_DATA = 1,
+	ENTER_TRANSACTION_DATA,
+	UPDATE_DATA_BASE
 };
 
 #define DATA_REQUEST_MESSAGE "please enter action\n1 enter data client:\n2 enter data transaction:\n3 update base\n"
+#define TRANSACTION_FILENAME "transaction.dat"
 
 struct Client_data {
 	int			Number;
@@ -30,8 +31,8 @@ int main(void){
 
 	while (scanf("%d", &choice) != -1) {
 		switch(choice) {
-			case Test_1: {
-				Ptr = fopen("record.dat", "r+" );
+			case ENTER_CLIENT_DATA: {
+				Ptr = fopen("record.dat", "r+");
 				if (Ptr == NULL) {
 					puts("Not acess");
 				} else {
@@ -40,8 +41,8 @@ int main(void){
 				}
 				break;
 			}
-			case Test_2: {
-				Ptr = fopen(filename, "r+");
+			case ENTER_TRANSACTION_DATA: {
+				Ptr = fopen(TRANSACTION_FILENAME, "r+");
 					if (Ptr == NULL) {
 					puts("Not acess");
 					}
@@ -51,7 +52,7 @@ int main(void){
 				}
 				break;
 			}
-			case Test_3: {
+			case UPDATE_DATA_BASE: {
 				Ptr = fopen("record.dat", "r");
 				Ptr_2 = fopen("transaction.dat", "r");
 				blackrecord = fopen("blackrecord.dat", "w");
@@ -123,7 +124,7 @@ void transactionWrite(FILE *ofPtr, Client_data transfer) {
 		   "1 Number account: ",
 		   "2 Client cash payments: ");
 	while(scanf("%d %lf", &transfer.Number, &transfer.cash_payments) != -1) {
-		fprintf(filename, "%-3d%-6.2f\n", transfer.Number, transfer.cash_payments);
+		fprintf(TRANSACTION_FILENAME, "%-3d%-6.2f\n", transfer.Number, transfer.cash_payments);
 		printf("%s\n%s\n",
 				"1 Number account:",
 				"2 Client cash payments: ");
