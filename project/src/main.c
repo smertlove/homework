@@ -8,6 +8,8 @@ enum Test_case {
 	Test_3
 };
 
+#define DATA_REQUEST_MESSAGE "please enter action\n1 enter data client:\n2 enter data transaction:\n3 update base\n"
+
 struct Client_data {
 	int			Number;
 	char		Name[20];
@@ -24,7 +26,7 @@ int main(void){
 	int choice = 0;
 	FILE *Ptr, *Ptr_2 , *blackrecord;
 	Client_data client_data, transfer;
-	printf("%s", "please enter action\n1 enter data client:\n2 enter data transaction:\n3 update base\n");
+	printf("%s", DATA_REQUEST_MESSAGE);
 
 	while (scanf("%d", &choice) != -1) {
 		switch(choice) {
@@ -69,7 +71,7 @@ int main(void){
 				break;
 			}
 		}
-	printf("%s", "please enter action\n1 enter data client:\n2 enter data transaction:\n3 update base\n");
+	printf("%s", DATA_REQUEST_MESSAGE);
 	}
 	return 0;
 }
