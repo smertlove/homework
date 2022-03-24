@@ -2,6 +2,7 @@
 #define ROJECT_INCLUDE_UTILS_H_
 
 #include <stdio.h>
+#include <stdbool.h>
 
 void masterWrite(FILE *ofPTR, client_t Client);
 void transactionWrite(FILE *ofPTR, client_t transfer);

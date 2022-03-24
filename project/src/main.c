@@ -9,6 +9,7 @@ enum action {
 #define TRANSACTION_FILENAME 	"transaction.dat"
 #define RECORD_FILENAME			"record.dat"
 #define BLACKRECORD_FILENAME	"blackrecord.dat"
+#define FILE_ACCESS_ERROR		"--- ERROR: NO ACCESS ---"
 
 struct client_t {
 	int			account_number;
@@ -24,48 +25,49 @@ typedef struct client_t client_t;
 
 int main(void){
 	int case_choice = get_case_choice();
-	FILE *Ptr;
-	FILE *Ptr_2;
-	FILE *blackrecord;
-	client_t client_data;
-	client_t transfer;
+
+	
+	
 
 	while (case_choice != -1) {
 		switch(case_choice) {
 			case ENTER_CLIENT_DATA: {
-				Ptr = fopen(RECORD_FILENAME, "r+");
-				if (Ptr == NULL) {
-					puts("Not acess");
-				} else {
-					masterWrite(Ptr, client_data);
-					fclose(Ptr);
+				FILE *clients_db = fopen(RECORD_FILENAME, "r+");
+				if (clients_db == NULL) {
+					puts(FILE_ACCESS_ERROR);
+					break;
 				}
+				client_t client_data;
+				masterWrite(clients_db, client_data);
+				fclose(clients_db);
 				break;
 			}
 			case ENTER_TRANSACTION_DATA: {
-				Ptr = fopen(TRANSACTION_FILENAME, "r+");
-					if (Ptr == NULL) {
-					puts("Not acess");
-					}
-				else{
-					transactionWrite(Ptr, transfer);
-					fclose(Ptr);
+				FILE *transaction_data = fopen(TRANSACTION_FILENAME, "r+");
+				if (transaction_data == NULL) {
+					puts(FILE_ACCESS_ERROR);
+					break;
 				}
+				client_t transfer;
+				transactionWrite(transaction_data, transfer);
+				fclose(transaction_data);
 				break;
 			}
 			case UPDATE_DATA_BASE: {
-				Ptr = fopen(RECORD_FILENAME, "r");
-				Ptr_2 = fopen(TRANSACTION_FILENAME, "r");
-				blackrecord = fopen(BLACKRECORD_FILENAME, "w");
-				if (Ptr == NULL || Ptr_2 == NULL || blackRecord == NULL) {
-					puts("exit");
-				} else {
-					blackRecord(Ptr, Ptr_2, blackrecord, client_data, transfer);
-					free(Ptr);
-					fclose(Ptr);
-					fclose(Ptr_2);
-					fclose(blackrecord);
+				FILE *clients_db = fopen(RECORD_FILENAME, "r");
+				FILE *transaction_data = fopen(TRANSACTION_FILENAME, "r");
+				FILE *blackrecord = fopen(BLACKRECORD_FILENAME, "w");
+				if (clients_db == NULL || transaction_data == NULL || blackrecord == NULL) {
+					puts(FILE_ACCESS_ERROR);
+					break;
 				}
+				client_t client_data;
+				client_t transfer;
+				blackRecord(clients_db, transaction_data, blackrecord, client_data, transfer);
+				free(clients_db);
+				fclose(clients_db);
+				fclose(transaction_data);
+				fclose(blackrecord);
 				break;
 			}
 			default: {
