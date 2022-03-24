@@ -3,8 +3,8 @@
 
 #include <stdio.h>
 
-void masterWrite(FILE *ofPTR, Client_data Client);
-void transactionWrite(FILE *ofPTR, Client_data transfer);
-void blackRecord(FILE *ofPTR, FILE *ofPTR_2, FILE *blackrecord, Client_data client_data, Client_data transfer);
+void masterWrite(FILE *ofPTR, client_t Client);
+void transactionWrite(FILE *ofPTR, client_t transfer);
+void blackRecord(FILE *ofPTR, FILE *ofPTR_2, FILE *blackrecord, client_t client_data, client_t transfer);
 
 #endif // ROJECT_INCLUDE_UTILS_H_

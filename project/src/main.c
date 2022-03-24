@@ -1,17 +1,17 @@
 #include "utils.h"
 
-
-
-enum Action {
+enum action {
 	ENTER_CLIENT_DATA = 1,
 	ENTER_TRANSACTION_DATA,
 	UPDATE_DATA_BASE
 };
 
-#define DATA_REQUEST_MESSAGE "please enter action\n1 enter data client:\n2 enter data transaction:\n3 update base\n"
-#define TRANSACTION_FILENAME "transaction.dat"
+#define DATA_REQUEST_MESSAGE 	"please enter action\n1 enter data client:\n2 enter data transaction:\n3 update base\n"
+#define TRANSACTION_FILENAME 	"transaction.dat"
+#define RECORD_FILENAME			"record.dat"
+#define BLACKRECORD_FILENAME	"blackrecord.dat"
 
-struct Client_data {
+struct client_t {
 	int			account_number;
 	char		name[20];
 	char		surname[20];
@@ -21,22 +21,22 @@ struct Client_data {
 	double		credit_limit;
 	double		cash_payments;
 };
-typedef struct Client_data Client_data;
+typedef struct client_t client_t;
 
 int main(void){
 	int choice = 0;
 	FILE *Ptr;
 	FILE *Ptr_2;
 	FILE *blackrecord;
-	Client_data client_data;
-	Client_data transfer;
-	
+	client_t client_data;
+	client_t transfer;
+
 	printf("%s", DATA_REQUEST_MESSAGE);
 
 	while (scanf("%d", &choice) != -1) {
 		switch(choice) {
 			case ENTER_CLIENT_DATA: {
-				Ptr = fopen("record.dat", "r+");
+				Ptr = fopen(RECORD_FILENAME, "r+");
 				if (Ptr == NULL) {
 					puts("Not acess");
 				} else {
@@ -57,9 +57,9 @@ int main(void){
 				break;
 			}
 			case UPDATE_DATA_BASE: {
-				Ptr = fopen("record.dat", "r");
-				Ptr_2 = fopen("transaction.dat", "r");
-				blackrecord = fopen("blackrecord.dat", "w");
+				Ptr = fopen(RECORD_FILENAME, "r");
+				Ptr_2 = fopen(TRANSACTION_FILENAME, "r");
+				blackrecord = fopen(BLACKRECORD_FILENAME, "w");
 				if (Ptr == NULL || Ptr_2 == NULL || blackRecord == NULL) {
 					puts("exit");
 				} else {
@@ -81,7 +81,7 @@ int main(void){
 	return 0;
 }
 
-void masterWrite(FILE *ofPTR, Client_data Client) {
+void masterWrite(FILE *ofPTR, client_t Client) {
 	printf("%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n\n",
 			"1 Number account: ",
 			"2 Client name: ",
@@ -123,7 +123,7 @@ void masterWrite(FILE *ofPTR, Client_data Client) {
 	}
 }
 
-void transactionWrite(FILE *ofPtr, Client_data transfer) {
+void transactionWrite(FILE *ofPtr, client_t transfer) {
 	printf("%s\n%s\n",
 		   "1 Number account: ",
 		   "2 Client cash payments: ");
@@ -135,7 +135,7 @@ void transactionWrite(FILE *ofPtr, Client_data transfer) {
 	}
 }
 
-void blackRecord(FILE *ofPTR, FILE  *ofPTR_2, FILE *blackrecord, Client_data client_data, Client_data transfer) {
+void blackRecord(FILE *ofPTR, FILE  *ofPTR_2, FILE *blackrecord, client_t client_data, client_t transfer) {
     int count = 0;
     int ccount = 0;
 	while((fscanf(ofPTR,
