@@ -25,8 +25,12 @@ typedef struct Client_data Client_data;
 
 int main(void){
 	int choice = 0;
-	FILE *Ptr, *Ptr_2 , *blackrecord;
-	Client_data client_data, transfer;
+	FILE *Ptr;
+	FILE *Ptr_2;
+	FILE *blackrecord;
+	Client_data client_data;
+	Client_data transfer;
+	
 	printf("%s", DATA_REQUEST_MESSAGE);
 
 	while (scanf("%d", &choice) != -1) {
