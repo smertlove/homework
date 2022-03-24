@@ -6,7 +6,6 @@ enum action {
 	UPDATE_DATA_BASE
 };
 
-#define DATA_REQUEST_MESSAGE 	"please enter action\n1 enter data client:\n2 enter data transaction:\n3 update base\n"
 #define TRANSACTION_FILENAME 	"transaction.dat"
 #define RECORD_FILENAME			"record.dat"
 #define BLACKRECORD_FILENAME	"blackrecord.dat"
@@ -24,17 +23,15 @@ struct client_t {
 typedef struct client_t client_t;
 
 int main(void){
-	int choice = 0;
+	int case_choice = get_case_choice();
 	FILE *Ptr;
 	FILE *Ptr_2;
 	FILE *blackrecord;
 	client_t client_data;
 	client_t transfer;
 
-	printf("%s", DATA_REQUEST_MESSAGE);
-
-	while (scanf("%d", &choice) != -1) {
-		switch(choice) {
+	while (case_choice != -1) {
+		switch(case_choice) {
 			case ENTER_CLIENT_DATA: {
 				Ptr = fopen(RECORD_FILENAME, "r+");
 				if (Ptr == NULL) {
@@ -76,7 +73,7 @@ int main(void){
 				break;
 			}
 		}
-	printf("%s", DATA_REQUEST_MESSAGE);
+	case_choice = get_case_choice();
 	}
 	return 0;
 }
@@ -167,4 +164,11 @@ void blackRecord(FILE *ofPTR, FILE  *ofPTR_2, FILE *blackrecord, client_t client
 		rewind(ofPTR_2);
         count++;
 		}
+}
+
+int get_case_choice(void) {
+	printf("%s", "please enter action\n1 enter data client:\n2 enter data transaction:\n3 update base\n");
+	int case_choice;
+	scanf("%d", &case_choice);
+	return case_choice;
 }
