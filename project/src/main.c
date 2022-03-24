@@ -34,30 +34,52 @@ void print_client_data_fields(void) {
 			"8 Client cash payments: ");
 }
 
-void masterWrite(FILE *ofPTR, client_t Client) {
+void write_client_data(FILE *file, client_t client) {
+	fprintf(file,
+			"%-12d%-11s%-11s%-16s%20s%12.2f%12.2f%12.2f\n",
+			client.account_number,
+			client.name,
+			client.surname,
+			client.address,
+			client.telephone_number,
+			client.indebtedness,
+			client.credit_limit,
+			client.cash_payments);
+}
+
+// int scan_client_data(client_t *client) {
+// 	int argc = scanf("%d%s%s%s%s%lf%lf%lf",
+// 					&client->account_number,
+// 					client->name,
+// 					client->surname,
+// 					client->address,
+// 					client->telephone_number,
+// 					&client->indebtedness,
+// 					&client->credit_limit,
+// 					&client->cash_payments
+// 				);
+// 	return argc;
+// }
+
+void masterWrite(FILE *file, client_t client) {
 	print_client_data_fields();
-	while (scanf(	"%d%s%s%s%s%lf%lf%lf",
-					&Client.account_number,
-					Client.name,
-					Client.surname,
-					Client.address,
-					Client.telephone_number,
-					&Client.indebtedness,
-					&Client.credit_limit,
-					&Client.cash_payments
+	fseek(file, 0, SEEK_END);
+	char c;
+	while (scanf("%d%s%s%s%s%lf%lf%lf",
+					&client.account_number,
+					client.name,
+					client.surname,
+					client.address,
+					client.telephone_number,
+					&client.indebtedness,
+					&client.credit_limit,
+					&client.cash_payments
 				) != -1) {
-		fprintf(ofPTR,
-				"%-12d%-11s%-11s%-16s%20s%12.2f%12.2f%12.2f\n",
-				Client.account_number,
-				Client.name,
-				Client.surname,
-				Client.address,
-				Client.telephone_number,
-				Client.indebtedness,
-				Client.credit_limit,
-				Client.cash_payments);
+		if(c = getchar() != '\n' && c != EOF){
+			break;
+		}
+		write_client_data(file, client);
 		print_client_data_fields();
-		while(getchar() != '\n');
 	}
 }
 
@@ -137,6 +159,8 @@ int main(void){
 				client_t client_data;
 				masterWrite(clients_db, client_data);
 				fclose(clients_db);
+				while (getchar() != '\n');
+				
 				break;
 			}
 			case ENTER_TRANSACTION_DATA: {
