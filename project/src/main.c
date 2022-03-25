@@ -1,61 +1,74 @@
+#include <stdio.h>
+
 #include "utils.h"
+#include "is_prime.h"
+#include "print_from_n_to_1.h"
 
-#define ERR_ARGS_COUNT (-1)
-#define ERR_WRONG_FLG (-2)
+#define ERR_ARGS_COUNT          -1
+#define ERR_WRONG_FLG           -2
+#define ERR_STRTOL_FAIL         -3
 
-#define TST_FOO_FIX     1
-#define TST_FOO_IMPL    2
-#define TST_MOD_IMPL    3
+#define TST_TIMER_FIX            1
+#define TST_TIMER_IMPL           2
+#define TST_CUSTOM_POWER_IMPL    3
+#define TST_RECURSIVE_PRINT_IMPL 4
 
-
-/* NOTE(stitaevskiy):
- * We use `atoi` function just for simplification and code reducing.
- * This function doesn't report conversation errors.
- * For safety program we recommend using `strtol` and its analogs.
- * (See `man atoi` and `man strtol` for more info).
- *
- * const char str_num[] = "1234";
- * char* end = NULL;
- * int val = (int) strtol(str_num, &end, 0);
- * if (end != '\0') {
- *     //ERROR
- * }
- *
- * */
 
 int main(int argc, const char** argv) {
     if (argc < 3) {
         return ERR_ARGS_COUNT;
     }
-
-    int Test_case = atoi(argv[1]);
+    char* end = NULL;
+    int test_case = strtol(argv[1], &end, 10);
+    if (*end != '\0') {
+        return ERR_STRTOL_FAIL;
+    }
     const char* data;
     data = argv[2];
 
-    switch (Test_case) {
-        case TST_FOO_FIX: {
-            int to = atoi(data);
+    switch (test_case) {
+        case TST_TIMER_FIX: {
+            int to = strtol(data, &end, 10);
+            if (*end != '\0') {
+                return ERR_STRTOL_FAIL;
+            }
             size_t ticks_count = timer_from(to);
-            printf("%d\n", ticks_count);
+            printf("%zu\n", ticks_count);
             break;
         }
-        case TST_FOO_IMPL: {
-            if (argc = 4) {
-                // int base = atoi(data);
-                // int pow =  atoi(argv[3]);
-                // int res = custom_pow(base, pow);    // TODO: Implement me
-
-                // printf("%i\n", res);
+        case TST_TIMER_IMPL: {
+            if (argc == 4) {
+                int base = strtol(data, &end, 10);
+                if (*end != '\0') {
+                    return ERR_STRTOL_FAIL;
+                }
+                int pow =  strtol(argv[3], &end, 10);
+                if (*end != '\0') {
+                    return ERR_STRTOL_FAIL;
+                }
+                int res = custom_pow(base, pow);
+                printf("%i\n", res);
+                break;
             } else {
                 return ERR_ARGS_COUNT;
             }
         }
-        case TST_MOD_IMPL: {
-            // int num = atoi(data);
-
-            // TODO: Print to stdout `1` if `num` is prime number and `0` otherwise
-            // This function MUST be implemented in
-            // a separate C-module (not in `main` or `utils` module)
+        case TST_CUSTOM_POWER_IMPL: {
+            int num = strtol(data, &end, 10);
+            if (*end != '\0') {
+                return ERR_STRTOL_FAIL;
+            }
+            int res = is_prime(num);
+            printf("%i", res);
+            break;
+        }
+        case TST_RECURSIVE_PRINT_IMPL: {
+            int num = strtol(data, &end, 10);
+            if (*end != '\0') {
+                return ERR_STRTOL_FAIL;
+            }
+            print_from_n_to_1(num);
+            break;
         }
         default: {
             return ERR_WRONG_FLG;
