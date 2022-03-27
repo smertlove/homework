@@ -1,5 +1,7 @@
 #include <stdlib.h>
 #include "utils.h"
+#include "client_t.h"
+#include "record_manager.c"
 
 enum action {
 	ENTER_CLIENT_DATA = 1,
@@ -14,139 +16,13 @@ enum action {
 
 
 
-
-int get_case_choice(void) {
-	puts("please enter action\n1 enter data client:\n2 enter data transaction:\n3 update base\n");
-	int case_choice;
-	scanf("%d", &case_choice);
-	return case_choice;
+void clean_buffer(void) {
+	while (getchar() != '\n');
 }
-
-void print_client_data_fields(void) {
-	printf("%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n\n",
-			"1 Number account: ",
-			"2 Client name: ",
-			"3 Surname: ",
-			"4 Addres client: ",
-			"5 Client Telnum: ",
-			"6 Client indebtedness: ",
-			"7 Client credit limit: ",
-			"8 Client cash payments: ");
-}
-
-void write_client_data(FILE *file, client_t client) {
-	fprintf(file,
-			"%-12d%-11s%-11s%-16s%20s%12.2f%12.2f%12.2f\n",
-			client.account_number,
-			client.name,
-			client.surname,
-			client.address,
-			client.telephone_number,
-			client.indebtedness,
-			client.credit_limit,
-			client.cash_payments);
-}
-
-// int scan_client_data(client_t *client) {
-// 	int argc = scanf("%d%s%s%s%s%lf%lf%lf",
-// 					&client->account_number,
-// 					client->name,
-// 					client->surname,
-// 					client->address,
-// 					client->telephone_number,
-// 					&client->indebtedness,
-// 					&client->credit_limit,
-// 					&client->cash_payments
-// 				);
-// 	return argc;
-// }
-
-void masterWrite(FILE *file, client_t client) {
-	print_client_data_fields();
-	fseek(file, 0, SEEK_END);
-	char c;
-	while (scanf("%d%s%s%s%s%lf%lf%lf",
-					&client.account_number,
-					client.name,
-					client.surname,
-					client.address,
-					client.telephone_number,
-					&client.indebtedness,
-					&client.credit_limit,
-					&client.cash_payments
-				) != -1) {
-		if(c = getchar() != '\n' && c != EOF){
-			break;
-		}
-		write_client_data(file, client);
-		print_client_data_fields();
-	}
-}
-
-void transactionWrite(FILE *ofPtr, client_t transfer) {
-	printf("%s\n%s\n",
-		   "1 Number account: ",
-		   "2 Client cash payments: ");
-	while(scanf("%d %lf", &transfer.account_number, &transfer.cash_payments) != -1) {
-		fprintf(ofPtr, "%-3d%-6.2f\n", transfer.account_number, transfer.cash_payments);
-		printf("%s\n%s\n",
-				"1 Number account:",
-				"2 Client cash payments: ");
-	}
-}
-
-void blackRecord(FILE *ofPTR, FILE  *ofPTR_2, FILE *blackrecord, client_t client_data, client_t transfer) {
-	while(fscanf(ofPTR,
-		"%d%s%s%s%s%lf%lf%lf",
-		&client_data.account_number,
-		client_data.name,
-		client_data.surname,
-		client_data.address,
-		client_data.telephone_number,
-		&client_data.indebtedness,
-		&client_data.credit_limit,
-		&client_data.cash_payments) != -1) {
-			while ((fscanf(ofPTR_2, "%d %lf", &transfer.account_number, &transfer.cash_payments) != -1)) {
-				if(client_data.account_number == transfer.account_number && transfer.cash_payments != 0) {
-					client_data.credit_limit += transfer.cash_payments;
-				}
-			}
-		fprintf(blackrecord,
-				"%-12d%-11s%-11s%-16s%20s%12.2f%12.2f%12.2f\n",
-				client_data.account_number,
-				client_data.name,
-				client_data.surname,
-				client_data.address,
-				client_data.telephone_number,
-				client_data.indebtedness,
-				client_data.credit_limit ,
-				client_data.cash_payments);
-		rewind(ofPTR_2);
-		}
-}
-
-
 
 
 
 int main(void){
-	// int count = 0;
-	// int a;
-	// 	int b;
-	// 	char c;
-	// 	int scn;
-	// 		while(1){
-	// 	printf("%s\n", "enter some digits");
-		
-	// 	scn = scanf("%d%d%s", &a, &b, &c);
-
-	// 	while(getchar() != '\n');
-
-	// 	printf("int a = %d\nint b = %d\nchar c = %s\n", a, b, &c);
-	// 	printf("scan_return = %d\n--- COUNT %d ---\n",  scn, count);
-	// 	count++;
-	// }
-	
 	int case_choice = get_case_choice();
 	while (case_choice != -1) {
 		switch(case_choice) {
@@ -159,7 +35,7 @@ int main(void){
 				client_t client_data;
 				masterWrite(clients_db, client_data);
 				fclose(clients_db);
-				while (getchar() != '\n');
+				
 				
 				break;
 			}
@@ -196,6 +72,7 @@ int main(void){
 				break;
 			}
 		}
+	clean_buffer();
 	case_choice = get_case_choice();
 	}
 	return 0;
