@@ -58,7 +58,7 @@ int main(void){
 					puts(FILE_ACCESS_ERROR);
 					break;
 				}
-				client_t client_data ={.account_number = 0};
+				client_t client_data = {.account_number = 0};
 				client_t transfer = {.account_number = 0};
 				blackRecord(clients_db, transaction_data, blackrecord, client_data, transfer);
 				
