@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "client_t.h"
 
-#define CLIENT_DATA_SCAN_PATTERN	"%d%s%s%s%s%lf%lf%lf"
+#define CLIENT_DATA_SCAN_PATTERN	"%1d%10s%10s%10s%10s%1lf%1lf%1lf"
 #define TRANSACTION_SCAN_PATTERN	"%d %lf"
 
 int scan_client_data(client_t *client) {

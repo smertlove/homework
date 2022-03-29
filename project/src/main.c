@@ -32,7 +32,7 @@ int main(void){
 					puts(FILE_ACCESS_ERROR);
 					break;
 				}
-				client_t client_data;
+				client_t client_data = {.account_number = 0};
 				masterWrite(clients_db, client_data);
 				fclose(clients_db);
 				
@@ -45,7 +45,7 @@ int main(void){
 					puts(FILE_ACCESS_ERROR);
 					break;
 				}
-				client_t transfer;
+				client_t transfer = {.account_number = 0};
 				transactionWrite(transaction_data, transfer);
 				fclose(transaction_data);
 				break;
@@ -58,13 +58,14 @@ int main(void){
 					puts(FILE_ACCESS_ERROR);
 					break;
 				}
-				client_t client_data;
-				client_t transfer;
+				client_t client_data ={.account_number = 0};
+				client_t transfer = {.account_number = 0};
 				blackRecord(clients_db, transaction_data, blackrecord, client_data, transfer);
-				free(clients_db);
+				
 				fclose(clients_db);
 				fclose(transaction_data);
 				fclose(blackrecord);
+				free(clients_db);
 				break;
 			}
 			default: {

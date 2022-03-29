@@ -1,5 +1,5 @@
-#ifndef ROJECT_INCLUDE_CLIENT_T_H_
-#define ROJECT_INCLUDE_CLIENT_T_H_
+#ifndef PROJECT_INCLUDE_CLIENT_T_H_
+#define PROJECT_INCLUDE_CLIENT_T_H_
 
 
 typedef struct client_t {
@@ -14,4 +14,4 @@ typedef struct client_t {
 } client_t;
 
 
-#endif // ROJECT_INCLUDE_CLIENT_T_H_
+#endif // PROJECT_INCLUDE_CLIENT_T_H_
