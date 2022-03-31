@@ -36,9 +36,7 @@ void masterWrite(FILE *file, client_t client) {
     print_client_data_fields(data_fields, 8);
     fseek(file, 0, SEEK_END);
     while(scan_client_data(&client) == 8 || scan_client_data(&client) != EOF) {
-
         write_client_data(file, client);
-        
         // chistim buffer
         int c;
         if(((c = getchar()) != '\n') && c != EOF) {
