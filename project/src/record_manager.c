@@ -22,7 +22,8 @@ void transactionWrite(FILE *file, client_t transfer) {
 	print_client_data_fields(data_fields_to_print, 2);
 	while(scan_transaction_data(&transfer) != -1) {
 		int c;
-        if(((c = getchar()) != '\n') && c != EOF) {
+		if(((c = getchar()) != '\n') && c != EOF) {
+			scanf("%*[^\n]");
 			break;
 		}
 		write_transaction_data(file, transfer);
@@ -34,13 +35,16 @@ void transactionWrite(FILE *file, client_t transfer) {
 void masterWrite(FILE *file, client_t client) {
 	print_client_data_fields(data_fields, 8);
 	fseek(file, 0, SEEK_END);
-	while(scan_client_data(&client) != -1) {
-		int c;
-		if(((c = getchar()) != '\n') && c != EOF) {
-			break;
-		}
+	while(scan_client_data(&client) == 8 || scan_client_data(&client) != EOF) {
+
 		write_client_data(file, client);
 		print_client_data_fields(data_fields, 8);
+		// chistim buffer
+		int c;
+		if(((c = getchar()) != '\n') && c != EOF) {
+			scanf("%*[^\n]");
+			break;
+		}
 	}
 }
 

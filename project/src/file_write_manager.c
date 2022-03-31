@@ -3,7 +3,7 @@
 #include "client_t.h"
 
 #define CLIENT_DATA_WRITE_PATTERN	"%-12d%-11s%-11s%-16s%20s%12.2f%12.2f%12.2f\n"
-#define TRANSACTION_WRITE_PATTERN	"%d\n%f\n"
+#define TRANSACTION_WRITE_PATTERN	"%-3d%-6.2f\n"
 
 void write_client_data(FILE *file, client_t client) {
 	fprintf(file,
