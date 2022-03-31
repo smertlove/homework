@@ -1,7 +1,6 @@
 #ifndef PROJECT_INCLUDE_UTILS_H_
 #define PROJECT_INCLUDE_UTILS_H_
 
-#include <stdio.h>
 #include "client_t.h"
 
 void masterWrite(FILE *file, client_t client);

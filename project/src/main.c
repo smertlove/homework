@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdio.h>
 #include "utils.h"
 #include "client_t.h"
 #include "record_manager.c"
