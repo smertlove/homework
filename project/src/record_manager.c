@@ -38,13 +38,14 @@ void masterWrite(FILE *file, client_t client) {
 	while(scan_client_data(&client) == 8 || scan_client_data(&client) != EOF) {
 
 		write_client_data(file, client);
-		print_client_data_fields(data_fields, 8);
+		
 		// chistim buffer
 		int c;
 		if(((c = getchar()) != '\n') && c != EOF) {
 			scanf("%*[^\n]");
 			break;
 		}
+		print_client_data_fields(data_fields, 8);
 	}
 }
 
@@ -65,8 +66,4 @@ int get_case_choice(void) {
 	int case_choice;
 	scanf("%d", &case_choice);
 	return case_choice;
-}
-
-void clean_buffer(void) {
-	while (getchar() != '\n');
 }

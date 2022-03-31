@@ -3,7 +3,6 @@
 #include "record_manager.h"
 #include "client_t.h"
 
-
 enum action {
 	ENTER_CLIENT_DATA = 1,
 	ENTER_TRANSACTION_DATA,
@@ -25,7 +24,7 @@ int main(void){
 				FILE *clients_db = fopen(RECORD_FILENAME, "r+");
 				if (clients_db == NULL) {
 					puts(FILE_ACCESS_ERROR);
-					// break;
+					break;
 				}
 				client_t client_data = {.account_number = 0};
 				masterWrite(clients_db, client_data);
@@ -38,7 +37,7 @@ int main(void){
 				FILE *transaction_data = fopen(TRANSACTION_FILENAME, "r+");
 				if (transaction_data == NULL) {
 					puts(FILE_ACCESS_ERROR);
-					// break;
+					break;
 				}
 				client_t transfer = {.account_number = 0};
 				transactionWrite(transaction_data, transfer);
@@ -51,7 +50,7 @@ int main(void){
 				FILE *blackrecord = fopen(BLACKRECORD_FILENAME, "w");
 				if (clients_db == NULL || transaction_data == NULL || blackrecord == NULL) {
 					puts(FILE_ACCESS_ERROR);
-					// break;
+					break;
 				}
 				client_t client_data = {.account_number = 0};
 				client_t transfer = {.account_number = 0};
@@ -69,8 +68,6 @@ int main(void){
 				break;
 			}
 		}
-	// clean_buffer();
-	
 	case_choice = get_case_choice();
 	}
 	return 0;
