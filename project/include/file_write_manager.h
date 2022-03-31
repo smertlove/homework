@@ -11,4 +11,4 @@ void write_transaction_data(FILE *file, client_t transaction);
 
 
 
-#endif // PROJECT_INCLUDE_FILE_WRITE_MANAGER_H_
+#endif  // PROJECT_INCLUDE_FILE_WRITE_MANAGER_H_

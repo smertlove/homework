@@ -12,4 +12,4 @@ int get_case_choice(void);
 void clean_buffer(void);
 
 
-#endif // PROJECT_INCLUDE_RECORD_MANAGER_H_
+#endif  // PROJECT_INCLUDE_RECORD_MANAGER_H_

@@ -13,4 +13,4 @@ int read_transaction_data(FILE *file, client_t *transfer);
 
 
 
-#endif // PROJECT_INCLUDE_SCAN_MANAGER_H_
+#endif  // PROJECT_INCLUDE_SCAN_MANAGER_H_

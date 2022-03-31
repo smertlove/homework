@@ -9,17 +9,17 @@ enum action {
     UPDATE_DATA_BASE
 };
 
-#define TRANSACTION_FILENAME	"transaction.dat"
-#define RECORD_FILENAME			"record.dat"
-#define BLACKRECORD_FILENAME	"blackrecord.dat"
-#define FILE_ACCESS_ERROR		"--- ERROR: NO ACCESS ---"
+#define TRANSACTION_FILENAME    "transaction.dat"
+#define RECORD_FILENAME         "record.dat"
+#define BLACKRECORD_FILENAME    "blackrecord.dat"
+#define FILE_ACCESS_ERROR       "--- ERROR: NO ACCESS ---"
 
 
-int main(void){
+int main(void) {
     int case_choice = get_case_choice();
     while (case_choice > 0 && case_choice < 4) {
         printf("case choice: %d\n", case_choice);
-        switch(case_choice) {
+        switch (case_choice) {
             case ENTER_CLIENT_DATA: {
                 FILE *clients_db = fopen(RECORD_FILENAME, "r+");
                 if (clients_db == NULL) {
