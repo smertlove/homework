@@ -7,15 +7,15 @@
 #define TRANSACTION_SCAN_PATTERN	"%d %lf"
 
 int scan_client_data(client_t *client) {
-	int argc = scanf(CLIENT_DATA_SCAN_PATTERN,
-	&client->account_number,
-	client->name,
-	client->surname,
-	client->address,
-	client->telephone_number,
-	&client->indebtedness,
-	&client->credit_limit,
-	&client->cash_payments
+	int argc = scanf(	CLIENT_DATA_SCAN_PATTERN,
+						&client->account_number,
+						client->name,
+						client->surname,
+						client->address,
+						client->telephone_number,
+						&client->indebtedness,
+						&client->credit_limit,
+						&client->cash_payments
 	);
 	return argc;
 }
