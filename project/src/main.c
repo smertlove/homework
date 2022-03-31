@@ -1,9 +1,8 @@
 #include <stdlib.h>
-#include <stdio.h>
 
-#include "utils.h"
+#include "record_manager.h"
 #include "client_t.h"
-#include "record_manager.c"
+
 
 enum action {
 	ENTER_CLIENT_DATA = 1,
@@ -21,6 +20,7 @@ enum action {
 void clean_buffer(void) {
 	while (getchar() != '\n');
 }
+
 
 
 

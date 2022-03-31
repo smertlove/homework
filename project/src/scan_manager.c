@@ -1,5 +1,6 @@
 #include <stdio.h>
 
+#include "scan_manager.h"
 #include "client_t.h"
 
 #define CLIENT_DATA_SCAN_PATTERN	"%1d%10s%10s%10s%10s%1lf%1lf%1lf"
@@ -27,7 +28,7 @@ int scan_transaction_data(client_t *client) {
 	return argc;
 }
 
-int read_client_data(FILE *file, client_t *client){
+int read_client_data(FILE *file, client_t *client) {
     int argc = fscanf(	file,
 						CLIENT_DATA_SCAN_PATTERN,
 						&client->account_number,

@@ -1,10 +1,21 @@
 #include <stdio.h>
 
 #include "client_t.h"
-#include "print_manager.c"
-#include "file_write_manager.c"
-#include "scan_manager.c"
+#include "record_manager.h"
+#include "print_manager.h"
+#include "file_write_manager.h"
+#include "scan_manager.h"
 
+static char *data_fields[8] = {
+	" Number account: ",
+	" Client name: ",
+	" Surname: ",
+	" Addres client: ",
+	" Client Telnum: ",
+	" Client indebtedness: ",
+	" Client credit limit: ",
+	" Client cash payments: "
+};
 
 void transactionWrite(FILE *file, client_t transfer) {
 	char *data_fields_to_print[2] = {data_fields[0], data_fields[7]};
@@ -44,3 +55,11 @@ void blackRecord(FILE *client_db, FILE  *transfer_db, FILE *main_db, client_t cl
 		rewind(transfer_db);
 		}
 }
+
+int get_case_choice(void) {
+	puts("please enter action\n1 enter data client:\n2 enter data transaction:\n3 update base\n");
+	int case_choice;
+	scanf("%d", &case_choice);
+	return case_choice;
+}
+
