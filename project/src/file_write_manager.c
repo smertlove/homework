@@ -1,4 +1,5 @@
 #include <stdio.h>
+
 #include "client_t.h"
 
 #define CLIENT_DATA_WRITE_PATTERN	"%-12d%-11s%-11s%-16s%20s%12.2f%12.2f%12.2f\n"

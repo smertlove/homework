@@ -1,4 +1,5 @@
 #include <stdio.h>
+
 #include "client_t.h"
 #include "print_manager.c"
 #include "file_write_manager.c"
