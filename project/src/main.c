@@ -29,8 +29,6 @@ int main(void){
                 client_t client_data = {.account_number = 0};
                 masterWrite(clients_db, client_data);
                 fclose(clients_db);
-                
-                
                 break;
             }
             case ENTER_TRANSACTION_DATA: {
@@ -55,11 +53,9 @@ int main(void){
                 client_t client_data = {.account_number = 0};
                 client_t transfer = {.account_number = 0};
                 blackRecord(clients_db, transaction_data, blackrecord, client_data, transfer);
-                
                 fclose(clients_db);
                 fclose(transaction_data);
                 fclose(blackrecord);
-
                 break;
             }
             default: {
