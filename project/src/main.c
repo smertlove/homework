@@ -10,7 +10,7 @@ enum action {
 	UPDATE_DATA_BASE
 };
 
-#define TRANSACTION_FILENAME 	"transaction.dat"
+#define TRANSACTION_FILENAME	"transaction.dat"
 #define RECORD_FILENAME			"record.dat"
 #define BLACKRECORD_FILENAME	"blackrecord.dat"
 #define FILE_ACCESS_ERROR		"--- ERROR: NO ACCESS ---"
