@@ -16,14 +16,6 @@ enum action {
 #define FILE_ACCESS_ERROR		"--- ERROR: NO ACCESS ---"
 
 
-
-void clean_buffer(void) {
-	while (getchar() != '\n');
-}
-
-
-
-
 int main(void){
 	int case_choice = get_case_choice();
 	while (case_choice != -1) {

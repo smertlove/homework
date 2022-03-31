@@ -63,3 +63,6 @@ int get_case_choice(void) {
 	return case_choice;
 }
 
+void clean_buffer(void) {
+	while (getchar() != '\n');
+}
