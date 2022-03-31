@@ -25,6 +25,7 @@ void clean_buffer(void) {
 int main(void){
 	int case_choice = get_case_choice();
 	while (case_choice != -1) {
+		printf("case choice: %d\n", case_choice);
 		switch(case_choice) {
 			case ENTER_CLIENT_DATA: {
 				FILE *clients_db = fopen(RECORD_FILENAME, "r+");
@@ -69,11 +70,13 @@ int main(void){
 				break;
 			}
 			default: {
+				printf("case choice: %d\n", case_choice);
 				puts("error");
 				break;
 			}
 		}
 	clean_buffer();
+	
 	case_choice = get_case_choice();
 	}
 	return 0;
