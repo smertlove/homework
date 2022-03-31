@@ -44,10 +44,10 @@ int read_client_data(FILE *file, client_t *client) {
 }
 
 int read_transaction_data(FILE *file, client_t *transfer) {
-    int argc = fscanf(	file,
-                        TRANSACTION_SCAN_PATTERN,
-                        &transfer->account_number,
-                        &transfer->cash_payments
+    int argc = fscanf(file,
+                    TRANSACTION_SCAN_PATTERN,
+                    &transfer->account_number,
+                    &transfer->cash_payments
     );
     return argc;
 }
