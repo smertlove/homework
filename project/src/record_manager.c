@@ -17,7 +17,7 @@ static char *data_fields[8] = {
     " Client cash payments: "
 };
 
-void transactionWrite(FILE *file, client_t transfer) {
+void manage_transaction_file(FILE *file, client_t transfer) {
     char *data_fields_to_print[2] = {data_fields[0], data_fields[7]};
     print_client_data_fields(data_fields_to_print, 2);
     while (scan_transaction_data(&transfer) != -1) {
@@ -32,7 +32,7 @@ void transactionWrite(FILE *file, client_t transfer) {
 }
 
 
-void masterWrite(FILE *file, client_t client) {
+void manage_record_file(FILE *file, client_t client) {
     print_client_data_fields(data_fields, 8);
     fseek(file, 0, SEEK_END);
     while (scan_client_data(&client) == 8 || scan_client_data(&client) != EOF) {
@@ -47,7 +47,7 @@ void masterWrite(FILE *file, client_t client) {
     }
 }
 
-void blackRecord(FILE *client_db, FILE  *transfer_db, FILE *main_db, client_t client, client_t transfer) {
+void manage_blackrecord_file(FILE *client_db, FILE  *transfer_db, FILE *main_db, client_t client, client_t transfer) {
     while (read_client_data(client_db, &client) != -1) {
             while (read_transaction_data(transfer_db, &transfer) != -1) {
                 if (client.account_number == transfer.account_number && transfer.cash_payments != 0) {

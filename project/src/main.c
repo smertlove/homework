@@ -27,7 +27,7 @@ int main(void) {
                     break;
                 }
                 client_t client_data = {.account_number = 0};
-                masterWrite(clients_db, client_data);
+                manage_record_file(clients_db, client_data);
                 fclose(clients_db);
                 break;
             }
@@ -38,7 +38,7 @@ int main(void) {
                     break;
                 }
                 client_t transfer = {.account_number = 0};
-                transactionWrite(transaction_data, transfer);
+                manage_transaction_file(transaction_data, transfer);
                 fclose(transaction_data);
                 break;
             }
@@ -52,7 +52,7 @@ int main(void) {
                 }
                 client_t client_data = {.account_number = 0};
                 client_t transfer = {.account_number = 0};
-                blackRecord(clients_db, transaction_data, blackrecord, client_data, transfer);
+                manage_blackrecord_file(clients_db, transaction_data, blackrecord, client_data, transfer);
                 fclose(clients_db);
                 fclose(transaction_data);
                 fclose(blackrecord);
