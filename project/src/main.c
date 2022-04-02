@@ -18,7 +18,6 @@ enum action {
 int main(void) {
     int case_choice = get_case_choice();
     while (case_choice > 0 && case_choice < 4) {
-        printf("case choice: %d\n", case_choice);
         switch (case_choice) {
             case ENTER_CLIENT_DATA: {
                 FILE *clients_db = fopen(RECORD_FILENAME, "r+");
@@ -70,7 +69,6 @@ int main(void) {
                 break;
             }
             default: {
-                printf("case choice: %d\n", case_choice);
                 puts("error");
                 break;
             }
