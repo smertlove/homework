@@ -3,6 +3,7 @@ HDRS_DIR = project/include
 
 SRCS = \
 		project/src/main.c \
+		project/src/logic.c \
 		project/src/print_manager.c \
 		project/src/scan_manager.c \
 		project/src/file_write_manager.c \
