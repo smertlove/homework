@@ -20,7 +20,7 @@ static char *data_fields[8] = {
 void manage_transaction_file(FILE *file, client_t transfer) {
     char *data_fields_to_print[2] = {data_fields[0], data_fields[7]};
     print_client_data_fields(data_fields_to_print, 2);
-    while (scan_transaction_data(&transfer) != -1) {
+    while (scan_transaction_data(&transfer) == 2) {
         int c;
         if (((c = getchar()) != '\n') && c != EOF) {
             scanf("%*[^\n]");
@@ -48,8 +48,8 @@ void manage_record_file(FILE *file, client_t client) {
 }
 
 void manage_blackrecord_file(FILE *client_db, FILE  *transfer_db, FILE *main_db, client_t client, client_t transfer) {
-    while (read_client_data(client_db, &client) != -1) {
-            while (read_transaction_data(transfer_db, &transfer) != -1) {
+    while (read_client_data(client_db, &client) == 8) {
+            while (read_transaction_data(transfer_db, &transfer) == 2) {
                 if (client.account_number == transfer.account_number && transfer.cash_payments != 0) {
                     client.credit_limit += transfer.cash_payments;
                 }
