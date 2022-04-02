@@ -61,7 +61,7 @@ void manage_blackrecord_file(FILE *client_db, FILE  *transfer_db, FILE *main_db,
 
 int get_case_choice(void) {
     puts("please enter action\n1 enter data client:\n2 enter data transaction:\n3 update base\n");
-    int case_choice;
+    int case_choice = 0;
     scanf("%d", &case_choice);
     return case_choice;
 }
