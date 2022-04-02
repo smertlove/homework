@@ -9,5 +9,6 @@
 
 void run_logic(void);
 void run_enter_data_case(const char *filename, void (*manager_to_execute)(FILE*, client_t));
+void run_update_data_base_case(void);
 
 #endif  // PROJECT_INCLUDE_LOGIC_H_
