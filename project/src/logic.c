@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdio.h>
 
 #include "logic.h"
 #include "record_manager.h"
@@ -13,7 +14,48 @@ enum action {
 #define TRANSACTION_FILENAME    "transaction.dat"
 #define RECORD_FILENAME         "record.dat"
 #define BLACKRECORD_FILENAME    "blackrecord.dat"
-#define FILE_ACCESS_ERROR       "--- ERROR: NO ACCESS ---"
+#define FILE_ACCESS_ERROR       "--- ERROR: NO ACCESS ---\n"
+
+
+
+void run_enter_data_case(const char *filename, void (*manager_to_execute)(FILE*, client_t)) {
+    FILE *file = fopen(filename, "r+");
+    client_t data = {0};
+    if (file == NULL) {
+        puts(FILE_ACCESS_ERROR);
+    } else {
+        manager_to_execute(file, data);
+        fclose(file);
+    }
+}
+
+
+void run_update_data_base_case(void) {
+    FILE *clients_db = fopen(RECORD_FILENAME, "r");
+    if (clients_db == NULL) {
+        puts(FILE_ACCESS_ERROR);
+        return;
+    }
+    FILE *transaction_data = fopen(TRANSACTION_FILENAME, "r");
+    if (transaction_data == NULL) {
+        fclose(clients_db);
+        puts(FILE_ACCESS_ERROR);
+        return;
+    }
+    FILE *blackrecord = fopen(BLACKRECORD_FILENAME, "w");
+    if (blackrecord == NULL) {
+        fclose(clients_db);
+        fclose(transaction_data);
+        puts(FILE_ACCESS_ERROR);
+        return;
+    }
+    client_t client_data = {0};
+    client_t transfer = {0};
+    manage_blackrecord_file(clients_db, transaction_data, blackrecord, client_data, transfer);
+    fclose(clients_db);
+    fclose(transaction_data);
+    fclose(blackrecord);
+}
 
 
 void run_logic(void) {
@@ -21,56 +63,19 @@ void run_logic(void) {
     while (case_choice > 0 && case_choice < 4) {
         switch (case_choice) {
             case ENTER_CLIENT_DATA: {
-                FILE *clients_db = fopen(RECORD_FILENAME, "r+");
-                if (clients_db == NULL) {
-                    puts(FILE_ACCESS_ERROR);
-                    break;
-                }
-                client_t client_data = {0};
-                manage_record_file(clients_db, client_data);
-                fclose(clients_db);
+                run_enter_data_case(RECORD_FILENAME, manage_record_file);
                 break;
             }
             case ENTER_TRANSACTION_DATA: {
-                FILE *transaction_data = fopen(TRANSACTION_FILENAME, "r+");
-                if (transaction_data == NULL) {
-                    puts(FILE_ACCESS_ERROR);
-                    break;
-                }
-                client_t transfer = {0};
-                manage_transaction_file(transaction_data, transfer);
-                fclose(transaction_data);
+                run_enter_data_case(TRANSACTION_FILENAME, manage_transaction_file);
                 break;
             }
             case UPDATE_DATA_BASE: {
-                FILE *clients_db = fopen(RECORD_FILENAME, "r");
-                if (clients_db == NULL) {
-                    puts(FILE_ACCESS_ERROR);
-                    break;
-                }
-                FILE *transaction_data = fopen(TRANSACTION_FILENAME, "r");
-                if (transaction_data == NULL) {
-                    fclose(clients_db);
-                    puts(FILE_ACCESS_ERROR);
-                    break;
-                }
-                FILE *blackrecord = fopen(BLACKRECORD_FILENAME, "w");
-                if (blackrecord == NULL) {
-                    fclose(clients_db);
-                    fclose(transaction_data);
-                    puts(FILE_ACCESS_ERROR);
-                    break;
-                }
-                client_t client_data = {0};
-                client_t transfer = {0};
-                manage_blackrecord_file(clients_db, transaction_data, blackrecord, client_data, transfer);
-                fclose(clients_db);
-                fclose(transaction_data);
-                fclose(blackrecord);
+                run_update_data_base_case();
                 break;
             }
             default: {
-                puts("error");
+                puts("error\n");
                 break;
             }
         }
