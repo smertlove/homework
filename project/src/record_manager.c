@@ -37,7 +37,6 @@ void manage_record_file(FILE *file, client_t client) {
     fseek(file, 0, SEEK_END);
     while (scan_client_data(&client) == 8 || scan_client_data(&client) != EOF) {
         write_client_data(file, client);
-        // chistim buffer
         int c;
         if (((c = getchar()) != '\n') && c != EOF) {
             scanf("%*[^\n]");
