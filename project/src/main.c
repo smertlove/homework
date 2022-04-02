@@ -44,9 +44,20 @@ int main(void) {
             }
             case UPDATE_DATA_BASE: {
                 FILE *clients_db = fopen(RECORD_FILENAME, "r");
+                if (clients_db == NULL) {
+                    puts(FILE_ACCESS_ERROR);
+                    break;
+                }
                 FILE *transaction_data = fopen(TRANSACTION_FILENAME, "r");
+                if (transaction_data == NULL) {
+                    fclose(clients_db);
+                    puts(FILE_ACCESS_ERROR);
+                    break;
+                }
                 FILE *blackrecord = fopen(BLACKRECORD_FILENAME, "w");
-                if (clients_db == NULL || transaction_data == NULL || blackrecord == NULL) {
+                if (blackrecord == NULL) {
+                    fclose(clients_db);
+                    fclose(transaction_data);
                     puts(FILE_ACCESS_ERROR);
                     break;
                 }
