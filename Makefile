@@ -12,7 +12,8 @@ SRCS = \
 
 TEST_SRCS = \
 		project/test/test.c \
-		project/src/file_write_manager.c
+		project/src/file_write_manager.c \
+		project/src/scan_manager.c
 
 .PHONY: all build rebuild check test memtest build_test custom_test clean
 
