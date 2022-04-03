@@ -14,7 +14,8 @@ enum action {
 #define TRANSACTION_FILENAME    "transaction.dat"
 #define RECORD_FILENAME         "record.dat"
 #define BLACKRECORD_FILENAME    "blackrecord.dat"
-#define FILE_ACCESS_ERROR       "--- ERROR: NO ACCESS ---\n"
+#define FILE_ACCESS_ERROR       "--- ERROR: NO SUCH FILE HERE ---\n"
+#define FILE_CREATION_MSG       "--- FILE HAS BEEN CREATED ---\n"
 
 
 
@@ -22,11 +23,11 @@ void run_enter_data_case(const char *filename, void (*manager_to_execute)(FILE*,
     FILE *file = fopen(filename, "r+");
     client_t data = {0};
     if (file == NULL) {
-        puts(FILE_ACCESS_ERROR);
-    } else {
-        manager_to_execute(file, data);
-        fclose(file);
+        puts(FILE_CREATION_MSG);
+        file = fopen(filename, "w");
     }
+    manager_to_execute(file, data);
+    fclose(file);
 }
 
 

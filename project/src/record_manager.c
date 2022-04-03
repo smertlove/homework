@@ -36,12 +36,12 @@ void manage_record_file(FILE *file, client_t client) {
     print_client_data_fields(data_fields, 8);
     fseek(file, 0, SEEK_END);
     while (scan_client_data(&client) == 8 || scan_client_data(&client) != EOF) {
-        write_client_data(file, client);
         int c;
         if (((c = getchar()) != '\n') && c != EOF) {
             scanf("%*[^\n]");
             break;
         }
+        write_client_data(file, client);
         print_client_data_fields(data_fields, 8);
     }
 }
