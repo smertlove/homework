@@ -5,6 +5,9 @@
 
 
 typedef struct Matrix {
+    double *data;
+    size_t row_count;
+    size_t col_count;
 } Matrix;
 
 // Init/release operations
@@ -18,18 +21,19 @@ int get_cols(const Matrix* matrix, size_t* cols);
 int get_elem(const Matrix* matrix, size_t row, size_t col, double* val);
 int set_elem(Matrix* matrix, size_t row, size_t col, double val);
 
-//Math operations
+// Math operations
 Matrix* mul_scalar(const Matrix* matrix, double val);
 Matrix* transp(const Matrix* matrix);
 
 Matrix* sum(const Matrix* l, const Matrix* r);
 Matrix* sub(const Matrix* l, const Matrix* r);
-Matrix* mul(const Matrix* l, const Matrix* r);
+Matrix* mul(const Matrix* l, const Matrix* r); // 4islo solbcov l == 4islo strok r !!!
 
 // Extra operations
 int det(const Matrix* matrix, double* val);
 Matrix* adj(const Matrix* matrix);
 Matrix* inv(const Matrix* matrix);
 
+void pprint(Matrix *matrix);
 
 #endif //_MATRIX_H_
