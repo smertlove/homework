@@ -9,10 +9,12 @@ int main(void) {
     set_elem(m, 3, 0, 23.0);
 
     Matrix *mm = mul_scalar(m, 7.0);
+    free_matrix(m);
     // print_addr(mm);
     puts("ne padaet posle 2");
 
     Matrix *mmm = transp(mm);
+    free_matrix(mm);
     // print_addr(mmm);
     puts("ne padaet posle 3");
 

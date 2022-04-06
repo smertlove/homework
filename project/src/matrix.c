@@ -1,21 +1,14 @@
 #include <stdio.h>
 #include <malloc.h>
+#include <stdlib.h>
 
 #include "matrix.h"
 
 #define ERROR_NO_FILE_ACCESS "--- FILE ACCESS ERROR ---"
 #define MEMORY_ALLOCATION_ERROR "--- PROBLEMS WITH MEMORY ALLOCATION---"
 
-void print_addr(Matrix* matrix) {
-    // printf("- - - - -\n\n");
-    // printf("sizeof this matrix is %zu\n", sizeof(matrix));
-    printf("%p\t%p\n", &matrix, &matrix->data);
-    // printf("sizeof it's data is %zu\n\n", sizeof(matrix->data)*matrix->row_count*matrix->col_count);
-    // for (size_t i = 0; i < matrix->row_count * matrix->col_count; i+=1) {
-    //     printf("%.2fl ", matrix->data[i]);
-    // }
-    // printf("\n\n- - - - -\n\n");
-    
+void print_mdata(Matrix* matrix) {
+    printf("%ld %ld", matrix->row_count, matrix->col_count);
 }
 
 Matrix* create_matrix(size_t rows, size_t cols) {
@@ -87,10 +80,9 @@ Matrix* copy_matrix(const Matrix* old_matrix) {
             double cur_value = 0.0;
             get_elem(old_matrix, i, j, &cur_value);
             set_elem(new_matrix, i, j, cur_value);
-            printf("%fl\n", new_matrix->data[i*8+j]);
+            printf("%ld\n", i*sizeof(double)+j);
         }  
-    } 
-    printf("- - - - -\n\n"); 
+    }
     return new_matrix;
 }
 
@@ -125,7 +117,7 @@ Matrix* transp(const Matrix* matrix) {
 Matrix* sum(const Matrix* l, const Matrix* r) {
     Matrix *new_matrix = create_matrix(l->row_count, l->col_count);
     for (size_t i = 0; i < l->row_count; i++) {
-        for (size_t j = 0; j < count; j++) {
+        for (size_t j = 0; j < l->col_count; j++) {
             set_elem(new_matrix, i, j, l->data[i*8+j] + r->data[i*8+j]);
         }
         
@@ -136,7 +128,7 @@ Matrix* sum(const Matrix* l, const Matrix* r) {
 Matrix* sub(const Matrix* l, const Matrix* r) {
     Matrix *new_matrix = create_matrix(l->row_count, l->col_count);
     for (size_t i = 0; i < l->row_count; i++) {
-        for (size_t j = 0; j < count; j++) {
+        for (size_t j = 0; j < l->col_count; j++) {
             set_elem(new_matrix, i, j, l->data[i*8+j] - r->data[i*8+j]);
         }       
     }
@@ -145,11 +137,3 @@ Matrix* sub(const Matrix* l, const Matrix* r) {
 
 
 
-void pprint(Matrix* matrix) {  // pretty print
-    for (size_t i = 0; i < matrix->row_count; i++) {
-        for (size_t j = 0; j < matrix->col_count; j++) {
-            printf("%2f\t", matrix->data[i*8+j]);
-        }
-        printf("\n");
-    }
-}
