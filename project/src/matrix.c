@@ -136,7 +136,7 @@ Matrix* transp(const Matrix* matrix) {
             get_elem(matrix, i, j, &elem);
             set_elem(new_matrix, j, i, elem);
         }
-    } 
+    }
     return new_matrix;
 }
 
@@ -216,7 +216,7 @@ Matrix* inv(const Matrix* matrix) {
 
 void pprint(Matrix* matrix) {  // pretty print
     for (size_t i = 0; i < matrix->row_count; i++) {
-        for (size_t j = 0; j < matrix->col_count; j++) {    
+        for (size_t j = 0; j < matrix->col_count; j++) {
             printf("%lf\t", matrix->data[i*sizeof(double)+j]);
         }
         printf("\n");
