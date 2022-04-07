@@ -6,6 +6,7 @@
 
 #define ERROR_NO_FILE_ACCESS    "--- FILE ACCESS ERROR ---"
 #define MEMORY_ALLOCATION_ERROR "--- PROBLEMS WITH MEMORY ALLOCATION---"
+#define FILE_SCAN_ERROR         "dirty data in file, aborting..."
 
 enum status {
     STATUS_INVALID_INPUT = -1,
@@ -26,13 +27,13 @@ Matrix* create_matrix(size_t rows, size_t cols) {
     if (rows < 1 || cols < 1) {
         return NULL;
     }
-    Matrix *matrix = calloc(1, sizeof(Matrix));
+    Matrix *matrix = malloc(sizeof(Matrix));
     if (matrix == NULL) {
         puts(MEMORY_ALLOCATION_ERROR);
         free(matrix);
         return NULL;
     }
-    matrix->data = calloc(rows * cols, sizeof(double));
+    matrix->data = (double*)calloc(rows * cols, sizeof(double));
     if (matrix->data == NULL) {
         puts(MEMORY_ALLOCATION_ERROR);
         free_matrix(matrix);
@@ -58,12 +59,20 @@ Matrix* create_matrix_from_file(const char* path_file) {
     }
     fscanf(file, "%zu %zu", &rows, &cols);
     Matrix *matrix = create_matrix(rows, cols);
-    for (size_t i = 0; i < matrix->row_count; i++) {
-        for (size_t j = 0; j < matrix->col_count; j++) {
-            fscanf(file, "%lf", &matrix->data[i*sizeof(double)+j]);
+    double *ptr = matrix->data;
+    for (size_t i = 0; i < rows; i++) {
+        for (size_t j = 0; j < cols; j++) {
+            double buf = 0.0;          
+            if (fscanf(file, "%lf", &buf) != -1) {
+                *ptr = buf;
+                ptr++;
+            } else {
+                puts(FILE_SCAN_ERROR);
+                free_matrix(matrix);
+                return NULL;
+            }
         }
     }
-
     fclose(file);
     return matrix;
 }
@@ -88,18 +97,20 @@ int get_cols(const Matrix* matrix, size_t* cols) {
 }
 
 int get_elem(const Matrix* matrix, size_t row, size_t col, double* val) {
-    if (matrix == NULL || row != 0 || col != 0) {
+    if (matrix == NULL) {
         return STATUS_INVALID_INPUT;
     }
-    *val = matrix->data[row*sizeof(double)+col];
+    double *ptr = matrix->data + (row * matrix->col_count + col);
+    *val = *ptr;
     return STATUS_OK;
 }
 
 int set_elem(Matrix* matrix, size_t row, size_t col, double val) {
-    if (matrix == NULL || row != 0 || col != 0) {
+    if (matrix == NULL) {
         return STATUS_INVALID_INPUT;
     }
-    matrix->data[row*33+col] = val;
+    double *ptr = matrix->data + (row * matrix->col_count + col);
+    *ptr = val;
     return STATUS_OK;
 }
 
@@ -109,7 +120,7 @@ Matrix* mul_scalar(const Matrix* matrix, double val) {
     if (matrix == NULL) {
         return NULL;
     }
-    Matrix *new_matrix = create_matrix(matrix->row_count, matrix->col_count);
+    Matrix *new_matrix = create_matrix(matrix->row_count, matrix->col_count); 
     if (val == 0.0) {
         return new_matrix;
     }
@@ -130,8 +141,8 @@ Matrix* transp(const Matrix* matrix) {
     size_t rows = matrix->col_count;
     size_t cols = matrix->row_count;
     Matrix *new_matrix = create_matrix(rows, cols);
-    for (size_t i = 0; i < rows; i++) {
-        for (size_t j = 0; j < cols; j++) {
+    for (size_t i = 0; i < cols; i++) {
+        for (size_t j = 0; j < rows; j++) {
             double elem = 0.0;
             get_elem(matrix, i, j, &elem);
             set_elem(new_matrix, j, i, elem);
@@ -213,12 +224,17 @@ Matrix* inv(const Matrix* matrix) {
 }
 
 /***************** PRETTY PRINT *****************/
-
-void pprint(Matrix* matrix) {  // pretty print
-    for (size_t i = 0; i < matrix->row_count; i++) {
-        for (size_t j = 0; j < matrix->col_count; j++) {
-            printf("%lf\t", matrix->data[i*sizeof(double)+j]);
-        }
-        printf("\n");
-    }
-}
+//
+//this func has been used during development
+//
+// void pprint(Matrix* matrix) {
+//     double *ptr = matrix->data;
+//     for (size_t i = 0; i < matrix->row_count; i++) {
+//         for (size_t j = 0; j < matrix->col_count; j++) {
+//             printf("%lf\t", *ptr);
+//             ptr++;
+//         }
+//         printf("\n");
+//     }
+//     puts("\n\n");
+// }
