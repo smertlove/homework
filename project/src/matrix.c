@@ -76,7 +76,7 @@ Matrix* create_matrix_from_file(const char* path_file) {
 /***************** BASIC OPERATIONS *****************/
 
 int get_rows(const Matrix* matrix, size_t* rows) {
-    if (matrix == NULL || rows != 0) {
+    if (matrix == NULL) {
         return STATUS_INVALID_INPUT;
     }
     *rows = matrix->row_count;
@@ -84,7 +84,7 @@ int get_rows(const Matrix* matrix, size_t* rows) {
 }
 
 int get_cols(const Matrix* matrix, size_t* cols) {
-    if (matrix == NULL || cols != 0) {
+    if (matrix == NULL) {
         return STATUS_INVALID_INPUT;
     }
     *cols = matrix->col_count;
