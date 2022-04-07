@@ -62,7 +62,7 @@ Matrix* create_matrix_from_file(const char* path_file) {
     double *ptr = matrix->data;
     for (size_t i = 0; i < rows; i++) {
         for (size_t j = 0; j < cols; j++) {
-            double buf = 0.0;          
+            double buf = 0.0;
             if (fscanf(file, "%lf", &buf) != -1) {
                 *ptr = buf;
                 ptr++;
@@ -120,7 +120,7 @@ Matrix* mul_scalar(const Matrix* matrix, double val) {
     if (matrix == NULL) {
         return NULL;
     }
-    Matrix *new_matrix = create_matrix(matrix->row_count, matrix->col_count); 
+    Matrix *new_matrix = create_matrix(matrix->row_count, matrix->col_count);
     if (val == 0.0) {
         return new_matrix;
     }
@@ -225,7 +225,7 @@ Matrix* inv(const Matrix* matrix) {
 
 /***************** PRETTY PRINT *****************/
 //
-//this func has been used during development
+// this func has been used during development
 //
 // void pprint(Matrix* matrix) {
 //     double *ptr = matrix->data;
