@@ -7,14 +7,26 @@
 #define ERROR_NO_FILE_ACCESS "--- FILE ACCESS ERROR ---"
 #define MEMORY_ALLOCATION_ERROR "--- PROBLEMS WITH MEMORY ALLOCATION---"
 
+enum status {
+    STATUS_INVALID_INPUT = -1,
+    STATUS_OK
+};
+
 /***************** INIT/RELEASE OPERATIONS *****************/
 
 void free_matrix(Matrix* matrix){
+    if (matrix == NULL) {
+        return;
+    }
     free(matrix->data);
     free(matrix);
 }
 
 Matrix* create_matrix(size_t rows, size_t cols) {
+    if (rows < 1 || cols < 1) {
+        return NULL;
+    }
+    
     Matrix *matrix = calloc(1, sizeof(Matrix));
     if (matrix == NULL) {
         puts(MEMORY_ALLOCATION_ERROR);
@@ -35,6 +47,10 @@ Matrix* create_matrix(size_t rows, size_t cols) {
 
 
 Matrix* create_matrix_from_file(const char* path_file) {
+    if (!*path_file) {
+        return NULL;
+    }
+    
     size_t rows = 0;
     size_t cols = 0;
     
@@ -60,29 +76,47 @@ Matrix* create_matrix_from_file(const char* path_file) {
 /***************** BASIC OPERATIONS *****************/
 
 int get_rows(const Matrix* matrix, size_t* rows) {
+    if (matrix == NULL || rows != 0) {
+        return STATUS_INVALID_INPUT;
+    }
     *rows = matrix->row_count;
-    return 0;
+    return STATUS_OK;
 }
 
 int get_cols(const Matrix* matrix, size_t* cols) {
+    if (matrix == NULL || cols != 0) {
+        return STATUS_INVALID_INPUT;
+    }
     *cols = matrix->col_count;
-    return 0;
+    return STATUS_OK;
 }
 
 int get_elem(const Matrix* matrix, size_t row, size_t col, double* val) {
+    if (matrix == NULL || row != 0 || col != 0) {
+        return STATUS_INVALID_INPUT;
+    }
     *val = matrix->data[row*sizeof(double)+col];
-    return 0;
+    return STATUS_OK;
 }
 
 int set_elem(Matrix* matrix, size_t row, size_t col, double val) {
+    if (matrix == NULL || row != 0 || col != 0) {
+        return STATUS_INVALID_INPUT;
+    }
     matrix->data[row*33+col] = val;
-    return 0;
+    return STATUS_OK;
 }
 
 /***************** MATH OPERATIONS *****************/
 
-Matrix* mul_scalar(const Matrix* matrix, double val) { 
+Matrix* mul_scalar(const Matrix* matrix, double val) {
+    if (matrix == NULL) {
+        return NULL;
+    }
     Matrix *new_matrix = create_matrix(matrix->row_count, matrix->col_count);
+    if(val == 0.0){
+        return new_matrix;
+    }
     for (size_t i = 0; i < matrix->row_count; i++) {
         for (size_t j = 0; j < matrix->col_count; j++) {
             double elem = 0;
@@ -94,6 +128,9 @@ Matrix* mul_scalar(const Matrix* matrix, double val) {
 }
 
 Matrix* transp(const Matrix* matrix) {
+    if (matrix == NULL) {
+        return NULL;
+    }
     size_t rows = matrix->col_count;
     size_t cols = matrix->row_count;
     Matrix *new_matrix = create_matrix(rows, cols);
@@ -108,6 +145,9 @@ Matrix* transp(const Matrix* matrix) {
 }
 
 static Matrix* double_variable_action(const Matrix* l, const Matrix* r, double (*to_do_action)(double, double)) {
+    if (l == NULL || r == NULL) {  // assuming "to_do_action" func is always there
+        return NULL;
+    }
     Matrix *new_matrix = create_matrix(l->row_count, l->col_count);
     for (size_t i = 0; i < l->row_count; i++) {
         for (size_t j = 0; j < l->col_count; j++) {
@@ -121,23 +161,26 @@ static Matrix* double_variable_action(const Matrix* l, const Matrix* r, double (
     return new_matrix;
 }
 
-static double subtract(double a, double b) {
+static double subtract(double a, double b) {  // assuming both doubles are always there
     return a - b;
 }
 
-static double add(double a, double b) {
+static double add(double a, double b) {  // assuming both doubles are always there
     return a + b;
 }
 
-Matrix* sum(const Matrix* l, const Matrix* r) {
+Matrix* sum(const Matrix* l, const Matrix* r) {  // all input checks in "double_variable_action" func
     return double_variable_action(l, r, add);
 }
 
-Matrix* sub(const Matrix* l, const Matrix* r) {
+Matrix* sub(const Matrix* l, const Matrix* r) {  // all input checks in "double_variable_action" func
     return double_variable_action(l, r, subtract);
 }
 
 Matrix* mul(const Matrix* l, const Matrix* r) {
+    if (l == NULL || r == NULL) {
+        return NULL;
+    }
     size_t rows = l->row_count;
     size_t cols = r->col_count;
     Matrix *new_matrix = create_matrix(rows, cols);
