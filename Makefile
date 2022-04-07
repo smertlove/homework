@@ -44,7 +44,7 @@ memtestextra: $(TST_TARGET)
 rebuild: clean build
 
 $(TARGET): $(SRCS)
-	$(CC) -Wall -Wextra -Werror $(addprefix -I,$(HDRS)) -o $(TARGET) $(CFLAGS) $(SRCS) -lm
+	$(CC) -g -Wall -Wextra -Werror $(addprefix -I,$(HDRS)) -o $(TARGET) $(CFLAGS) $(SRCS) -lm
 
 $(TST_TARGET): $(TST_SRCS)
 	$(CC) -Wall -Wextra -Werror $(addprefix -I,$(TST_HDRS)) -o $(TST_TARGET) $(CFLAGS) $(TST_SRCS) -lm

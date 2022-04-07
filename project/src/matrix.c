@@ -12,13 +12,15 @@ void print_mdata(Matrix* matrix) {
 }
 
 Matrix* create_matrix(size_t rows, size_t cols) {
-    Matrix *matrix = malloc(sizeof(Matrix));
+    Matrix *matrix = calloc(1, sizeof(Matrix));
     if (matrix == NULL) {
         puts(MEMORY_ALLOCATION_ERROR);
+        return NULL;
     } 
     matrix->data = calloc(rows * cols,  sizeof(double));
     if (matrix->data == NULL) {
         puts(MEMORY_ALLOCATION_ERROR);
+        return NULL;
     }
     matrix->row_count = rows;
     matrix->col_count = cols;
@@ -28,6 +30,8 @@ Matrix* create_matrix(size_t rows, size_t cols) {
 void free_matrix(Matrix* matrix){
     free(matrix->data);
     free(matrix);
+    matrix->data = NULL;
+    matrix = NULL;
 }
 
 Matrix* create_matrix_from_file(const char* path_file) {
@@ -37,21 +41,23 @@ Matrix* create_matrix_from_file(const char* path_file) {
     FILE *file = fopen(path_file, "r");
     if (file == NULL) {
         puts(ERROR_NO_FILE_ACCESS);
+        return NULL;
     }
     
     fscanf(file, "%zu %zu", &rows, &cols);
     Matrix *matrix = create_matrix(rows, cols);
-    matrix->row_count = rows;
-    matrix->col_count = cols;
     for (size_t i = 0; i < matrix->row_count; i++) {
         for (size_t j = 0; j < matrix->col_count; j++) {
-            fscanf(file, "%lf", &matrix->data[i*8+j]);
+            fscanf(file, "%lf", &matrix->data[i*sizeof(double)+j]);
         }
     }
 
     fclose(file);
     return matrix;
 }
+
+
+/*************************************/
 
 int get_rows(const Matrix* matrix, size_t* rows) {
     *rows = matrix->row_count;
@@ -64,51 +70,38 @@ int get_cols(const Matrix* matrix, size_t* cols) {
 }
 
 int get_elem(const Matrix* matrix, size_t row, size_t col, double* val) {
-    *val = matrix->data[row * sizeof(val) + col];
+    *val = matrix->data[row*sizeof(double)+col];
     return 0;
 }
 
 int set_elem(Matrix* matrix, size_t row, size_t col, double val) {
-    matrix->data[row * sizeof(val) + col] = val;
+    matrix->data[row*sizeof(double)+col] = val;
     return 0;
 }
 
-Matrix* copy_matrix(const Matrix* old_matrix) {
-    Matrix *new_matrix = create_matrix(old_matrix->row_count, old_matrix->col_count);
-    for (size_t i = 0; i < old_matrix->row_count; i++) {
-        for (size_t j = 0; j < old_matrix->col_count; j++) {
-            double cur_value = 0.0;
-            get_elem(old_matrix, i, j, &cur_value);
-            set_elem(new_matrix, i, j, cur_value);
-            printf("%ld\n", i*sizeof(double)+j);
-        }  
-    }
-    return new_matrix;
-}
-
 /***********************************/
-Matrix* mul_scalar(const Matrix* matrix, double val) {
-    
-    Matrix *new_matrix = copy_matrix(matrix);
+Matrix* mul_scalar(const Matrix* matrix, double val) { 
+    Matrix *new_matrix = create_matrix(matrix->row_count, matrix->col_count);
     for (size_t i = 0; i < matrix->row_count; i++) {
         for (size_t j = 0; j < matrix->col_count; j++) {
-            double cur_value = 0.0;
-            get_elem(matrix, i, j, &cur_value);
-            set_elem(new_matrix, i, j, cur_value * val);
+            double elem = 0;
+            get_elem(matrix, i, j, &elem);
+            set_elem(new_matrix, i, j, elem * val);
         }
     }
     return new_matrix;
 }
 
 Matrix* transp(const Matrix* matrix) {
-    size_t cols = matrix->col_count;
-    size_t rows = matrix->row_count;
-    Matrix *new_matrix = create_matrix(cols, rows);
-    for (size_t i = 0; i < matrix->row_count; i++) {
-        for (size_t j = 0; j < matrix->col_count; j++) {
-            double cur_value = 0.0;
-            get_elem(matrix, i, j, &cur_value);
-            set_elem(new_matrix, j, i, cur_value);
+    size_t rows = matrix->col_count;
+    size_t cols = matrix->row_count;
+    Matrix *new_matrix = create_matrix(rows, cols);
+    for (size_t i = 0; i < rows; i++) {
+        for (size_t j = 0; j < cols; j++) {
+            double elem = 0.0;
+            get_elem(matrix, i, j, &elem);
+            set_elem(new_matrix, j, i, elem);
+            puts("sry");
         }
     } 
     return new_matrix;
@@ -118,9 +111,13 @@ Matrix* sum(const Matrix* l, const Matrix* r) {
     Matrix *new_matrix = create_matrix(l->row_count, l->col_count);
     for (size_t i = 0; i < l->row_count; i++) {
         for (size_t j = 0; j < l->col_count; j++) {
-            set_elem(new_matrix, i, j, l->data[i*8+j] + r->data[i*8+j]);
-        }
-        
+            double elem1 = 0.0;
+            double elem2 = 0.0;
+            get_elem(l, i, j, &elem1);
+            get_elem(r, i, j, &elem2);
+            set_elem(new_matrix, i, j, elem1 + elem2);
+            puts("sry");
+        } 
     }
     return new_matrix;
 }
@@ -129,11 +126,41 @@ Matrix* sub(const Matrix* l, const Matrix* r) {
     Matrix *new_matrix = create_matrix(l->row_count, l->col_count);
     for (size_t i = 0; i < l->row_count; i++) {
         for (size_t j = 0; j < l->col_count; j++) {
-            set_elem(new_matrix, i, j, l->data[i*8+j] - r->data[i*8+j]);
+            double elem1 = 0.0;
+            double elem2 = 0.0;
+            get_elem(l, i, j, &elem1);
+            get_elem(r, i, j, &elem2);
+            set_elem(new_matrix, i, j, elem1 - elem2);
         }       
     }
     return new_matrix;
 }
 
+// Matrix* mul(const Matrix* l, const Matrix* r) {
+//     size_t rows = l->row_count;
+//     size_t cols = r->col_count;
+//     Matrix *new_matrix = create_matrix(rows, cols);
+//     for (size_t i = 0; i < rows; i++) {
+//         double total = 0.0;
+//         for (size_t j = 0; j < cols; j++) {
+//             double elem1 = 0.0;
+//             double elem2 = 0.0;
+//             get_elem(l, i, j, &elem1);
+//             get_elem(r, i, j, &elem2);
+//             total = total + elem1*elem2;
+//         }    
+//         set_elem(new_matrix, i, i, total);   
+//     }
+//     return new_matrix;
+// }
 
 
+
+void pprint(Matrix* matrix) {  // pretty print
+    for (size_t i = 0; i < matrix->row_count; i++) {
+        for (size_t j = 0; j < matrix->col_count; j++) {    
+            printf("%lf\t", matrix->data[i*sizeof(double)+j]);
+        }
+        printf("\n");
+    }
+}

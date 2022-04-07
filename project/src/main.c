@@ -2,39 +2,33 @@
 #include "matrix.h"
 
 
-int main(void) {
+
+void case1(void) {
     Matrix *m = create_matrix_from_file("./ff.txt");
-    // print_addr(m);
-    // puts("ne padaet posle 1");
-    set_elem(m, 3, 0, 23.0);
+    pprint(m);
+    Matrix *mm = create_matrix_from_file("./fff.txt");
+    pprint(mm);
+}
 
-    Matrix *mm = mul_scalar(m, 7.0);
-    free_matrix(m);
-    // print_addr(mm);
-    puts("ne padaet posle 2");
+void case2(void) {
+    Matrix *m = create_matrix_from_file("./ff.txt");
+    set_elem(m, 0, 3, 9.0);
+    set_elem(m, 3, 0, 7.0);
+    set_elem(m, 3, 3, 9.0);
+    set_elem(m, 0, 1, 6.0);
+    set_elem(m, 0, 2, 5.0);
+    pprint(m);
+    Matrix *mm = mul_scalar(m, 2.0);
+    pprint(mm);
 
-    Matrix *mmm = transp(mm);
-    free_matrix(mm);
-    // print_addr(mmm);
-    puts("ne padaet posle 3");
-
-    
-
-    size_t v1 = 0;
-    size_t v2 = 0;
-    get_rows(m, &v1);
-    get_cols(m, &v2);
-    printf("%zu %zu\n", v1, v2);
-    print_addr(mmm);
-    double v3 = 0;
-    double v4 = 0;
-    get_elem(m, 1, 1, &v3);
-    get_elem(m, 3, 0, &v4);
-    printf("%lf %lf\n", v3, v4);
+    Matrix *mmm = mul_scalar(mm, 3.0);
+    pprint(mmm);
+}
 
 
-    free_matrix(m);
-    // printf("%d\n", get_rows(m, m->row_count));
+int main(void) {
+    case1();
+    // case2();
     return 0;
 }
 

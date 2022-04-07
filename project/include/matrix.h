@@ -34,4 +34,6 @@ int det(const Matrix* matrix, double* val);
 Matrix* adj(const Matrix* matrix);
 Matrix* inv(const Matrix* matrix);
 
+void pprint(Matrix* matrix);
+
 #endif //_MATRIX_H_
