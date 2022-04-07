@@ -193,7 +193,7 @@ Matrix* mul(const Matrix* l, const Matrix* r) {
                 total = total + elem1 * elem2;
             }
             set_elem(new_matrix, i, j, total);
-        }      
+        }
     }
     return new_matrix;
 }
