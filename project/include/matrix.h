@@ -1,5 +1,5 @@
-#ifndef _MATRIX_H_
-#define _MATRIX_H_
+#ifndef PROJECT_INCLUDE_MATRIX_H_
+#define PROJECT_INCLUDE_MATRIX_H_
 
 #include <stddef.h>
 
@@ -27,7 +27,7 @@ Matrix* transp(const Matrix* matrix);
 
 Matrix* sum(const Matrix* l, const Matrix* r);
 Matrix* sub(const Matrix* l, const Matrix* r);
-Matrix* mul(const Matrix* l, const Matrix* r); // 4islo solbcov l == 4islo strok r !!!
+Matrix* mul(const Matrix* l, const Matrix* r);  // 4islo solbcov l == 4islo strok r !!!
 
 // Extra operations
 int det(const Matrix* matrix, double* val);
@@ -36,4 +36,4 @@ Matrix* inv(const Matrix* matrix);
 
 void pprint(Matrix* matrix);
 
-#endif //_MATRIX_H_
+#endif  // PROJECT_INCLUDE_MATRIX_H_

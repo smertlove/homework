@@ -4,7 +4,7 @@
 
 #include "matrix.h"
 
-#define ERROR_NO_FILE_ACCESS "--- FILE ACCESS ERROR ---"
+#define ERROR_NO_FILE_ACCESS    "--- FILE ACCESS ERROR ---"
 #define MEMORY_ALLOCATION_ERROR "--- PROBLEMS WITH MEMORY ALLOCATION---"
 
 enum status {
@@ -14,7 +14,7 @@ enum status {
 
 /***************** INIT/RELEASE OPERATIONS *****************/
 
-void free_matrix(Matrix* matrix){
+void free_matrix(Matrix* matrix) {
     if (matrix == NULL) {
         return;
     }
@@ -26,14 +26,13 @@ Matrix* create_matrix(size_t rows, size_t cols) {
     if (rows < 1 || cols < 1) {
         return NULL;
     }
-    
     Matrix *matrix = calloc(1, sizeof(Matrix));
     if (matrix == NULL) {
         puts(MEMORY_ALLOCATION_ERROR);
         free(matrix);
         return NULL;
-    } 
-    matrix->data = calloc(rows * cols,  sizeof(double));
+    }
+    matrix->data = calloc(rows * cols, sizeof(double));
     if (matrix->data == NULL) {
         puts(MEMORY_ALLOCATION_ERROR);
         free_matrix(matrix);
@@ -50,16 +49,13 @@ Matrix* create_matrix_from_file(const char* path_file) {
     if (!*path_file) {
         return NULL;
     }
-    
     size_t rows = 0;
     size_t cols = 0;
-    
     FILE *file = fopen(path_file, "r");
     if (file == NULL) {
         puts(ERROR_NO_FILE_ACCESS);
         return NULL;
     }
-    
     fscanf(file, "%zu %zu", &rows, &cols);
     Matrix *matrix = create_matrix(rows, cols);
     for (size_t i = 0; i < matrix->row_count; i++) {
@@ -114,7 +110,7 @@ Matrix* mul_scalar(const Matrix* matrix, double val) {
         return NULL;
     }
     Matrix *new_matrix = create_matrix(matrix->row_count, matrix->col_count);
-    if(val == 0.0){
+    if (val == 0.0) {
         return new_matrix;
     }
     for (size_t i = 0; i < matrix->row_count; i++) {
@@ -144,7 +140,9 @@ Matrix* transp(const Matrix* matrix) {
     return new_matrix;
 }
 
-static Matrix* double_variable_action(const Matrix* l, const Matrix* r, double (*to_do_action)(double, double)) {
+static Matrix* double_variable_action(const Matrix* l,
+                                      const Matrix* r,
+                                      double (*to_do_action)(double, double)) {
     if (l == NULL || r == NULL) {  // assuming "to_do_action" func is always there
         return NULL;
     }
@@ -156,7 +154,7 @@ static Matrix* double_variable_action(const Matrix* l, const Matrix* r, double (
             get_elem(l, i, j, &elem1);
             get_elem(r, i, j, &elem2);
             set_elem(new_matrix, i, j, to_do_action(elem1, elem2));
-        }       
+        }
     }
     return new_matrix;
 }
