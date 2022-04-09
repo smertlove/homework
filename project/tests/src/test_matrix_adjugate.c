@@ -49,7 +49,7 @@ static void _test_adjugate(const char *in, const char *out) {
     Matrix *expected_matrix = create_matrix_from_file(out);
 
     Matrix *adj_matrix = adj(in_matrix);
-   
+
     assert_matrix_equal(expected_matrix, adj_matrix, 1e-2);
 
     free_matrix(in_matrix);
