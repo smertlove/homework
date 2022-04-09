@@ -227,7 +227,7 @@ static Matrix* del_row_n_col(const Matrix *matrix, size_t row, size_t col) {
                 *new_matrix_data_ptr = return_elem(matrix, i, j);
                 new_matrix_data_ptr++;
             }
-        }  
+        }
     }
     return new_matrix;
 }
@@ -244,7 +244,6 @@ static double return_det(const Matrix* matrix) {  // intentionally made "risky".
         double sign = 1.0;
         double answ = 0.0;
         for (size_t j = 0; j < matrix->col_count; j++) {
-            
             Matrix *minor = del_row_n_col(matrix, 0, j);
             double multiplicator = return_elem(matrix, 0, j);
             double buf = return_det(minor);
@@ -252,12 +251,11 @@ static double return_det(const Matrix* matrix) {  // intentionally made "risky".
             sign *= -1.0;
             free_matrix(minor);
         }
-        return answ;  
+        return answ;
     }
-    
 }
 
-int det(const Matrix* matrix, double* val) {   
+int det(const Matrix* matrix, double* val) {
     if (matrix == NULL || matrix->row_count != matrix->col_count) {
         return STATUS_INVALID_INPUT;
     }
@@ -288,7 +286,7 @@ Matrix* adj(const Matrix* matrix) {
 }
 
 Matrix* inv(const Matrix* matrix) {
-    if (matrix == NULL || matrix->row_count != matrix->col_count){
+    if (matrix == NULL || matrix->row_count != matrix->col_count) {
         return NULL;
     } else if (matrix->row_count == 1) {
         Matrix *inversed = create_matrix(1, 1);
