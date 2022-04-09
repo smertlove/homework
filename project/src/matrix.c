@@ -33,7 +33,7 @@ Matrix* create_matrix(size_t rows, size_t cols) {
         free(matrix);
         return NULL;
     }
-    matrix->data = (double*)calloc(rows * cols, sizeof(double));
+    matrix->data = calloc(rows * cols, sizeof(double));
     if (matrix->data == NULL) {
         puts(MEMORY_ALLOCATION_ERROR);
         free_matrix(matrix);
@@ -62,9 +62,7 @@ Matrix* create_matrix_from_file(const char* path_file) {
     double *ptr = matrix->data;
     for (size_t i = 0; i < rows; i++) {
         for (size_t j = 0; j < cols; j++) {
-            double buf = 0.0;
-            if (fscanf(file, "%lf", &buf) != -1) {
-                *ptr = buf;
+            if (fscanf(file, "%lf", ptr) != -1) {
                 ptr++;
             } else {
                 puts(FILE_SCAN_ERROR);
@@ -100,8 +98,7 @@ int get_elem(const Matrix* matrix, size_t row, size_t col, double* val) {
     if (matrix == NULL) {
         return STATUS_INVALID_INPUT;
     }
-    double *ptr = matrix->data + (row * matrix->col_count + col);
-    *val = *ptr;
+    *val = *(matrix->data + (row * matrix->col_count + col));
     return STATUS_OK;
 }
 
@@ -109,12 +106,13 @@ int set_elem(Matrix* matrix, size_t row, size_t col, double val) {
     if (matrix == NULL) {
         return STATUS_INVALID_INPUT;
     }
-    double *ptr = matrix->data + (row * matrix->col_count + col);
-    *ptr = val;
+    *(matrix->data + (row * matrix->col_count + col)) = val;
     return STATUS_OK;
 }
 
 /***************** MATH OPERATIONS *****************/
+
+
 
 Matrix* mul_scalar(const Matrix* matrix, double val) {
     if (matrix == NULL) {
@@ -133,6 +131,8 @@ Matrix* mul_scalar(const Matrix* matrix, double val) {
     }
     return new_matrix;
 }
+
+
 
 Matrix* transp(const Matrix* matrix) {
     if (matrix == NULL) {
@@ -210,31 +210,113 @@ Matrix* mul(const Matrix* l, const Matrix* r) {
 }
 
 /***************** EXTRA OPERATIONS *****************/
-// not implemented yet
 
-int det(const Matrix* matrix, double* val) {
-    printf("%zu%lf", matrix->col_count, *val);
-    return 0;
+static double return_elem(const Matrix* matrix, size_t row, size_t col) {  // intentionally made "risky"
+    double *val = matrix->data + (row * matrix->col_count + col);
+    return *val;
 }
+
+static Matrix* del_row_n_col(const Matrix *matrix, size_t row, size_t col) {
+    size_t rows = matrix->row_count - 1;
+    size_t cols = matrix->col_count - 1;
+    Matrix *new_matrix = create_matrix(rows, cols);
+    double *new_matrix_data_ptr = new_matrix->data;
+    for (size_t i = 0; i < matrix->row_count; i++) {
+        for (size_t j = 0; j < matrix->col_count; j++) {
+            if (i != row && j != col) {
+                *new_matrix_data_ptr = return_elem(matrix, i, j);
+                new_matrix_data_ptr++;
+            }
+        }  
+    }
+    return new_matrix;
+}
+
+
+static double return_det(const Matrix* matrix) {  // intentionally made "risky". "det" func is "safe"
+    if (matrix->row_count == 1) {
+        return return_elem(matrix, 0, 0);
+    } else if (matrix->row_count == 2) {
+        double answ = (return_elem(matrix, 0, 0) * return_elem(matrix, 1, 1)) -
+                      (return_elem(matrix, 0, 1) * return_elem(matrix, 1, 0));
+        return answ;
+    } else {
+        double sign = 1.0;
+        double answ = 0.0;
+        for (size_t j = 0; j < matrix->col_count; j++) {
+            
+            Matrix *minor = del_row_n_col(matrix, 0, j);
+            double multiplicator = return_elem(matrix, 0, j);
+            double buf = return_det(minor);
+            answ += (sign * multiplicator * buf);
+            sign *= -1.0;
+            free_matrix(minor);
+        }
+        return answ;  
+    }
+    
+}
+
+int det(const Matrix* matrix, double* val) {   
+    if (matrix == NULL || matrix->row_count != matrix->col_count) {
+        return STATUS_INVALID_INPUT;
+    }
+
+    *val = return_det(matrix);
+    return STATUS_OK;
+}
+
 Matrix* adj(const Matrix* matrix) {
-    return create_matrix(matrix->row_count, matrix->col_count);
+    if (matrix == NULL || matrix->row_count != matrix->col_count) {
+        return NULL;
+    } else if (matrix->row_count < 2) {
+        return transp(matrix);
+    } else {
+        size_t rows = matrix->row_count;
+        size_t cols = matrix->col_count;
+        Matrix *new_matrix = create_matrix(rows, cols);
+        for (size_t i = 0; i < rows; i++) {
+            for (size_t j = 0; j < cols; j++) {
+                double sign = (i + j) % 2 == 0 ? 1.0 : -1.0;
+                Matrix *minor = del_row_n_col(matrix, i, j);
+                set_elem(new_matrix, j, i, sign * return_det(minor));
+                free_matrix(minor);
+            }
+        }
+        return new_matrix;
+    }
 }
+
 Matrix* inv(const Matrix* matrix) {
-    return create_matrix(matrix->row_count, matrix->col_count);
+    if (matrix == NULL || matrix->row_count != matrix->col_count){
+        return NULL;
+    } else if (matrix->row_count == 1) {
+        Matrix *inversed = create_matrix(1, 1);
+        set_elem(inversed, 0, 0, 1 / return_elem(matrix, 0, 0));  // det always equals 1
+        return inversed;
+    } else {
+        Matrix *adjugate = adj(matrix);
+        Matrix *inversed = mul_scalar(adjugate, 1 / return_det(matrix));
+        free_matrix(adjugate);
+        return inversed;
+    }
 }
+
+
 
 /***************** PRETTY PRINT *****************/
 //
 // this func has been used during development
 //
-// void pprint(Matrix* matrix) {
-//     double *ptr = matrix->data;
-//     for (size_t i = 0; i < matrix->row_count; i++) {
-//         for (size_t j = 0; j < matrix->col_count; j++) {
-//             printf("%lf\t", *ptr);
-//             ptr++;
-//         }
-//         printf("\n");
-//     }
-//     puts("\n\n");
-// }
+
+void pprint(Matrix* matrix) {
+    double *ptr = matrix->data;
+    for (size_t i = 0; i < matrix->row_count; i++) {
+        for (size_t j = 0; j < matrix->col_count; j++) {
+            printf("%lf\t", *ptr);
+            ptr++;
+        }
+        printf("\n");
+    }
+    puts("\n\n");
+}
