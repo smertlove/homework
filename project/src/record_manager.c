@@ -17,7 +17,7 @@ static char *data_fields[8] = {
     " Client cash payments: "
 };
 
-#define    STATUS_INVALID_INPUT = -1
+#define STATUS_INVALID_INPUT -1
 
 void manage_transaction_file(FILE *file, client_t transfer) {
     char *data_fields_to_print[2] = {data_fields[0], data_fields[7]};
@@ -72,5 +72,5 @@ int get_case_choice(void) {
         scanf("%*[^\n]");
         return STATUS_INVALID_INPUT;
     };
-    return input_status[case_choice];
+    return case_choice;
 }
