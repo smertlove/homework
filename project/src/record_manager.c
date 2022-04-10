@@ -58,8 +58,8 @@ void manage_blackrecord_file(
                     client.credit_limit += transfer.cash_payments;
                 }
             }
-        write_client_data(main_db, client);
-        rewind(transfer_db);
+            write_client_data(main_db, client);
+            rewind(transfer_db);
         }
 }
 
