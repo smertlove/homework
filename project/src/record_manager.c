@@ -17,6 +17,13 @@ static char *data_fields[8] = {
     " Client cash payments: "
 };
 
+enum input_status {
+    STATUS_INVALID_INPUT = -1,
+    STATUS_ENTER_CLIENT_DATA_ACTION = 1,
+    STATUS_ENTER_TRANSACTION_DATA_ACTION,
+    STATUS_UPDATE_BASE_ACTION
+};
+
 void manage_transaction_file(FILE *file, client_t transfer) {
     char *data_fields_to_print[2] = {data_fields[0], data_fields[7]};
     print_client_data_fields(data_fields_to_print, 2);
@@ -66,6 +73,9 @@ void manage_blackrecord_file(
 int get_case_choice(void) {
     puts("please enter action\n1 enter data client:\n2 enter data transaction:\n3 update base\n");
     int case_choice = 0;
-    scanf("%d", &case_choice);
-    return case_choice;
+    if(scanf("%d", &case_choice) != 1) {
+        scanf("%*[^\n]");
+        return STATUS_INVALID_INPUT;
+    };
+    return input_status[case_choice];
 }
