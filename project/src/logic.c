@@ -59,7 +59,7 @@ void run_update_data_base_case(void) {
 }
 
 
-void run_logic(void) {
+void run_case_manager_logic(void) {
     int case_choice = get_case_choice();
     while (case_choice > 0 && case_choice < 4) {
         switch (case_choice) {
