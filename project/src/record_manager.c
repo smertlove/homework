@@ -17,12 +17,7 @@ static char *data_fields[8] = {
     " Client cash payments: "
 };
 
-enum input_status {
-    STATUS_INVALID_INPUT = -1,
-    STATUS_ENTER_CLIENT_DATA_ACTION = 1,
-    STATUS_ENTER_TRANSACTION_DATA_ACTION,
-    STATUS_UPDATE_BASE_ACTION
-};
+#define    STATUS_INVALID_INPUT = -1
 
 void manage_transaction_file(FILE *file, client_t transfer) {
     char *data_fields_to_print[2] = {data_fields[0], data_fields[7]};
