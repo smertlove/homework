@@ -68,9 +68,9 @@ void manage_blackrecord_file(
 int get_case_choice(void) {
     puts("please enter action\n1 enter data client:\n2 enter data transaction:\n3 update base\n");
     int case_choice = 0;
-    if(scanf("%d", &case_choice) != 1) {
+    if (scanf("%d", &case_choice) != 1) {
         scanf("%*[^\n]");
         return STATUS_INVALID_INPUT;
-    };
+    }
     return case_choice;
 }
