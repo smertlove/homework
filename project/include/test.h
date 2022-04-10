@@ -7,7 +7,5 @@
 
 void make_sample_file(void);
 void test_file_write(void);
-int main(void);
-
 
 #endif  // PROJECT_INCLUDE_TEST_H_

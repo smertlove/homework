@@ -11,16 +11,17 @@
 
 void make_sample_file(void) {
     FILE *sample_file = fopen(SAMPLE_RECORD_NAME, "w");
-    fprintf(sample_file,
-            "%-12d%-11s%-11s%-16s%20s%12.2f%12.2f%12.2f\n",
-            1,
-            "Charles",
-            "Darvin",
-            "Shrewsbury",
-            "telnum",
-            777.0,
-            666.0,
-            322.0);
+    fprintf(
+        sample_file,
+        "%-12d%-11s%-11s%-16s%20s%12.2f%12.2f%12.2f\n",
+        1,
+        "Charles",
+        "Darvin",
+        "Shrewsbury",
+        "telnum",
+        777.0,
+        666.0,
+        322.0);
     fclose(sample_file);
 }
 
