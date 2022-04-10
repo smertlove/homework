@@ -80,6 +80,6 @@ void run_logic(void) {
                 break;
             }
         }
-    case_choice = get_case_choice();
+        case_choice = get_case_choice();
     }
 }
