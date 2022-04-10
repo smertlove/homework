@@ -53,14 +53,14 @@ void manage_blackrecord_file(
     client_t client,
     client_t transfer) {
     while (read_client_data(client_db, &client) == 8) {
-            while (read_transaction_data(transfer_db, &transfer) == 2) {
-                if (client.account_number == transfer.account_number && transfer.cash_payments != 0) {
-                    client.credit_limit += transfer.cash_payments;
-                }
+        while (read_transaction_data(transfer_db, &transfer) == 2) {
+            if (client.account_number == transfer.account_number && transfer.cash_payments != 0) {
+                client.credit_limit += transfer.cash_payments;
             }
-            write_client_data(main_db, client);
-            rewind(transfer_db);
         }
+        write_client_data(main_db, client);
+        rewind(transfer_db);
+    }
 }
 
 int get_case_choice(void) {
