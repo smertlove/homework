@@ -15,7 +15,6 @@
 // } lexeme_t;
 
 typedef enum {
-    L_HEAD_END,
     L_ANY_CHAR,
     L_COLON,
     L_NEWLINE,
@@ -44,17 +43,17 @@ typedef bool (*action_t)(const char *s, const char **end);
 //     action_t action;
 // } rule_t;
 
-typedef struct {
-    state_t state;
-    action_t action;
-} rule_t;
+// typedef struct {
+//     state_t state;
+//     action_t action;
+// } rule_t;
 
-static lexeme_t get_lexeme(const char *s, const char **end);
-static lexeme_t get_hdr_value(const char *s, const char **end);
+// static lexeme_t get_lexeme(const char *s, const char **end);
+// static lexeme_t get_hdr_value(const char *s, const char **end);
 
-static void return_string(void) {
-    return;
-}
+// static void return_string(void) {
+//     return;
+// }
 
 
 
@@ -72,29 +71,37 @@ static void return_string(void) {
 // };
 
 
-static rule_t transitions[S_COUNT][L_COUNT] = {
-//                    L_ANY_CHAR       L_COLON         L_NEWLINE      L_WHITESPACE      L_HEAD_END
-/* S_HEAD_BEGIN */   {S_HDR_BEGIN,     S_ERR,          S_NEWLINE,     S_HEAD_BEGIN,     S_HEAD_END },
-/* S_HDR_BEGIN */    {S_HDR_BEGIN,     S_HDR_VAL,      S_NEWLINE,     S_HDR_BEGIN,      S_ERR      },
-/* S_COLON */        {S_HDR_VAL,       S_ERR,          S_NEWLINE,     S_COLON,          S_ERR      },
-/* S_HDR_VAL */      {S_HDR_VAL,       S_HDR_VAL,      S_NEWLINE,     S_HDR_VAL,        S_HEAD_END },
-/* S_NEWLINE */      {S_HDR_BEGIN,     S_ERR,          S_HEAD_END,    S_HDR_VAL,        S_HEAD_END },
-/* S_WHITESPACE */   {S_HDR_VAL,       S_COLON,        S_NEWLINE,     S_WHITESPACE,     S_HEAD_END },
-/* S_HEAD_END */     {S_ERR,           S_ERR,          S_ERR,         S_ERR,            S_HEAD_END }
+static state_t transitions[S_COUNT][L_COUNT] = {
+//                    L_ANY_CHAR       L_COLON         L_NEWLINE      L_WHITESPACE
+/* S_HEAD_BEGIN */   {S_HDR_BEGIN,     S_ERR,          S_NEWLINE,     S_HEAD_BEGIN},
+/* S_HDR_BEGIN */    {S_HDR_BEGIN,     S_HDR_VAL,      S_NEWLINE,     S_HDR_BEGIN},
+/* S_COLON */        {S_HDR_VAL,       S_ERR,          S_NEWLINE,     S_COLON    },
+/* S_HDR_VAL */      {S_HDR_VAL,       S_HDR_VAL,      S_NEWLINE,     S_HDR_VAL  },
+/* S_NEWLINE */      {S_HDR_BEGIN,     S_ERR,          S_HEAD_END,    S_HDR_VAL  },
+/* S_WHITESPACE */   {S_HDR_VAL,       S_COLON,        S_NEWLINE,     S_WHITESPACE},
+/* S_HEAD_END */     {S_ERR,           S_ERR,          S_ERR,         S_ERR      }
 };
 
 
 
-static lexeme_t get_string(const char *s, const char **end) {
-    ++s;
-    while (*s != ':') {
-        ++s;
+static char* get_string(const char *eml_ptr, state_t state) {
+    // char *buff[20];
+    // ++eml_ptr;
+    // while (*eml_ptr != ':') {
+    //     ++eml_ptr;
+    // }
+    // if (*eml_ptr == '\0') {
+    //     return L_ERR;
+    // }
+    // *end = eml_ptr + 1;
+    // return L_STR;
+    if (state == S_HDR_BEGIN) {
+        while(*eml_ptr != ':'){
+            printf("%s", eml_ptr);
+        }
+        puts("\n");
     }
-    if (*s == '\0') {
-        return L_ERR;
-    }
-    *end = s + 1;
-    return L_STR;
+    return "h";
 }
 
 static lexeme_t get_lexeme(const char *eml_ptr, state_t prev_state) {
@@ -125,12 +132,11 @@ static bool parse_eml_headers(const char *eml_ptr) {
     state_t state = S_HEAD_BEGIN;
     state_t prev_state = state;
     while (state != S_HEAD_END) {
-        lexeme_t lexeme = get_lexeme(eml_ptr, prev_state);             
+        lexeme_t lexeme = get_lexeme(eml_ptr, prev_state);
         state = transitions[state][lexeme];
         ++eml_ptr;
-        if (state == S_COLON) {
-            char *name;
-            char *value;
+        if (state == S_HDR_BEGIN) {
+            get_string(eml_ptr,);
 
         }
     }

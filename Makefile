@@ -1,8 +1,10 @@
 TARGET = ./main.out
+HDRS = project/include
 VALGRIND_LOG = "valgrind.log"
 
 SRCS = \
 	   project/src/main.c \
+	   project/src/emlparse.c
 
 .PHONY: all check build test memtest rebuild clean
 
