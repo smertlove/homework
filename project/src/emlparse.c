@@ -1,7 +1,11 @@
 #include <stdio.h>
 #include <stdbool.h>
+#include <malloc.h>
 
 #include "emlparse.h"
+
+
+
 
 // typedef enum {
 //     L_HEAD_END,
@@ -16,9 +20,12 @@
 
 typedef enum {
     L_ANY_CHAR,
+    
+    
     L_COLON,
     L_NEWLINE,
     L_WHITESPACE,
+    L_HEAD_END,
     L_COUNT,
     L_ERR
 } lexeme_t;
@@ -26,8 +33,8 @@ typedef enum {
 typedef enum {
     S_HEAD_BEGIN,
     S_HDR_BEGIN,
-    S_HDR_VAL,
     S_COLON,
+    S_HDR_VAL,  
     S_NEWLINE,
     S_WHITESPACE,
     S_HEAD_END,
@@ -72,39 +79,39 @@ typedef bool (*action_t)(const char *s, const char **end);
 
 
 static state_t transitions[S_COUNT][L_COUNT] = {
-//                    L_ANY_CHAR       L_COLON         L_NEWLINE      L_WHITESPACE
-/* S_HEAD_BEGIN */   {S_HDR_BEGIN,     S_ERR,          S_NEWLINE,     S_HEAD_BEGIN},
-/* S_HDR_BEGIN */    {S_HDR_BEGIN,     S_HDR_VAL,      S_NEWLINE,     S_HDR_BEGIN},
-/* S_COLON */        {S_HDR_VAL,       S_ERR,          S_NEWLINE,     S_COLON    },
-/* S_HDR_VAL */      {S_HDR_VAL,       S_HDR_VAL,      S_NEWLINE,     S_HDR_VAL  },
-/* S_NEWLINE */      {S_HDR_BEGIN,     S_ERR,          S_HEAD_END,    S_HDR_VAL  },
-/* S_WHITESPACE */   {S_HDR_VAL,       S_COLON,        S_NEWLINE,     S_WHITESPACE},
-/* S_HEAD_END */     {S_ERR,           S_ERR,          S_ERR,         S_ERR      }
+//                    L_ANY_CHAR       L_COLON         L_NEWLINE      L_WHITESPACE      L_HEAD_END
+/* S_HEAD_BEGIN */   {S_HDR_BEGIN,     S_ERR,          S_NEWLINE,     S_HEAD_BEGIN,     S_HEAD_END },
+/* S_HDR_BEGIN */    {S_HDR_BEGIN,     S_HDR_VAL,      S_NEWLINE,     S_HDR_BEGIN,      S_ERR      },
+/* S_COLON */        {S_HDR_VAL,       S_ERR,          S_NEWLINE,     S_COLON,          S_ERR      },
+/* S_HDR_VAL */      {S_HDR_VAL,       S_HDR_VAL,      S_NEWLINE,     S_HDR_VAL,        S_HEAD_END },
+/* S_NEWLINE */      {S_HDR_BEGIN,     S_ERR,          S_HEAD_END,    S_HDR_VAL,        S_HEAD_END },
+/* S_WHITESPACE */   {S_HDR_VAL,       S_COLON,        S_NEWLINE,     S_WHITESPACE,     S_HEAD_END },
+/* S_HEAD_END */     {S_ERR,           S_ERR,          S_ERR,         S_ERR,            S_HEAD_END }
 };
 
 
-
-static char* get_string(const char *eml_ptr, state_t state) {
-    // char *buff[20];
-    // ++eml_ptr;
-    // while (*eml_ptr != ':') {
-    //     ++eml_ptr;
-    // }
-    // if (*eml_ptr == '\0') {
-    //     return L_ERR;
-    // }
-    // *end = eml_ptr + 1;
-    // return L_STR;
-    if (state == S_HDR_BEGIN) {
-        while(*eml_ptr != ':'){
-            printf("%s", eml_ptr);
-        }
-        puts("\n");
-    }
-    return "h";
-}
+// static char* get_string(const char *eml_ptr, state_t state) {
+//     // char *buff[20];
+//     // ++eml_ptr;
+//     // while (*eml_ptr != ':') {
+//     //     ++eml_ptr;
+//     // }
+//     // if (*eml_ptr == '\0') {
+//     //     return L_ERR;
+//     // }
+//     // *end = eml_ptr + 1;
+//     // return L_STR;
+//     if (state == S_HDR_BEGIN) {
+//         while(*eml_ptr != ':'){
+//             printf("%s", eml_ptr);
+//         }
+//         puts("\n");
+//     }
+//     return "h";
+// }
 
 static lexeme_t get_lexeme(const char *eml_ptr, state_t prev_state) {
+    printf("%s\n", eml_ptr);
     switch (*eml_ptr) {
         case '\n': {
             if (prev_state == S_NEWLINE) {
@@ -128,16 +135,18 @@ static lexeme_t get_lexeme(const char *eml_ptr, state_t prev_state) {
 }
 
 
-static bool parse_eml_headers(const char *eml_ptr) {
+static bool parse_eml_headers(const char *eml) {
+    // int ptr = 0;
     state_t state = S_HEAD_BEGIN;
     state_t prev_state = state;
     while (state != S_HEAD_END) {
-        lexeme_t lexeme = get_lexeme(eml_ptr, prev_state);
+        lexeme_t lexeme = get_lexeme(eml, prev_state);
+        printf("lexeme: %d\n", lexeme);
         state = transitions[state][lexeme];
-        ++eml_ptr;
-        if (state == S_HDR_BEGIN) {
-            get_string(eml_ptr,);
-
+        printf("%d\n", state);
+        puts("- - - - - -");
+        if (state == S_ERR) {
+            return false;
         }
     }
     return state == S_HEAD_END;

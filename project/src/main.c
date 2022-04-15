@@ -27,7 +27,9 @@ int main( /*int argc, const char **argv*/) {
     // const char *path_to_eml = argv[1];
     const char *path_to_eml = "./btests/emails/bilingual-simple.eml";
     char *eml = read_eml_from_file(path_to_eml);
-    emlparse(eml);
+ 
+    
+    // emlparse(eml);
     free(eml);
     return 0;
 }
