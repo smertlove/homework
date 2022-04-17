@@ -2,7 +2,10 @@
 #define PROJECT_INCLUDE_EMLPARSE_H_
 
 #include <stdbool.h>
+#include <stdio.h>
 
-bool emlparse(const char *eml);
+bool emlparse(FILE *eml);
+
+
 
 #endif  // PROJECT_INCLUDE_EMLPARSE_H_
