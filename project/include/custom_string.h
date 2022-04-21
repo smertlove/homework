@@ -1,6 +1,8 @@
 #ifndef PROJECT_INCLUDE_CUSTOM_STRING_H_
 #define PROJECT_INCLUDE_CUSTOM_STRING_H_
 
+#include <stdlib.h>
+
 typedef struct {
 	char *data;
 	size_t size;

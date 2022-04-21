@@ -24,7 +24,7 @@ void add_char (string_t *string, char ch) {
 }
 
 void free_string(string_t *string){
-    if (string->data != NULL)
+    if (string != NULL && string->data != NULL)
     {
     free(string->data);
     }

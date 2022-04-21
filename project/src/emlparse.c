@@ -11,7 +11,8 @@ typedef struct {
     string_t *from;
     string_t *to;
     string_t *date;
-    size_t mime_num;
+    string_t *boundary;
+    size_t part_count;
 } data_t;
 
 typedef enum {
@@ -48,6 +49,7 @@ static state_t transitions[S_COUNT][L_COUNT] = {
 };
 
 static lexeme_t get_lexeme(char cur_sym, state_t prev_state) {
+    
     switch (cur_sym) {
         case '\n': {
             if (prev_state == S_NEWLINE) {
@@ -57,10 +59,15 @@ static lexeme_t get_lexeme(char cur_sym, state_t prev_state) {
             }
         }
         case ':': return  L_COLON;
-        case ' ': return  L_WHITESPACE;
+        case ' ': {
+            if (prev_state == S_NEWLINE) {
+                return L_ANY_CHAR;
+            }
+            return  L_WHITESPACE;
+        }
         case '\r': {
             if (prev_state == S_NEWLINE) {
-                return L_HEAD_END;
+                return L_NEWLINE;
             } else {
                 return L_ANY_CHAR;
             }
@@ -76,37 +83,46 @@ static bool compare_headers (string_t *found_header, const char *searched_header
 }
 
 static string_t* get_boundary (string_t *header_value) {
-    char *ptr = strstr(header_value->data, "boundary=") + 9;
-        
     string_t *boundary = init_string();
-    if (*ptr == '"') {
-        ++ptr;
-        while (*ptr != '"') {
-            add_char(boundary, *ptr);
-            ++ptr;
-        }
+
+    char *ptr = strstr(header_value->data, "boundary=");
+    if (ptr == NULL) {
         return boundary;
     }
-    printf("%s", ptr);
+    ptr += 9;
+    if (*ptr == '"') {
+        ++ptr;
+    }
+    while (*ptr != '"' && *ptr != ' ' && *ptr != '\n' && *ptr != '\r') {
+        add_char(boundary, *ptr);
+        ++ptr;
+    }
+        
+
     boundary->data = ptr;
+    
     return boundary;
     }
 
 
-static size_t calculate_parts(string_t *boundary, FILE *eml) {
+static size_t calculate_parts(string_t *boundary, char *eml_body) {
+    
     size_t counter = 0;
-    char *buf = calloc(boundary->size+1, 1);
-    while (fgets(buf, boundary->size, eml)!=NULL) {
-        if (strcmp(boundary->data, buf) == 0) {
-            ++counter;
-        }
+    char *flg = strstr(eml_body, boundary->data);
+    
+    while (flg != NULL) {
+        ++counter;
+        flg = strstr(flg + boundary->size, boundary->data);
+        printf("counter=%zu\n", counter);
     }
-    printf("%zu", counter);
-    return counter;
+    
+    return counter - 1;
 
 }
 
-static bool parse_eml_headers(FILE *eml) {
+
+
+static data_t parse_eml_headers(FILE *eml) {
 
     data_t data = {0};
 
@@ -129,12 +145,13 @@ static bool parse_eml_headers(FILE *eml) {
                 data.from = value;
             } else if (compare_headers(header, "To")) {
                 data.to = value;
+
+
             } else if (compare_headers(header, "Date")) {
                 data.date = value;
+
             } else if (compare_headers(header, "Content-Type")) {
-                string_t *b = get_boundary(value);
-                
-                calculate_parts(b, eml);
+                data.boundary = get_boundary(value);
             } else {
                 free_string(value);
             }
@@ -150,11 +167,11 @@ static bool parse_eml_headers(FILE *eml) {
         } else if (state == S_HDR_VAL) {
             add_char(value, cur_sym);
         } else if (state == S_ERR) {
-            return false;
+            return data;
         }
     }
-    printf("%s\n%s\n%s\n", data.from->data, data.to->data, data.date->data);
-    return state == S_HEAD_END;
+    
+    return data;
 }
 
 
@@ -165,10 +182,31 @@ bool emlparse(FILE *eml) {
     if (eml == NULL) {
         return false;
     }
+    // getting length of eml
+    fseek(eml, 0, SEEK_END);
+    int eml_length = ftell(eml);
+    fseek(eml, 0, SEEK_SET);
+    // parsing head
+    data_t data = parse_eml_headers(eml);
+    // getting body as a string
+    int body_length = eml_length - ftell(eml);
+    char *eml_body = malloc(body_length);
+    fread(eml_body,1, body_length, eml);
+    // counting eml body parts
+    data.part_count = data.boundary == NULL ? 0 : calculate_parts(data.boundary, eml_body);
+    printf("%zu\n", data.part_count);
+    printf("%s|%s|%s|%zu",
+        data.from == NULL ? "" : data.from->data, 
+        data.to == NULL ? "" : data.to->data, 
+        data.date == NULL ? "" : data.date->data, 
+        data.part_count);
+    
+    free_string(data.date);
+    free_string(data.from);
+    free_string(data.to);
 
-    if (!parse_eml_headers(eml)) {
-        return false;
-    }
+    free_string(data.boundary);
+
     return true;
 }
 
