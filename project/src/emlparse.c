@@ -89,19 +89,29 @@ static bool compare_headers (string_t *found_header, const char *searched_header
 }
 
 static string_t* get_boundary (string_t *header_value) {
+    // puts("entered 'get boundary' func");
     string_t *boundary = init_string();
     char *ptr = strstr(header_value->data, "boundary=");
-    //printf("ptr = %s\n", ptr);
     if (ptr == NULL) {
+        // puts("no boundary found");
         return boundary;
     }
     ptr += 9;
+    
     if (*ptr == '"') {
         ++ptr;
     }
-    while (*ptr != '"' && *ptr != ' ' && *ptr != '\n' && *ptr != '\r') {
+    // printf("got boundary coordinates: ptr = %c\n", *ptr);
+    // int c= 0;
+    while (*ptr != '"' && *ptr != ' ' && *ptr != '\n' && *ptr != '\r' && *ptr != '\0') {
         add_char(boundary, *ptr);
         ++ptr;
+        // c++;
+        // if (c == 40) {
+        //     puts("40 loops break");
+        //     break;
+        // }
+        // printf("looking at next char: ptr = \"%c\", %d\n", *ptr, *ptr);
     }
     return boundary;
     }
@@ -131,14 +141,14 @@ static data_t parse_eml_headers(FILE *eml) {
 
     state_t state = S_HEAD_BEGIN;
     state_t prev_state = state;
-
+    // puts ("initialized variables");
     while (state != S_HEAD_END) {
-    
+        
         char cur_sym = fgetc(eml);
         lexeme_t lexeme = get_lexeme(cur_sym, prev_state);
         prev_state = state;
         state = transitions[state][lexeme];
-
+        // printf("%c; %d; %d\n", cur_sym, lexeme, state);
         if((state == S_HDR_BEGIN && prev_state == S_NEWLINE) || state == S_HEAD_END) {
 
             if (compare_headers(header, "From")) {
@@ -156,16 +166,21 @@ static data_t parse_eml_headers(FILE *eml) {
                 // }
                 // printf("\n");
                 // printf("from -- %s\n", data.from->data);
+                // puts("got from");
             } else if (compare_headers(header, "To")) {
                 data.to = value;
+                // puts("got to");
                 //printf("to -- %s\n", data.to->data);
 
             } else if (compare_headers(header, "Date")) {
                 data.date = value;
+                // puts("got date");
                 //printf("date -- %s\n", data.date->data);
             } else if (compare_headers(header, "Content-Type")) {
                 // printf("%s\n%s\n", header->data, value->data);
+                // puts("start boundary extraction");
                 data.boundary = get_boundary(value);
+                // puts("got boundary");
                 // printf("boundary -- %s\n", data.boundary->data);
             } else {
                 free_string(value);
@@ -204,21 +219,23 @@ bool emlparse(FILE *eml) {
     if (eml == NULL) {
         return false;
     }
+    // puts("entered parse function");
     // getting length of eml
     fseek(eml, 0, SEEK_END);
     int eml_length = ftell(eml);
     fseek(eml, 0, SEEK_SET);
+    // puts("got length of eml");
     // parsing head
     data_t data = parse_eml_headers(eml);
-    // puts("1");
+    // puts("done parsing headers");
     // getting body as a string
     int body_length = eml_length - ftell(eml);
     char *eml_body = malloc(body_length);
     fread(eml_body,1, body_length, eml);
-    // puts("2");
+    // puts("put body into string");
     // counting eml body parts
     data.part_count = data.boundary->data == NULL ? 1 : calculate_parts(data.boundary, eml_body);
-    // puts("3");
+    // puts("counted parts of body");
 
 
     // print_string_codes(data.from);
@@ -231,6 +248,7 @@ bool emlparse(FILE *eml) {
         data.to == NULL ? "" : data.to->data, 
         data.date == NULL ? "" : data.date->data, 
         data.part_count);
+
     
     free_string(data.date);
     free_string(data.from);
