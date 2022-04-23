@@ -17,7 +17,7 @@ check:
 build: $(TARGET)
 
 test: $(TARGET)
-	./btests/run.sh $(TARGET)
+	$(TARGET)
 
 memtest: $(TARGET)
 	./btests/run.sh $(TARGET) --memcheck

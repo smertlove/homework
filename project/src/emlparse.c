@@ -91,7 +91,7 @@ static bool compare_headers (string_t *found_header, const char *searched_header
 static string_t* get_boundary (string_t *header_value) {
     string_t *boundary = init_string();
     char *ptr = strstr(header_value->data, "boundary=");
-    // printf("ptr = %s\n", ptr);
+    //printf("ptr = %s\n", ptr);
     if (ptr == NULL) {
         return boundary;
     }
@@ -143,14 +143,24 @@ static data_t parse_eml_headers(FILE *eml) {
 
             if (compare_headers(header, "From")) {
                 data.from = value;
-                // printf("from -- %s\n", data.from->data);
+                for (size_t i = 0; i < strlen(data.from->data); ++i) {
+                    printf("%d ", data.from->data[i]);
+                    printf("%ld/",i);
+                }
+                printf("\n");
+                for (size_t i = 0; i < strlen(data.from->data); ++i) {
+                    printf("%c ", data.from->data[i]);
+                    printf("%ld/",i);
+                }
+                printf("\n");
+                printf("from -- %s\n", data.from->data);
             } else if (compare_headers(header, "To")) {
                 data.to = value;
-                // printf("to -- %s\n", data.to->data);
+                //printf("to -- %s\n", data.to->data);
 
             } else if (compare_headers(header, "Date")) {
                 data.date = value;
-                // printf("date -- %s\n", data.date->data);
+                //printf("date -- %s\n", data.date->data);
             } else if (compare_headers(header, "Content-Type")) {
                 // printf("%s\n%s\n", header->data, value->data);
                 data.boundary = get_boundary(value);
