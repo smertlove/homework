@@ -89,7 +89,6 @@ static bool compare_headers (string_t *found_header, const char *searched_header
 
 static string_t* get_boundary (string_t *header_value) {
     string_t *boundary = init_string();
-
     char *ptr = strstr(header_value->data, "boundary=");
     if (ptr == NULL) {
         return boundary;
@@ -102,10 +101,6 @@ static string_t* get_boundary (string_t *header_value) {
         add_char(boundary, *ptr);
         ++ptr;
     }
-        
-
-    boundary->data = ptr;
-    
     return boundary;
     }
 
@@ -118,7 +113,6 @@ static size_t calculate_parts(string_t *boundary, char *eml_body) {
     while (flg != NULL) {
         ++counter;
         flg = strstr(flg + boundary->size, boundary->data);
-        printf("counter=%zu\n", counter);
     }
     
     return counter - 1;
@@ -148,15 +142,17 @@ static data_t parse_eml_headers(FILE *eml) {
 
             if (compare_headers(header, "From")) {
                 data.from = value;
+                printf("from -- %s\n", data.from->data);
             } else if (compare_headers(header, "To")) {
                 data.to = value;
-
+                printf("to -- %s\n", data.to->data);
 
             } else if (compare_headers(header, "Date")) {
                 data.date = value;
-
+                printf("date -- %s\n", data.date->data);
             } else if (compare_headers(header, "Content-Type")) {
                 data.boundary = get_boundary(value);
+                printf("boundary -- %s\n", data.boundary->data);
             } else {
                 free_string(value);
             }
@@ -193,13 +189,14 @@ bool emlparse(FILE *eml) {
     fseek(eml, 0, SEEK_SET);
     // parsing head
     data_t data = parse_eml_headers(eml);
+    puts("!");
     // getting body as a string
     int body_length = eml_length - ftell(eml);
     char *eml_body = malloc(body_length);
     fread(eml_body,1, body_length, eml);
     // counting eml body parts
     data.part_count = data.boundary == NULL ? 0 : calculate_parts(data.boundary, eml_body);
-    printf("%zu\n", data.part_count);
+    printf("found %zu parts in eml\n", data.part_count);
     printf("%s|%s|%s|%zu",
         data.from == NULL ? "" : data.from->data, 
         data.to == NULL ? "" : data.to->data, 
