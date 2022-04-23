@@ -6,17 +6,17 @@
 #define ERR_ARGS_COUNT "ERROR: invalid argument count"
 
 
-// int main( int argc, const char **argv) {
-//     if (argc != 2) {
-//         puts(ERR_ARGS_COUNT);
-//         return -1;
-//     }
+int main( int argc, const char **argv) {
+    if (argc != 2) {
+        puts(ERR_ARGS_COUNT);
+        return -1;
+    }
 
-//     const char *path_to_eml = argv[1];
+    const char *path_to_eml = argv[1];
 
 
-int main( ) {
-    const char *path_to_eml = "./btests/emails/aol.eml";
+// int main( ) {
+//     const char *path_to_eml = "./btests/emails/bilingual-simple.eml";
     FILE *eml = fopen(path_to_eml, "r");
     
     emlparse(eml);

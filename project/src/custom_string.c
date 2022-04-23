@@ -13,6 +13,7 @@ string_t* init_string(void) {
 }
 
 void add_char (string_t *string, char ch) {
+	if (ch == '\r') return;
 	++string->size;
 	if (string->data == NULL) {
 		string->data = calloc(1, string->size);

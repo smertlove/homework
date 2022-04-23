@@ -22,7 +22,8 @@ typedef enum {
     L_WHITESPACE,
     L_HEAD_END,
     L_COUNT,
-    L_ERR
+    L_ERR,
+    L_SKIP_CHAR
 } lexeme_t;
 
 typedef enum {
@@ -81,15 +82,16 @@ static lexeme_t get_lexeme(char cur_sym, state_t prev_state) {
     }
     return L_ERR;
 }
-
+// sizeof(searched_header) - 1
 
 static bool compare_headers (string_t *found_header, const char *searched_header) {
-    return strncmp(found_header->data, searched_header, sizeof(searched_header) - 1) == 0;
+    return strncmp(found_header->data, searched_header, strlen(searched_header) ) == 0;
 }
 
 static string_t* get_boundary (string_t *header_value) {
     string_t *boundary = init_string();
     char *ptr = strstr(header_value->data, "boundary=");
+    // printf("ptr = %s\n", ptr);
     if (ptr == NULL) {
         return boundary;
     }
@@ -106,7 +108,6 @@ static string_t* get_boundary (string_t *header_value) {
 
 
 static size_t calculate_parts(string_t *boundary, char *eml_body) {
-    
     size_t counter = 0;
     char *flg = strstr(eml_body, boundary->data);
     
@@ -142,17 +143,18 @@ static data_t parse_eml_headers(FILE *eml) {
 
             if (compare_headers(header, "From")) {
                 data.from = value;
-                printf("from -- %s\n", data.from->data);
+                // printf("from -- %s\n", data.from->data);
             } else if (compare_headers(header, "To")) {
                 data.to = value;
-                printf("to -- %s\n", data.to->data);
+                // printf("to -- %s\n", data.to->data);
 
             } else if (compare_headers(header, "Date")) {
                 data.date = value;
-                printf("date -- %s\n", data.date->data);
+                // printf("date -- %s\n", data.date->data);
             } else if (compare_headers(header, "Content-Type")) {
+                // printf("%s\n%s\n", header->data, value->data);
                 data.boundary = get_boundary(value);
-                printf("boundary -- %s\n", data.boundary->data);
+                // printf("boundary -- %s\n", data.boundary->data);
             } else {
                 free_string(value);
             }
@@ -175,7 +177,16 @@ static data_t parse_eml_headers(FILE *eml) {
     return data;
 }
 
-
+// static void print_string_codes(string_t *str) {
+//     static int counter = 0;
+//     char *ptr = str->data;
+//     for (size_t i = 0; i < str->size; i++) {
+//         printf("%d -- %c\n", *ptr, *ptr);
+//         ++ptr;
+//         ++counter;
+//     }
+//     printf("counter = %d", counter);
+// }
 
 
 
@@ -189,14 +200,22 @@ bool emlparse(FILE *eml) {
     fseek(eml, 0, SEEK_SET);
     // parsing head
     data_t data = parse_eml_headers(eml);
-    puts("!");
+    // puts("1");
     // getting body as a string
     int body_length = eml_length - ftell(eml);
     char *eml_body = malloc(body_length);
     fread(eml_body,1, body_length, eml);
+    // puts("2");
     // counting eml body parts
-    data.part_count = data.boundary == NULL ? 0 : calculate_parts(data.boundary, eml_body);
-    printf("found %zu parts in eml\n", data.part_count);
+    data.part_count = data.boundary->data == NULL ? 1 : calculate_parts(data.boundary, eml_body);
+    // puts("3");
+
+
+    // print_string_codes(data.from);
+    // print_string_codes(data.to);
+    // print_string_codes(data.date);
+
+    // puts("\n\n\n");
     printf("%s|%s|%s|%zu",
         data.from == NULL ? "" : data.from->data, 
         data.to == NULL ? "" : data.to->data, 
