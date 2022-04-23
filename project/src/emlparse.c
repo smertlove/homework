@@ -155,7 +155,7 @@ static data_t parse_eml_headers(FILE *eml) {
                 //     printf("%ld/\t",i);
                 // }
                 // printf("\n");
-                printf("from -- %s\n", data.from->data);
+                // printf("from -- %s\n", data.from->data);
             } else if (compare_headers(header, "To")) {
                 data.to = value;
                 //printf("to -- %s\n", data.to->data);
@@ -200,12 +200,6 @@ static data_t parse_eml_headers(FILE *eml) {
 //     printf("counter = %d", counter);
 // }
 
-static void print_string(string_t *string) {
-    for (size_t i = 0; i < string->size; i++) {
-        printf("%c", string->data[i]);
-    }
-}
-
 bool emlparse(FILE *eml) {
     if (eml == NULL) {
         return false;
@@ -232,19 +226,11 @@ bool emlparse(FILE *eml) {
     // print_string_codes(data.date);
 
     // puts("\n\n\n");
-    // printf("%s|%s|%s|%zu",
-    //     data.from == NULL ? "" : data.from->data, 
-    //     data.to == NULL ? "" : data.to->data, 
-    //     data.date == NULL ? "" : data.date->data, 
-    //     data.part_count);
-
-    data.from == NULL ? 0 : print_string(data.from);
-    printf("|");
-    data.to == NULL ? 0 : print_string(data.to);
-    printf("|");
-    data.date == NULL ? 0 : print_string(data.date);
-    printf("|");
-    printf("%zu", data.part_count);
+    printf("%s|%s|%s|%zu",
+        data.from == NULL ? "" : data.from->data, 
+        data.to == NULL ? "" : data.to->data, 
+        data.date == NULL ? "" : data.date->data, 
+        data.part_count);
     
     free_string(data.date);
     free_string(data.from);

@@ -17,7 +17,7 @@ check:
 build: $(TARGET)
 
 test: $(TARGET)
-	$(TARGET)
+	./btests/run.sh $(TARGET)
 
 memtest: $(TARGET)
 	./btests/run.sh $(TARGET) --memcheck
@@ -25,7 +25,7 @@ memtest: $(TARGET)
 rebuild: clean build
 
 $(TARGET): $(SRCS)
-	$(CC) -g -Wall -Wextra -Werror $(addprefix -I,$(HDRS)) -o $(TARGET) $(CFLAGS) $(SRCS)
+	$(CC) -Wall -Wextra -Werror $(addprefix -I,$(HDRS)) -o $(TARGET) $(CFLAGS) $(SRCS)
 
 clean:
 	rm -f $(TARGET) ${VALGRIND_LOG}
