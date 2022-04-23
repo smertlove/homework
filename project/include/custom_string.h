@@ -6,6 +6,7 @@
 typedef struct {
 	char *data;
 	size_t size;
+	size_t memory;
 } string_t;
 
 

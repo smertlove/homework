@@ -143,16 +143,18 @@ static data_t parse_eml_headers(FILE *eml) {
 
             if (compare_headers(header, "From")) {
                 data.from = value;
+                printf("%zu\n\n", value->size);
                 for (size_t i = 0; i < strlen(data.from->data); ++i) {
-                    printf("%d ", data.from->data[i]);
-                    printf("%ld/",i);
+                    printf("%d\t", data.from->data[i]);
+                    printf("%c\t", data.from->data[i]);
+                    printf("%ld\n",i);
                 }
                 printf("\n");
-                for (size_t i = 0; i < strlen(data.from->data); ++i) {
-                    printf("%c ", data.from->data[i]);
-                    printf("%ld/",i);
-                }
-                printf("\n");
+                // for (size_t i = 0; i < strlen(data.from->data); ++i) {
+                //     printf("%c ", data.from->data[i]);
+                //     printf("%ld/\t",i);
+                // }
+                // printf("\n");
                 printf("from -- %s\n", data.from->data);
             } else if (compare_headers(header, "To")) {
                 data.to = value;
