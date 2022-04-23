@@ -49,7 +49,6 @@ static state_t transitions[S_COUNT][L_COUNT] = {
 };
 
 static lexeme_t get_lexeme(char cur_sym, state_t prev_state) {
-    
     switch (cur_sym) {
         case '\n': {
             if (prev_state == S_NEWLINE) {
@@ -65,11 +64,17 @@ static lexeme_t get_lexeme(char cur_sym, state_t prev_state) {
             }
             return  L_WHITESPACE;
         }
+        case '\t': {
+            if (prev_state == S_NEWLINE) {
+                return L_ANY_CHAR;
+            }
+            return  L_WHITESPACE;
+        }
         case '\r': {
             if (prev_state == S_NEWLINE) {
                 return L_NEWLINE;
             } else {
-                return L_ANY_CHAR;
+                return L_WHITESPACE;
             }
         }
         default: return L_ANY_CHAR;
