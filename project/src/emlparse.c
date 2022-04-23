@@ -143,13 +143,13 @@ static data_t parse_eml_headers(FILE *eml) {
 
             if (compare_headers(header, "From")) {
                 data.from = value;
-                printf("%zu\n\n", value->size);
-                for (size_t i = 0; i < strlen(data.from->data); ++i) {
-                    printf("%d\t", data.from->data[i]);
-                    printf("%c\t", data.from->data[i]);
-                    printf("%ld\n",i);
-                }
-                printf("\n");
+                // printf("%zu\n\n", value->size);
+                // for (size_t i = 0; i < strlen(data.from->data); ++i) {
+                //     printf("%d\t", data.from->data[i]);
+                //     printf("%c\t", data.from->data[i]);
+                //     printf("%ld\n",i);
+                // }
+                // printf("\n");
                 // for (size_t i = 0; i < strlen(data.from->data); ++i) {
                 //     printf("%c ", data.from->data[i]);
                 //     printf("%ld/\t",i);
@@ -200,7 +200,11 @@ static data_t parse_eml_headers(FILE *eml) {
 //     printf("counter = %d", counter);
 // }
 
-
+static void print_string(string_t *string) {
+    for (size_t i = 0; i < string->size; i++) {
+        printf("%c", string->data[i]);
+    }
+}
 
 bool emlparse(FILE *eml) {
     if (eml == NULL) {
@@ -228,11 +232,19 @@ bool emlparse(FILE *eml) {
     // print_string_codes(data.date);
 
     // puts("\n\n\n");
-    printf("%s|%s|%s|%zu",
-        data.from == NULL ? "" : data.from->data, 
-        data.to == NULL ? "" : data.to->data, 
-        data.date == NULL ? "" : data.date->data, 
-        data.part_count);
+    // printf("%s|%s|%s|%zu",
+    //     data.from == NULL ? "" : data.from->data, 
+    //     data.to == NULL ? "" : data.to->data, 
+    //     data.date == NULL ? "" : data.date->data, 
+    //     data.part_count);
+
+    data.from == NULL ? 0 : print_string(data.from);
+    printf("|");
+    data.to == NULL ? 0 : print_string(data.to);
+    printf("|");
+    data.date == NULL ? 0 : print_string(data.date);
+    printf("|");
+    printf("%zu", data.part_count);
     
     free_string(data.date);
     free_string(data.from);
