@@ -120,11 +120,11 @@ static string_t* get_boundary (string_t *header_value) {
 static size_t calculate_parts(string_t *boundary, char *eml_body) {
     size_t counter = 0;
     char *flg = strstr(eml_body, boundary->data);
-    
     while (flg != NULL) {
         ++counter;
         flg = strstr(flg + boundary->size, boundary->data);
     }
+    
     
     return counter - 1;
 
@@ -230,8 +230,9 @@ bool emlparse(FILE *eml) {
     // puts("done parsing headers");
     // getting body as a string
     int body_length = eml_length - ftell(eml);
-    char *eml_body = malloc(body_length);
+    char *eml_body = calloc(1, body_length);
     fread(eml_body,1, body_length, eml);
+    
     // puts("put body into string");
     // counting eml body parts
     data.part_count = data.boundary->data == NULL ? 1 : calculate_parts(data.boundary, eml_body);

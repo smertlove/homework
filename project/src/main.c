@@ -16,7 +16,7 @@ int main( int argc, const char **argv) {
 
 
 //  int main( ) {
-//    const char *path_to_eml = "./btests/emails/broken-ctype.eml";
+//    const char *path_to_eml = "./btests/emails/enclosed-broken.eml";
     FILE *eml = fopen(path_to_eml, "r");
 
     // if (eml) {
