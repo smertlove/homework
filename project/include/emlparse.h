@@ -6,6 +6,4 @@
 
 bool emlparse(FILE *eml);
 
-
-
 #endif  // PROJECT_INCLUDE_EMLPARSE_H_

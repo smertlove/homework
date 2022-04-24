@@ -30,7 +30,7 @@ typedef enum {
     S_HEAD_BEGIN,
     S_HDR_BEGIN,
     S_COLON,
-    S_HDR_VAL,  
+    S_HDR_VAL,
     S_NEWLINE,
     S_WHITESPACE,
     S_HEAD_END,
@@ -63,19 +63,19 @@ static lexeme_t get_lexeme(char cur_sym, state_t prev_state) {
     switch (cur_sym) {
         case '\n': return L_NEWLINE;
         case ':': return  L_COLON;
-        case ' ': return  L_WHITESPACE;      
-        case '\t':return  L_WHITESPACE;      
-        case '\r':   return L_WHITESPACE; 
+        case ' ': return  L_WHITESPACE;
+        case '\t':return  L_WHITESPACE;
+        case '\r':   return L_WHITESPACE;
         default: return L_ANY_CHAR;
     }
     return L_ERR;
 }
 
-static bool compare_headers (string_t *found_header, const char *searched_header) {
+static bool compare_headers(string_t *found_header, const char *searched_header) {
     return strncmp(found_header->data, searched_header, strlen(searched_header)) == 0;
 }
 
-static string_t* get_boundary (string_t *header_value) {
+static string_t* get_boundary(string_t *header_value) {
     string_t *boundary = init_string();
     char *ptr = strstr(header_value->data, "boundary=");
     if (ptr == NULL) {
@@ -83,10 +83,10 @@ static string_t* get_boundary (string_t *header_value) {
     }
     if (ptr == NULL) {
         return boundary;
-    } 
+    }
     if (*(ptr - 1) == 'x') {  return boundary;  }
     ptr += 9;
-    
+
     if (*ptr == '"') {
         ++ptr;
     }
@@ -108,29 +108,23 @@ static size_t calculate_parts(string_t *boundary, char *eml_body) {
         flg = strstr(flg + boundary->size, boundary->data); 
     }
     while (*ptr != '\n' && *ptr != '\0') { ++ptr; }
-    while (*ptr == ' ' || *ptr == '\n' || *ptr == '\t' || *ptr == '\r' || *ptr == '.' || *ptr == '=') { ++ptr; }
+    while (*ptr == ' ' || *ptr == '\n' || *ptr == '\t' || *ptr == '\r' || *ptr == '.' || *ptr == '=') ++ptr;
     if (counter != 0 && *ptr == '\0') {
         return counter - 1;
     } else {
         return counter;
     }
-
-
 }
 
 
 
 static data_t parse_eml_headers(FILE *eml) {
-
     data_t data = {0};
-
     string_t *header = init_string();
     string_t *value = init_string();
-
     state_t state = S_HEAD_BEGIN;
     state_t prev_state = state;
     while (state != S_HEAD_END) {
-        
         char cur_sym = fgetc(eml);
         lexeme_t lexeme = get_lexeme(cur_sym, prev_state);
         prev_state = state;
@@ -148,19 +142,18 @@ static data_t parse_eml_headers(FILE *eml) {
             } else {
                 free_string(value);
             }
-            free_string(header);         
+            free_string(header);
             header = init_string();
             value = init_string();
             add_char(header, cur_sym);
-
-        } else if (state == S_HDR_BEGIN){
+        } else if (state == S_HDR_BEGIN) {
             add_char(header, cur_sym);
         } else if (state == S_HDR_VAL) {
             add_char(value, cur_sym);
         } else if (state == S_ERR) {
             return data;
         }
-    } 
+    }
     return data;
 }
 
@@ -170,6 +163,7 @@ bool emlparse(FILE *eml) {
         puts("if is true: no such eml");
         return false;
     }
+
     // getting length of eml
     fseek(eml, 0, SEEK_END);
     int eml_length = ftell(eml);
