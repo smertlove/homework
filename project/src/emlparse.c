@@ -72,7 +72,7 @@ static lexeme_t get_lexeme(char cur_sym, state_t prev_state) {
 }
 
 static bool compare_headers (string_t *found_header, const char *searched_header) {
-    return strncmp(found_header->data, searched_header, strlen(searched_header) ) == 0;
+    return strncmp(found_header->data, searched_header, strlen(searched_header)) == 0;
 }
 
 static string_t* get_boundary (string_t *header_value) {
@@ -144,6 +144,7 @@ static data_t parse_eml_headers(FILE *eml) {
                 data.date = value;
             } else if (compare_headers(header, "Content-Type")) {
                 data.boundary = get_boundary(value);
+                free_string(value);
             } else {
                 free_string(value);
             }
