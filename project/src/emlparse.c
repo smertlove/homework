@@ -156,7 +156,7 @@ static data_t parse_eml_headers(FILE *eml) {
         }
     }
     free_string(header);
-    
+
     free_string(value);
     return data;
 }
@@ -198,8 +198,8 @@ bool emlparse(FILE *eml) {
     free_string(data.date);
     free_string(data.from);
     free_string(data.to);
-    
+
     free_string(data.boundary);
-    
+
     return true;
 }
