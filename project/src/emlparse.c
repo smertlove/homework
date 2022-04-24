@@ -105,7 +105,7 @@ static size_t calculate_parts(string_t *boundary, char *eml_body) {
     while (flg != NULL) {
         ++counter;
         ptr = flg;
-        flg = strstr(flg + boundary->size, boundary->data); 
+        flg = strstr(flg + boundary->size, boundary->data);
     }
     while (*ptr != '\n' && *ptr != '\0') { ++ptr; }
     while (*ptr == ' ' || *ptr == '\n' || *ptr == '\t' || *ptr == '\r' || *ptr == '.' || *ptr == '=') ++ptr;
@@ -129,7 +129,7 @@ static data_t parse_eml_headers(FILE *eml) {
         lexeme_t lexeme = get_lexeme(cur_sym, prev_state);
         prev_state = state;
         state = transitions[state][lexeme];
-        if((state == S_HDR_BEGIN && prev_state == S_NEWLINE) || state == S_HEAD_END) {
+        if ((state == S_HDR_BEGIN && prev_state == S_NEWLINE) || state == S_HEAD_END) {
             if (compare_headers(header, "From")) {
                 data.from = value;
             } else if (compare_headers(header, "To")) {
@@ -175,17 +175,18 @@ bool emlparse(FILE *eml) {
     // getting body as a string
     int body_length = eml_length - ftell(eml);
     char *eml_body = calloc(1, body_length + 1);
-    fread(eml_body,1, body_length, eml);
+    fread(eml_body, 1, body_length, eml);
     eml_body[body_length] = '\0';
-    
+
     // counting eml body parts
-    data.part_count = (data.boundary == NULL) || (data.boundary->data == NULL) ? 1 : calculate_parts(data.boundary, eml_body);
+    data.part_count = (data.boundary == NULL) || (data.boundary->data == NULL) ?
+    1 : calculate_parts(data.boundary, eml_body);
 
     // outputting data
     printf("%s|%s|%s|%zu",
-        data.from == NULL ? "" : data.from->data, 
-        data.to == NULL ? "" : data.to->data, 
-        data.date == NULL ? "" : data.date->data, 
+        data.from == NULL ? "" : data.from->data,
+        data.to == NULL ? "" : data.to->data,
+        data.date == NULL ? "" : data.date->data,
         data.part_count);
 
     // freeing heap
