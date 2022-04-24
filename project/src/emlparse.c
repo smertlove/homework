@@ -93,9 +93,13 @@ static string_t* get_boundary (string_t *header_value) {
     string_t *boundary = init_string();
     char *ptr = strstr(header_value->data, "boundary=");
     if (ptr == NULL) {
-        // puts("no boundary found");
-        return boundary;
+        ptr = strstr(header_value->data, "BOUNDARY=");
     }
+    if (ptr == NULL) {
+        /// puts("no boundary found");
+        return boundary;
+    } 
+    if (*(ptr - 1) == 'x') {  return boundary;  }
     ptr += 9;
     
     if (*ptr == '"') {
@@ -106,27 +110,35 @@ static string_t* get_boundary (string_t *header_value) {
     while (*ptr != '"' && *ptr != ' ' && *ptr != '\n' && *ptr != '\r' && *ptr != '\0') {
         add_char(boundary, *ptr);
         ++ptr;
-        // c++;
-        // if (c == 40) {
-        //     puts("40 loops break");
-        //     break;
-        // }
-        // printf("looking at next char: ptr = \"%c\", %d\n", *ptr, *ptr);
     }
     return boundary;
-    }
+}
 
 
 static size_t calculate_parts(string_t *boundary, char *eml_body) {
     size_t counter = 0;
     char *flg = strstr(eml_body, boundary->data);
+    char *ptr = eml_body;
+    // printf("got boundary coordinates: flg = \"%c\"\n", *flg);
     while (flg != NULL) {
         ++counter;
+        ptr = flg;
+        // printf("got boundary coordinatees: flg = \"%c\"\n", *flg);
         flg = strstr(flg + boundary->size, boundary->data);
+        
     }
-    
-    
-    return counter - 1;
+    // puts("last boundary found...");
+    while (*ptr != '\n' && *ptr != '\0') { 
+        // printf("-- %c %d\n", *ptr, *ptr);
+        ++ptr; }
+    while (*ptr == ' ' || *ptr == '\n' || *ptr == '\t' || *ptr == '\r' || *ptr == '.' || *ptr == '=') { ++ptr; }
+    // printf("got boundary coordinatees: ptr = \"%c\"\n", *ptr);
+    if (counter != 0 && *ptr == '\0') {
+        return counter - 1;
+    } else {
+        return counter;
+    }
+
 
 }
 
@@ -216,7 +228,9 @@ static data_t parse_eml_headers(FILE *eml) {
 // }
 
 bool emlparse(FILE *eml) {
+    // puts("entered func");
     if (eml == NULL) {
+        puts("if is true: no such eml");
         return false;
     }
     // puts("entered parse function");
@@ -230,12 +244,13 @@ bool emlparse(FILE *eml) {
     // puts("done parsing headers");
     // getting body as a string
     int body_length = eml_length - ftell(eml);
-    char *eml_body = calloc(1, body_length);
+    char *eml_body = calloc(1, body_length + 1);
     fread(eml_body,1, body_length, eml);
+    eml_body[body_length] = '\0';
     
     // puts("put body into string");
     // counting eml body parts
-    data.part_count = data.boundary->data == NULL ? 1 : calculate_parts(data.boundary, eml_body);
+    data.part_count = (data.boundary == NULL) || (data.boundary->data == NULL) ? 1 : calculate_parts(data.boundary, eml_body);
     // puts("counted parts of body");
 
 
