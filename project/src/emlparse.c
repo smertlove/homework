@@ -72,7 +72,7 @@ static lexeme_t get_lexeme(char cur_sym, state_t prev_state) {
 }
 
 static bool compare_headers(string_t *found_header, const char *searched_header) {
-    return strncmp(found_header->data, searched_header, strlen(searched_header)) == 0;
+    return strcmp(found_header->data, searched_header) == 0;
 }
 
 static string_t* get_boundary(string_t *header_value) {
@@ -143,6 +143,7 @@ static data_t parse_eml_headers(FILE *eml) {
                 free_string(value);
             }
             free_string(header);
+
             header = init_string();
             value = init_string();
             add_char(header, cur_sym);
@@ -154,6 +155,9 @@ static data_t parse_eml_headers(FILE *eml) {
             return data;
         }
     }
+    free_string(header);
+    
+    free_string(value);
     return data;
 }
 
@@ -190,11 +194,12 @@ bool emlparse(FILE *eml) {
         data.part_count);
 
     // freeing heap
+    free(eml_body);
     free_string(data.date);
     free_string(data.from);
     free_string(data.to);
-
+    
     free_string(data.boundary);
-
+    
     return true;
 }

@@ -15,9 +15,11 @@ void add_char(string_t *string, char ch) {
 	if (ch == '\r') return;
 	++string->size;
 	if (string->data == NULL) {
-		string->data = calloc(1, string->size);
-	} else {
-		char *tmp = realloc(string->data, string->size);
+		string->data = calloc(10, string->size);
+		string->memory += 10;
+	} else if (string->size > string->memory) {
+		string->memory *= string->memory;
+		char *tmp = realloc(string->data, string->memory);
 		string->data = tmp;
 	}
 	string->data[string->size - 2] = ch;
@@ -26,7 +28,7 @@ void add_char(string_t *string, char ch) {
 
 void free_string(string_t *string) {
     if (string != NULL && string->data != NULL) {
-    free(string->data);
+    	free(string->data);
     }
     free(string);
 }

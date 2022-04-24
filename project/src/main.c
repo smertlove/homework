@@ -19,9 +19,11 @@ int main(int argc, const char **argv) {
     FILE *eml = fopen(path_to_eml, "r");
     if (eml == NULL) {
         puts("file opened");
+        return 1;
     }
 
     emlparse(eml);
 
+    fclose(eml);
     return 0;
 }
