@@ -1,3 +1,6 @@
+#include <cmath>
+#include <limits>
+
 #include "matrix.h"
 #include "exceptions.h"
 
@@ -25,6 +28,8 @@ Matrix::Matrix(std::istream& is) {
     }
 }
 
+
+
 size_t Matrix::getRows() const {
     return row_count;
 }
@@ -41,13 +46,25 @@ double& Matrix::operator()(size_t i, size_t j) {
     return data[i * col_count + j];
 }
 
+// Matrix::Matrix(const Matrix& rhs) {
+//     row_count = rhs.getRows();
+//     col_count = rhs.getCols();
+//     init_data();
+//     for (size_t i = 0; i < row_count; i++) {
+//         for (size_t j = 0; j < col_count; i++) {
+//             this->operator()(i, j) = rhs(i, j);
+//         }
+//     }
+// }
+
+
 bool Matrix::operator==(const Matrix& rhs) const {
     if (row_count != rhs.getRows() || col_count != rhs.getCols()) {
         return false;
     }
     for (size_t i = 0; i < row_count; i++) {
-        for (size_t j = 0; j < col_count; i++) {
-            if (operator()(i, j) != rhs(i, j)) {
+        for (size_t j = 0; j < col_count; j++) {
+            if ( std::fabs(operator()(i, j) - rhs(i, j)) >= 1e-07 ) {
                 return false;
             }
         }
@@ -108,9 +125,10 @@ Matrix operator*(double val, const Matrix& matrix) {
 }
 
 std::ostream& operator<<(std::ostream& os, const Matrix& matrix) {
+    os << "Matrix( " << matrix.getRows() << "x" << matrix.getCols() << " )" << std::endl;
     for (size_t i = 0; i < matrix.getRows(); i++) {
         for (size_t j = 0; j < matrix.getCols(); j++) {
-            os << matrix(i, j);
+            os << matrix(i, j) << "  \t";
         }
         os << std::endl;
     }
