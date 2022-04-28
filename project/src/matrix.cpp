@@ -169,8 +169,8 @@ std::ostream& operator<<(std::ostream& os, const Matrix& matrix) {
 
 Matrix Matrix::transp() const {
     Matrix new_matrix = Matrix(col_count, row_count);
-    for (size_t i = 0; i < col_count; i++) {
-        for (size_t j = 0; j < row_count; j++) {
+    for (size_t i = 0; i < row_count; i++) {
+        for (size_t j = 0; j < col_count; j++) {
             new_matrix(j, i) = (*this)(i, j);
         }
     }
