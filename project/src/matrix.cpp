@@ -22,10 +22,26 @@ Matrix::Matrix(size_t rows, size_t cols) {
 }
 
 Matrix::Matrix(std::istream& is) {
+    if (!is) {
+        throw InvalidMatrixStream();
+    }
+    row_count = 0;
+    col_count = 0;
     is >> row_count >> col_count;
+    if (!row_count || !col_count) {
+        std::cout << "!row || !col" << std::endl;
+        throw InvalidMatrixStream();
+    }
     init_data();
+    size_t counter = 0;
     for (size_t i = 0; i < (row_count * col_count); i++) {
         is >> data[i];
+        if (data[i]) {
+            ++counter;
+        }
+    }
+    if (counter != row_count * col_count) {
+        throw InvalidMatrixStream();
     }
 }
 
@@ -40,10 +56,18 @@ size_t Matrix::getCols() const {
 }
 
 double Matrix::operator()(size_t i, size_t j) const {
+    if (i > this->getRows() - 1 || j > this->getCols() - 1) {
+        std::cout << "SSSHIT" << i << j << std::endl;
+        throw OutOfRange(i, j, *this);
+    }
     return data[i * col_count + j];
 }
 
 double& Matrix::operator()(size_t i, size_t j) {
+    if (i > this->getRows() -1  || j > this->getCols() - 1) {
+        std::cout << "SSSHIT" << i << j << std::endl;
+        throw OutOfRange(i, j, *this);
+    }
     return data[i * col_count + j];
 }
 
@@ -51,54 +75,64 @@ double& Matrix::operator()(size_t i, size_t j) {
 
 
 bool Matrix::operator==(const Matrix& rhs) const {
+    std::cout << "called == func: ";
     if (row_count != rhs.getRows() || col_count != rhs.getCols()) {
+        std::cout << "matrixes not equal: different dimensions" << std::endl;
         return false;
     }
-    double tolerance = 0.01;
     for (size_t i = 0; i < row_count; i++) {
-        for (size_t j = 0; j < col_count; j++) {
-            if ( std::abs( operator()(i, j)) - std::abs(rhs(i, j))  > tolerance ) {
-                std::cout << operator()(i, j) << " != " << rhs(i, j)  << std::endl;
+        for (size_t j = 0; j < col_count; j++) {                /* s etim padaet eshe i store test for whatever reason */
+            if ( std::fabs( (*this)(i, j) - rhs(i, j))  >= 0.01 /* std::numeric_limits<double>::epsilon() * 10e-7*/ ) {
+                std::cout << "matrixes not equal: " << operator()(i, j) << " != " << rhs(i, j) << std::endl;
                 return false;
             }
         }
     }
+    std::cout << "success!! matrixes equal!" << std::endl;
     return true;
 }
 
 bool Matrix::operator!=(const Matrix& rhs) const {
-    bool answ = !(this == rhs);
-    std::cout << "!!!!" << answ << "!!!!"  << std::endl;
-    return answ;
+    std::cout << "called =! func: calling ==... ";
+    return !(*this == rhs);
 }
 
 Matrix Matrix::operator+(const Matrix& rhs) const {
+    if (row_count != rhs.getRows() || col_count != rhs.getCols()) {
+        throw DimensionMismatch(*this, rhs);
+    }
     Matrix new_matrix = Matrix(row_count, col_count);
     for (size_t i = 0; i < row_count; i++) {
         for (size_t j = 0; j < col_count; j++) {
-            new_matrix(i, j) = operator()(i, j) + rhs(i, j);
+            new_matrix(i, j) = (*this)(i, j) + rhs(i, j);
         }
     }
     return new_matrix;
 }
 
 Matrix Matrix::operator-(const Matrix& rhs) const {
+    if (row_count != rhs.getRows() || col_count != rhs.getCols()) {
+        throw DimensionMismatch(*this, rhs);
+    }
     Matrix new_matrix = Matrix(row_count, col_count);
     for (size_t i = 0; i < row_count; i++) {
         for (size_t j = 0; j < col_count; j++) {
-            new_matrix(i, j) = operator()(i, j) - rhs(i, j);
+            new_matrix(i, j) = (*this)(i, j) - rhs(i, j);
         }
     }
     return new_matrix;
 }
 
 Matrix Matrix::operator*(const Matrix& rhs) const {
+    if (col_count !=  rhs.getRows()) {
+        throw DimensionMismatch(*this, rhs);
+    }
     Matrix new_matrix = Matrix(row_count, rhs.getCols());
     for (size_t i = 0; i < row_count; i++) {
         for (size_t j = 0; j < rhs.getCols(); j++) {
             double total = 0.0;
             for (size_t k = 0; k < col_count; k++) {
-                total = total + operator()(i, k) * rhs(k, j);
+                total = total + (*this)(i, k) * rhs(k, j);
             }
             new_matrix(i, j) = total;
         }
@@ -110,7 +144,7 @@ Matrix Matrix::operator*(double val) const {
     Matrix new_matrix = Matrix(row_count, col_count);
     for (size_t i = 0; i < row_count; i++) {
         for (size_t j = 0; j < col_count; j++) {
-            new_matrix(i, j) = operator()(i, j) * val;
+            new_matrix(i, j) = (*this)(i, j) * val;
         }
     }
     return new_matrix;
@@ -125,16 +159,22 @@ std::ostream& operator<<(std::ostream& os, const Matrix& matrix) {
     for (size_t i = 0; i < matrix.getRows(); i++) {
         for (size_t j = 0; j < matrix.getCols(); j++) {
             // std::cout << matrix.operator()(i, j) << std::endl;
-            os << std::setprecision(8) << matrix.operator()(i, j) << " ";
+            os << std::setprecision(8) << matrix(i, j) << " ";
         }
+        os << std::endl;
     }
-    os << std::endl;
     return os;
 }
 
 
 Matrix Matrix::transp() const {
-    return Matrix(row_count, col_count);
+    Matrix new_matrix = Matrix(col_count, row_count);
+    for (size_t i = 0; i < col_count; i++) {
+        for (size_t j = 0; j < row_count; j++) {
+            new_matrix(j, i) = (*this)(i, j);
+        }
+    }
+    return new_matrix;
 }
 
 double Matrix::det() const {
