@@ -155,7 +155,7 @@ std::ostream& operator<<(std::ostream& os, const Matrix& matrix) {
     os << matrix.getRows() << " " << matrix.getCols()  << std::endl;
     for (size_t i = 0; i < matrix.getRows(); i++) {
         for (size_t j = 0; j < matrix.getCols(); j++) {
-            os << std::setprecision(8) << matrix(i, j) << " ";
+            os << std::setprecision(10) << matrix(i, j) << " ";
         }
         os << std::endl;
     }
