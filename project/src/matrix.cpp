@@ -1,5 +1,6 @@
 #include <cmath>
 #include <limits>
+#include <iomanip>
 
 #include "matrix.h"
 #include "exceptions.h"
@@ -46,25 +47,18 @@ double& Matrix::operator()(size_t i, size_t j) {
     return data[i * col_count + j];
 }
 
-// Matrix::Matrix(const Matrix& rhs) {
-//     row_count = rhs.getRows();
-//     col_count = rhs.getCols();
-//     init_data();
-//     for (size_t i = 0; i < row_count; i++) {
-//         for (size_t j = 0; j < col_count; i++) {
-//             this->operator()(i, j) = rhs(i, j);
-//         }
-//     }
-// }
+
 
 
 bool Matrix::operator==(const Matrix& rhs) const {
     if (row_count != rhs.getRows() || col_count != rhs.getCols()) {
         return false;
     }
+    double tolerance = 0.01;
     for (size_t i = 0; i < row_count; i++) {
         for (size_t j = 0; j < col_count; j++) {
-            if ( std::fabs(operator()(i, j) - rhs(i, j)) >= 1e-07 ) {
+            if ( std::abs( operator()(i, j)) - std::abs(rhs(i, j))  > tolerance ) {
+                std::cout << operator()(i, j) << " != " << rhs(i, j)  << std::endl;
                 return false;
             }
         }
@@ -73,7 +67,9 @@ bool Matrix::operator==(const Matrix& rhs) const {
 }
 
 bool Matrix::operator!=(const Matrix& rhs) const {
-    return !(operator==(rhs));
+    bool answ = !(operator==(rhs));
+    std::cout << "!!!!" << answ << "!!!!"  << std::endl;
+    return answ;
 }
 
 Matrix Matrix::operator+(const Matrix& rhs) const {
@@ -125,13 +121,14 @@ Matrix operator*(double val, const Matrix& matrix) {
 }
 
 std::ostream& operator<<(std::ostream& os, const Matrix& matrix) {
-    os << "Matrix( " << matrix.getRows() << "x" << matrix.getCols() << " )" << std::endl;
+    os << matrix.getRows() << " " << matrix.getCols()  << std::endl;
     for (size_t i = 0; i < matrix.getRows(); i++) {
         for (size_t j = 0; j < matrix.getCols(); j++) {
-            os << matrix(i, j) << "  \t";
+            // std::cout << matrix.operator()(i, j) << std::endl;
+            os << std::setprecision(8) << matrix.operator()(i, j) << " ";
         }
-        os << std::endl;
     }
+    os << std::endl;
     return os;
 }
 
