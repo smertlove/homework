@@ -79,7 +79,7 @@ bool Matrix::operator==(const Matrix& rhs) const {
     }
     for (size_t i = 0; i < row_count; i++) {
         for (size_t j = 0; j < col_count; j++) {                /* s etim padaet eshe i store test for whatever reason */
-            if ( std::fabs( (*this)(i, j) - rhs(i, j))  >= 0.01 /* std::numeric_limits<double>::epsilon() * 10e-7*/ ) {
+            if ( std::fabs( (*this)(i, j) - rhs(i, j))  >= 1e-7 /* std::numeric_limits<double>::epsilon() * 10e-7*/ ) {
                 std::cout << "matrixes not equal: " << operator()(i, j) << " != " << rhs(i, j) << std::endl;
                 return false;
             }
