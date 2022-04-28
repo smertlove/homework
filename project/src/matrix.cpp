@@ -67,7 +67,7 @@ bool Matrix::operator==(const Matrix& rhs) const {
 }
 
 bool Matrix::operator!=(const Matrix& rhs) const {
-    bool answ = !(operator==(rhs));
+    bool answ = !(this == rhs);
     std::cout << "!!!!" << answ << "!!!!"  << std::endl;
     return answ;
 }
