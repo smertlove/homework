@@ -29,7 +29,6 @@ Matrix::Matrix(std::istream& is) {
     col_count = 0;
     is >> row_count >> col_count;
     if (!row_count || !col_count) {
-        std::cout << "!row || !col" << std::endl;
         throw InvalidMatrixStream();
     }
     init_data();
@@ -57,7 +56,6 @@ size_t Matrix::getCols() const {
 
 double Matrix::operator()(size_t i, size_t j) const {
     if (i > this->getRows() - 1 || j > this->getCols() - 1) {
-        std::cout << "SSSHIT" << i << j << std::endl;
         throw OutOfRange(i, j, *this);
     }
     return data[i * col_count + j];
@@ -65,7 +63,6 @@ double Matrix::operator()(size_t i, size_t j) const {
 
 double& Matrix::operator()(size_t i, size_t j) {
     if (i > this->getRows() -1  || j > this->getCols() - 1) {
-        std::cout << "SSSHIT" << i << j << std::endl;
         throw OutOfRange(i, j, *this);
     }
     return data[i * col_count + j];
@@ -158,7 +155,6 @@ std::ostream& operator<<(std::ostream& os, const Matrix& matrix) {
     os << matrix.getRows() << " " << matrix.getCols()  << std::endl;
     for (size_t i = 0; i < matrix.getRows(); i++) {
         for (size_t j = 0; j < matrix.getCols(); j++) {
-            // std::cout << matrix.operator()(i, j) << std::endl;
             os << std::setprecision(8) << matrix(i, j) << " ";
         }
         os << std::endl;
