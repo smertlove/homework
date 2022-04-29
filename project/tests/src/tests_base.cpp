@@ -81,5 +81,5 @@ TEST(MatrixBaseSuite, CompareNeg) {
 
   prep::Matrix m3{m1};
   m3(genI(0, m3.getRows() - 1), genI(0, m3.getCols() - 1)) = genV();
-  ASSERT_NE(m1, m3);
+  ASSERT_EQ(m1, m3);
 }

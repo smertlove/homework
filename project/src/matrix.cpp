@@ -44,8 +44,6 @@ Matrix::Matrix(std::istream& is) {
     }
 }
 
-
-
 size_t Matrix::getRows() const {
     return row_count;
 }
@@ -173,16 +171,80 @@ Matrix Matrix::transp() const {
     return new_matrix;
 }
 
+/***************** EXTRA OPERATIONS *****************/
+
+double* Matrix::get_data_ptr() {
+    return data;
+}
+
+Matrix Matrix::get_minor(size_t row, size_t col) const {
+    if (row_count < 2 or col_count < 2) {
+        throw DimensionMismatch((*this));
+    }
+    Matrix new_matrix = Matrix(row_count - 1, col_count - 1);
+    double *ptr = new_matrix.get_data_ptr();
+    for (size_t i = 0; i < row_count; i++) {
+        for (size_t j = 0; j < col_count; j++) {
+            if (i != row && j != col) {
+                *ptr = (*this)(i, j);
+                ptr++;
+            }
+        }
+    }
+    return new_matrix;
+}
+
 double Matrix::det() const {
-    return 10.0;
+    if (row_count != col_count) {
+        throw DimensionMismatch((*this));
+    }
+    if (row_count == 1) {
+        return (*this)(0, 0);
+    } else if (row_count == 2) {
+        return (*this)(0, 0) * (*this)(1, 1) -
+               (*this)(0, 1) * (*this)(1, 0);
+    } else {
+        double sign = 1.0;
+        double answ = 0.0;
+        for (size_t j = 0; j < col_count; j++) {
+            Matrix minor = get_minor(0, j);
+            answ += (sign * (*this)(0, j) * minor.det());
+            sign *= -1.0;
+        }
+        return answ;
+    }
 }
 
 Matrix Matrix::adj() const {
-    return Matrix(row_count, col_count);
+    if (row_count != col_count) {
+        throw DimensionMismatch((*this));
+    } else if (row_count < 2) {
+        Matrix new_matrix = (*this);
+        return new_matrix;
+    } else {
+        Matrix new_matrix = Matrix(row_count, col_count);
+        for (size_t i = 0; i < row_count; i++) {
+            for (size_t j = 0; j < col_count; j++) {
+                double sign = (i + j) % 2 == 0 ? 1.0 : -1.0;
+                Matrix minor = get_minor(i, j);
+                new_matrix(j, i) = sign * minor.det();
+            }
+        }
+        return new_matrix;
+    }
 }
 
 Matrix Matrix::inv() const {
-    return Matrix(row_count, col_count);
+    if (row_count != col_count) {
+        throw DimensionMismatch((*this));
+    } else if (row_count == 1) {
+        Matrix inversed = Matrix(1, 1);
+        inversed(0, 0) = 1 / (*this)(0, 0);  // det always equals 1
+        return inversed;
+    } else {
+        Matrix inversed = (*this).adj() * (1 / (*this).det());
+        return inversed;
+    }
 }
 
 }  // namespace prep

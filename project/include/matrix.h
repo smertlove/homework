@@ -12,6 +12,8 @@ class Matrix {
         size_t col_count;
 
         void init_data();
+        Matrix get_minor(size_t row, size_t col) const ;
+        double* get_data_ptr();
 
     public:
         explicit Matrix(size_t rows = 0, size_t cols = 0);
