@@ -21,13 +21,13 @@ function check_log() {
     fi
 }
 
-# print_header "RUN cppcheck"
-# check_log "cppcheck project --enable=all --inconclusive --error-exitcode=1 -I project/include -I project/tests/include --suppress=missingIncludeSystem" "\(information\)"
+print_header "RUN cppcheck"
+check_log "cppcheck project --enable=all --inconclusive --error-exitcode=1 -I project/include -I project/tests/include --suppress=missingIncludeSystem" "\(information\)"
 
 print_header "RUN clang-tidy"
 check_log "clang-tidy project/src/* project/include/* -warnings-as-errors=* -- -x c++ -Iproject/include" "Error (?:reading|while processing)"
 
-# print_header "RUN cpplint"
-# check_log "cpplint --extensions=cpp project/include/* project/src/*" "Can't open for reading"
+print_header "RUN cpplint"
+check_log "cpplint --extensions=cpp project/include/* project/src/*" "Can't open for reading"
 
 print_header "SUCCESS"
