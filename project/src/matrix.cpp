@@ -32,16 +32,17 @@ Matrix::Matrix(std::istream& is) {
         throw InvalidMatrixStream();
     }
     init_data();
-    size_t counter = 0;
+    // size_t counter = 0;
     for (size_t i = 0; i < (row_count * col_count); i++) {
         is >> data[i];
-        if (data[i]) {
-            ++counter;
+        if (!is) {
+            throw InvalidMatrixStream();
         }
     }
-    if (counter != row_count * col_count) {
-        throw InvalidMatrixStream();
-    }
+    // std::cout << "!!!!!!!!!!!!!!!!!!!!!   " << counter << std::endl;
+    // if (counter != row_count * col_count) {
+    //     throw InvalidMatrixStream();
+    // }
 }
 
 size_t Matrix::getRows() const {
@@ -242,7 +243,11 @@ Matrix Matrix::inv() const {
         inversed(0, 0) = 1 / (*this)(0, 0);  // det always equals 1
         return inversed;
     } else {
-        Matrix inversed = (*this).adj() * (1 / (*this).det());
+        double determinant = (*this).det();
+        if (std::abs(std::round(determinant * 1000)) / 1000 < 0.0001 ) {
+            throw SingularMatrix();
+        }
+        Matrix inversed = (*this).adj() * (1 / determinant);
         return inversed;
     }
 }
