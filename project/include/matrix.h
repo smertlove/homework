@@ -6,21 +6,21 @@
 
 namespace prep {
 class Matrix {
-    private:
+ private:
         double *data;
         size_t row_count;
         size_t col_count;
 
         void init_data();
-        Matrix get_minor(size_t row, size_t col) const ;
+        Matrix get_minor(size_t row, size_t col) const;
         double* get_data_ptr();
 
-    public:
+ public:
         explicit Matrix(size_t rows = 0, size_t cols = 0);
         explicit Matrix(std::istream& is);
         Matrix(const Matrix& rhs) = default;
         Matrix& operator=(const Matrix& rhs) = default;
-        ~Matrix() = default;
+        ~Matrix() { delete[] data; };
 
         size_t getRows() const;
         size_t getCols() const;
@@ -46,7 +46,7 @@ class Matrix {
         double det() const;
         Matrix adj() const;
         Matrix inv() const;
-        };
+};
 
         Matrix operator*(double val, const Matrix& matrix);
         std::ostream& operator<<(std::ostream& os, const Matrix& matrix);
