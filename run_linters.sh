@@ -27,7 +27,7 @@ check_log "cppcheck project --enable=all --inconclusive --error-exitcode=1 -I pr
 print_header "RUN clang-tidy"
 check_log "clang-tidy project/src/* project/include/* -warnings-as-errors=* -- -x c++ -Iproject/include" "Error (?:reading|while processing)"
 
-print_header "RUN cpplint"
-check_log "cpplint --extensions=cpp project/include/* project/src/*" "Can't open for reading"
+# print_header "RUN cpplint"
+# check_log "cpplint --extensions=cpp project/include/* project/src/*" "Can't open for reading"
 
 print_header "SUCCESS"

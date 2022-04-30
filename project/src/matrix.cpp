@@ -75,8 +75,8 @@ bool Matrix::operator==(const Matrix& rhs) const {
         return false;
     }
     for (size_t i = 0; i < row_count; i++) {
-        for (size_t j = 0; j < col_count; j++) {                /* s etim padaet eshe i store test for whatever reason */
-            if ( std::fabs( (*this)(i, j) - rhs(i, j))  >= 1e-7 /* std::numeric_limits<double>::epsilon() * 10e-7*/ ) {
+        for (size_t j = 0; j < col_count; j++) {                
+            if ( std::fabs( (*this)(i, j) - rhs(i, j))  >= 1e-7 ) {
                 std::cout << "matrixes not equal: " << operator()(i, j) << " != " << rhs(i, j) << std::endl;
                 return false;
             }
@@ -175,7 +175,7 @@ Matrix Matrix::transp() const {
 Matrix Matrix::get_minor(size_t row, size_t col) const {
         // std::cout << "entered MINOR func" << std::endl;
 
-    if (row_count < 2 or col_count < 2) {
+    if (row_count < 2 || col_count < 2) {
         throw DimensionMismatch((*this));
     }
     Matrix new_matrix = Matrix(row_count - 1, col_count - 1);
@@ -247,7 +247,7 @@ Matrix Matrix::inv() const {
         return inversed;
     } else {
         double determinant = (*this).det();
-        if (std::abs(std::round(determinant * 1000)) / 1000 < 0.0001 ) {
+        if (std::abs(std::round(determinant * 1000)) / 1000 < 0.0001) {
             throw SingularMatrix();
         }
         Matrix inversed = (*this).adj() * (1 / determinant);
