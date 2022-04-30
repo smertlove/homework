@@ -7,20 +7,18 @@
 namespace prep {
 class Matrix {
  private:
-        double *data;
+        std::vector <double> data;
         size_t row_count;
         size_t col_count;
 
-        void init_data();
         Matrix get_minor(size_t row, size_t col) const;
-        double* get_data_ptr();
 
  public:
         explicit Matrix(size_t rows = 0, size_t cols = 0);
         explicit Matrix(std::istream& is);
         Matrix(const Matrix& rhs) = default;
         Matrix& operator=(const Matrix& rhs) = default;
-        ~Matrix() { delete[] data; };
+        ~Matrix() = default;
 
         size_t getRows() const;
         size_t getCols() const;

@@ -1,24 +1,20 @@
 #include <cmath>
 #include <limits>
 #include <iomanip>
+#include <vector>
 
 #include "matrix.h"
 #include "exceptions.h"
 
 namespace prep {
 
-
-void Matrix::init_data(){
-    data =  new double[row_count * col_count];
-}
-
 Matrix::Matrix(size_t rows, size_t cols) {
     row_count = rows;
     col_count = cols;
-    init_data();
-    for (size_t i = 0; i < row_count * col_count; i++) {
-        data[i] = 0.0;
+    for (size_t i = 0; i < rows * cols; i++) {
+        data.push_back(0.0);
     }
+    // std::cout << (*this) << std::endl;
 }
 
 Matrix::Matrix(std::istream& is) {
@@ -31,18 +27,17 @@ Matrix::Matrix(std::istream& is) {
     if (!row_count || !col_count) {
         throw InvalidMatrixStream();
     }
-    init_data();
-    // size_t counter = 0;
-    for (size_t i = 0; i < (row_count * col_count); i++) {
-        is >> data[i];
-        if (!is) {
-            throw InvalidMatrixStream();
+    double buf;
+    for (size_t i = 0; i < row_count; i++) {
+        for (size_t j = 0; j < col_count; j++) {
+            is >> buf;
+            // is.ignore(std::numeric_limits<streamsize>::max(), '\n');
+            if (!is) {
+                throw InvalidMatrixStream();
+            }
+            data.push_back(buf);
         }
     }
-    // std::cout << "!!!!!!!!!!!!!!!!!!!!!   " << counter << std::endl;
-    // if (counter != row_count * col_count) {
-    //     throw InvalidMatrixStream();
-    // }
 }
 
 size_t Matrix::getRows() const {
@@ -61,9 +56,12 @@ double Matrix::operator()(size_t i, size_t j) const {
 }
 
 double& Matrix::operator()(size_t i, size_t j) {
-    if (i > this->getRows() -1  || j > this->getCols() - 1) {
+    if (i > this->getRows() - 1  || j > this->getCols() - 1) {
+    std::cout << "OUT OF RANGE!!" << std::endl;
+
         throw OutOfRange(i, j, *this);
     }
+    // std::cout << i << " " << j << " " << data[i * col_count + j] << std::endl;
     return data[i * col_count + j];
 }
 
@@ -174,26 +172,30 @@ Matrix Matrix::transp() const {
 
 /***************** EXTRA OPERATIONS *****************/
 
-double* Matrix::get_data_ptr() {
-    return data;
-}
-
 Matrix Matrix::get_minor(size_t row, size_t col) const {
+        // std::cout << "entered MINOR func" << std::endl;
+
     if (row_count < 2 or col_count < 2) {
         throw DimensionMismatch((*this));
     }
     Matrix new_matrix = Matrix(row_count - 1, col_count - 1);
-    double *ptr = new_matrix.get_data_ptr();
+    size_t i_ptr = 0;
+    size_t j_ptr = 0;
     for (size_t i = 0; i < row_count; i++) {
         for (size_t j = 0; j < col_count; j++) {
             if (i != row && j != col) {
-                *ptr = (*this)(i, j);
-                ptr++;
+                new_matrix(i_ptr, j_ptr) = (*this)(i, j);
+                j_ptr++;
             }
+        }
+        j_ptr = 0;
+        if (i != row) {
+            i_ptr++;
         }
     }
     return new_matrix;
 }
+
 
 double Matrix::det() const {
     if (row_count != col_count) {
@@ -230,6 +232,7 @@ Matrix Matrix::adj() const {
                 Matrix minor = get_minor(i, j);
                 new_matrix(j, i) = sign * minor.det();
             }
+            std::cout << "adj loop" << std::endl;
         }
         return new_matrix;
     }
