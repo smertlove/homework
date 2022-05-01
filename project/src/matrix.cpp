@@ -8,13 +8,14 @@
 
 namespace prep {
 
+/***************** CREATION OPERATIONS *****************/
+
 Matrix::Matrix(size_t rows, size_t cols) {
     row_count = rows;
     col_count = cols;
     for (size_t i = 0; i < rows * cols; i++) {
         data.push_back(0.0);
     }
-    // std::cout << (*this) << std::endl;
 }
 
 Matrix::Matrix(std::istream& is) {
@@ -31,7 +32,6 @@ Matrix::Matrix(std::istream& is) {
     for (size_t i = 0; i < row_count; i++) {
         for (size_t j = 0; j < col_count; j++) {
             is >> buf;
-            // is.ignore(std::numeric_limits<streamsize>::max(), '\n');
             if (!is) {
                 throw InvalidMatrixStream();
             }
@@ -39,6 +39,8 @@ Matrix::Matrix(std::istream& is) {
         }
     }
 }
+
+/***************** BASIC OPERATIONS *****************/
 
 size_t Matrix::getRows() const {
     return row_count;
@@ -57,39 +59,44 @@ double Matrix::operator()(size_t i, size_t j) const {
 
 double& Matrix::operator()(size_t i, size_t j) {
     if (i > this->getRows() - 1  || j > this->getCols() - 1) {
-    std::cout << "OUT OF RANGE!!" << std::endl;
-
         throw OutOfRange(i, j, *this);
     }
-    // std::cout << i << " " << j << " " << data[i * col_count + j] << std::endl;
     return data[i * col_count + j];
 }
 
+std::ostream& operator<<(std::ostream& os, const Matrix& matrix) {
+    os << matrix.getRows() << " " << matrix.getCols()  << std::endl;
+    for (size_t i = 0; i < matrix.getRows(); i++) {
+        for (size_t j = 0; j < matrix.getCols(); j++) {
+            os << std::setprecision(10) << matrix(i, j) << " ";
+        }
+        os << std::endl;
+    }
+    return os;
+}
 
 
+/***************** COMPARISON OPERATIONS *****************/
 
 bool Matrix::operator==(const Matrix& rhs) const {
-    std::cout << "called == func: ";
     if (row_count != rhs.getRows() || col_count != rhs.getCols()) {
-        std::cout << "matrixes not equal: different dimensions" << std::endl;
         return false;
     }
     for (size_t i = 0; i < row_count; i++) {
-        for (size_t j = 0; j < col_count; j++) {                
+        for (size_t j = 0; j < col_count; j++) {
             if ( std::fabs( (*this)(i, j) - rhs(i, j))  >= 1e-7 ) {
-                std::cout << "matrixes not equal: " << operator()(i, j) << " != " << rhs(i, j) << std::endl;
                 return false;
             }
         }
     }
-    std::cout << "success!! matrixes equal!" << std::endl;
     return true;
 }
 
 bool Matrix::operator!=(const Matrix& rhs) const {
-    std::cout << "called =! func: calling ==... ";
     return !(*this == rhs);
 }
+
+/***************** MATH OPERATIONS *****************/
 
 Matrix Matrix::operator+(const Matrix& rhs) const {
     if (row_count != rhs.getRows() || col_count != rhs.getCols()) {
@@ -148,18 +155,6 @@ Matrix operator*(double val, const Matrix& matrix) {
     return matrix * val;
 }
 
-std::ostream& operator<<(std::ostream& os, const Matrix& matrix) {
-    os << matrix.getRows() << " " << matrix.getCols()  << std::endl;
-    for (size_t i = 0; i < matrix.getRows(); i++) {
-        for (size_t j = 0; j < matrix.getCols(); j++) {
-            os << std::setprecision(10) << matrix(i, j) << " ";
-        }
-        os << std::endl;
-    }
-    return os;
-}
-
-
 Matrix Matrix::transp() const {
     Matrix new_matrix = Matrix(col_count, row_count);
     for (size_t i = 0; i < row_count; i++) {
@@ -173,8 +168,6 @@ Matrix Matrix::transp() const {
 /***************** EXTRA OPERATIONS *****************/
 
 Matrix Matrix::get_minor(size_t row, size_t col) const {
-        // std::cout << "entered MINOR func" << std::endl;
-
     if (row_count < 2 || col_count < 2) {
         throw DimensionMismatch((*this));
     }
@@ -232,7 +225,6 @@ Matrix Matrix::adj() const {
                 Matrix minor = get_minor(i, j);
                 new_matrix(j, i) = sign * minor.det();
             }
-            std::cout << "adj loop" << std::endl;
         }
         return new_matrix;
     }
@@ -247,7 +239,7 @@ Matrix Matrix::inv() const {
         return inversed;
     } else {
         double determinant = (*this).det();
-        if (std::abs(std::round(determinant * 1000)) / 1000 < 0.0001) {
+        if (std::abs(std::round(determinant * 1000)) / 1000 < 0.0001 ) {
             throw SingularMatrix();
         }
         Matrix inversed = (*this).adj() * (1 / determinant);
