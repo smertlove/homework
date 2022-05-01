@@ -239,7 +239,7 @@ Matrix Matrix::inv() const {
         return inversed;
     } else {
         double determinant = (*this).det();
-        if (std::abs(std::round(determinant * 1000)) / 1000 < 0.0001 ) {
+        if (std::abs(std::round(determinant * 1000)) / 1000 < 0.0001) {
             throw SingularMatrix();
         }
         Matrix inversed = (*this).adj() * (1 / determinant);
