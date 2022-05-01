@@ -48,8 +48,9 @@ TEST(MatrixBaseSuite, ElementAccess) {
 TEST(MatrixBaseSuite, CopyAssign) {
   const auto m1 = genM();
   ASSERT_NO_THROW(prep::Matrix{m1});
-
+  std::cout << m1 << "\n\n" << std::endl;
   const prep::Matrix m2{m1};
+  std::cout << m2 << "\n\n" << std::endl;
   ASSERT_EQ(m1, m2);
 
   prep::Matrix m3;

@@ -7,6 +7,7 @@ TEST(MatrixMathExtraNegSuite, Det) {
 
     std::ifstream is(entry.path());
     const prep::Matrix m{is};
+    std::cout << m << std::endl;
     is.close();
 
     ASSERT_NEAR(0.0, m.det(), 1e-07);
@@ -19,6 +20,7 @@ TEST(MatrixMathExtraNegSuite, Inv) {
 
     std::ifstream is(entry.path());
     const prep::Matrix m{is};
+    std::cout << m << std::endl;
     is.close();
 
     ASSERT_THROW(m.inv(), prep::SingularMatrix);
