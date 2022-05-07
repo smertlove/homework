@@ -8,6 +8,26 @@ namespace task {
 template<class T>
 class list {
 
+protected:  // NOTE (Kirill Soloshenko) changed private to protected 
+            // in order to make further inheritance just a lil' bit easier :)
+    template <class T> class list_node {
+        private:
+            class list_node *next;
+            class list_node *prev;
+            T data;
+        public:
+            void set_next(list_node node) { next = *node; }
+            void set_prev(list_node node) { prev = *node; }
+            void set_data(T elem) { data = elem }
+            list_node* get_next() { return next; }
+            list_node* get_prev() { return prev; }
+            T get_data() { return data; }
+        };
+
+    list_node *begin;
+    list_node *end;
+    size_t     length;
+
 public:
     class iterator {
     public:
@@ -34,7 +54,7 @@ public:
         // Your code goes here?..
 
     private:
-        // Your code hoes here...
+        list_node *current;
     };
 
     class const_iterator {
@@ -103,10 +123,6 @@ public:
     void sort();
 
     // Your code goes here?..
-
-private:
-
-    // Your code goes here...
 
 };
 
