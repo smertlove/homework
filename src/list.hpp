@@ -10,14 +10,14 @@ class list {
 
 protected:  // NOTE (Kirill Soloshenko) changed private to protected 
             // in order to make further inheritance just a lil' bit easier :)
-    template <typename T>
+    template<class U>
     class list_node {
         public:
             class list_node *next;
             class list_node *prev;
-            T data;
+            U data;
 
-            list_node(T val=T(), list_node *next_node=nullptr, list_node *prev_node=nullptr) {
+            list_node(U val=U(), list_node *next_node=nullptr, list_node *prev_node=nullptr) {
                 data = val;
                 next = next_node;
                 prev = prev_node;
@@ -178,65 +178,107 @@ public:
 
 /*********** list ***********/
 
+template<class T>
 list<T>::list() {
     size = 0;
     head = nullptr;
     tail = nullptr;
 }
 
+template<class T>
 list<T>::list(size_t count, const T& value) {
     list();
     for (size_t i = 0; i < count; i++) {
         push_back(value);
     }
 }
-explicit list<T>::list(size_t count) {
-    list(count, T())
+
+template<class T>
+list<T>::list(size_t count) {
+    list(count, T());
 }
+
+template<class T>
 list<T>::~list() {
     while (head != nullptr) {
         pop_back();
     }
 }
 
-list<T>::list(const list& other);
-list<T>::list& operator=(const list& other);
+template<class T>
+list<T>::list(const list& other) {
+    *this = other;
+};
 
+template<class T>
+list<T>::list& operator=(const list& other) {
+    *this = other;
+}
+
+template<class T>
 T& list<T>::front() { return head; };
+
+template<class T>
 const T& list<T>::front() const { return head; };
 
+template<class T>
 T& list<T>::back() { return tail; };
+
+template<class T>
 const T& list<T>::back() const { return tail; };
 
-
+template<class T>
 iterator list<T>::begin() const { return iterator(head); }
+
+template<class T>
 iterator list<T>::end() const {return iterator(tail);}
 
+template<class T>
 const_iterator list<T>::cbegin() const { return const_iterator(head); }
+
+template<class T>
 const_iterator list<T>::cend() const { return const_iterator(end); }
 
+template<class T>
 reverse_iterator list<T>::rbegin() const { return reverse_iterator(head); }
+
+template<class T>
 reverse_iterator list<T>::rend() const { return reverse_iterator(end); }
 
+template<class T>
 const_reverse_iterator list<T>::crbegin() const { return const_reverse_iterator(head); }
+
+template<class T>
 const_reverse_iterator list<T>::crend() const { return const_reverse_iterator(end); }
 
+template<class T>
+bool list<T>::empty() const { return length == 0; }
 
-bool list<T>::empty() const { return size == 0; }
-size_t list<T>::size() const { return size; }
+template<class T>
+size_t list<T>::size() const { return length; }
+
+template<class T>
 size_t list<T>::max_size() const { return 1000000; };
+
+template<class T>
 void list<T>::clear();
 
+template<class T>
 iterator list<T>::insert(const_iterator pos, const T& value) {
     list_node *new_node = new list_node(value);
     pos->current
 }
+
+template<class T>
 iterator list<T>::insert(const_iterator pos, size_t count, const T& value);
 
+template<class T>
 iterator list<T>::erase(const_iterator pos);
+
+template<class T>
 iterator list<T>::erase(const_iterator first, const_iterator last);
 
-
+template<class T>
 list<T>::push_back(const T& value) {
     if (head == nullptr) {
         head = new list_node(data);
@@ -247,6 +289,7 @@ list<T>::push_back(const T& value) {
     }
 }
 
+template<class T>
 void list<T>::pop_back() {
     if (tail == nullptr) {
         return;
@@ -255,6 +298,7 @@ void list<T>::pop_back() {
     }
 }
 
+template<class T>
 list<T>::push_front(const T& value) {
     if (head == nullptr) {
         head = new list_node(data);
@@ -265,6 +309,7 @@ list<T>::push_front(const T& value) {
     }
 }
 
+template<class T>
 void list<T>::pop_front() {
     if (head == nullptr) {
         return;
@@ -273,12 +318,15 @@ void list<T>::pop_front() {
     }
 }
 
+template<class T>
 void resize(size_t count){return;};
 void swap(list& other){return;};
 
 
 void merge(list& other) {return;};
 void splice(const_iterator pos, list& other){return;};
+
+template<class T>
 void remove(const T& value){return;};
 void reverse(){return;};
 void unique(){return;};

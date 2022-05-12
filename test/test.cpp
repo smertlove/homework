@@ -25,8 +25,8 @@ bool TossCoin() {
 }
 
 
-template <class T>
-void RandomFill(T& container, size_t count, size_t max = -1) {
+template <class U>
+void RandomFill(U& container, size_t count, size_t max = -1) {
     while (count > 0) {
         container.push_back(RandomUInt(max));
         --count;
