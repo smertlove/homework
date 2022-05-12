@@ -41,28 +41,75 @@ public:
         using reference = T&;
         using iterator_category = std::bidirectional_iterator_tag;
 
-        iterator();
-        iterator(const iterator &other);
-        iterator& operator=(const iterator &other);
+        iterator() { current = nullptr; }
+        iterator(const iterator &other) { *this = other; }
+        iterator& operator=(const iterator &other) { return iterator(other); }
 
-        iterator& operator++();
-        iterator operator++(int);
-        reference operator*() const;
-        pointer operator->() const;
-        iterator& operator--();
-        iterator operator--(int);
+        iterator& operator++() {
+            current = current->next;
+            return *this;
+        }
+        iterator operator++(int) {
+            iterator old = *this;
+            current = current->next;
+            return old;
+        }
+        reference operator*() const { return &current; }
+        pointer operator->() const { return *current; }
+        iterator& operator--() {
+            current = current->prev;
+            return *this;
+        }
+        iterator operator--(int) {
+            iterator old = *this;
+            current = current->prev;
+            return old;
+        }
 
-        bool operator==(iterator other) const;
-        bool operator!=(iterator other) const;
+        bool operator==(iterator other) const { return current == other->current ? true : false; }
+        bool operator!=(iterator other) const { return !((*this) == other); }
 
-        // Your code goes here?..
-
-    
     };
 
-    // class const_iterator {
-    //     // Your code goes here...
-    // };
+    class const_iterator {
+    private:
+        list_node<T> *current;
+
+    public:
+        using difference_type = ptrdiff_t;
+        using value_type = T;
+        using pointer = T*;
+        using reference = T&;
+        using iterator_category = std::bidirectional_iterator_tag;
+
+        const_iterator() { current = nullptr; }
+        const_iterator(const const_iterator &other) { *this = other; }
+        const_iterator& operator=(const const_iterator &other) { return const_iterator(other); }
+
+        const_iterator& operator++() {
+            current = current->next;
+            return *this;
+        }
+        const_iterator operator++(int) {
+            iterator old = *this;
+            current = current->next;
+            return old;
+        }
+        reference operator*() const { return &current; }
+        pointer operator->() const { return *current; }
+        const_iterator& operator--() {
+            current = current->prev;
+            return *this;
+        }
+        const_iterator operator--(int) {
+            const_iterator old = *this;
+            current = current->prev;
+            return old;
+        }
+
+        bool operator==(const_iterator other) const { return current == other->current ? true : false; }
+        bool operator!=(const_iterator other) const { return !((*this) == other); }
+    };
 
     using reverse_iterator = std::reverse_iterator<iterator>;
     using const_reverse_iterator = std::reverse_iterator<const_iterator>;
@@ -129,56 +176,6 @@ public:
 
 };
 
-/*********** iterator ***********/
-
-list<class T>::iterator::iterator() {
-    current = nullptr;
-}
-
-list<class T>::iterator::iterator(const iterator &other) {
-    *this = other;
-}
-iterator& list<class T>::iterator::operator=(const iterator &other) {
-    return iterator(other);
-}
-
-iterator& list<class T>::iterator::operator++() {
-    current = current->next;
-    return *this;
-}
-
-iterator list<class T>::iterator::operator++(int) {
-    iterator old = *this;
-    current = current->next;
-    return old;
-}
-
-reference list<class T>::iterator::operator*() const {
-    return *current;
-}
-
-pointer list<class T>::iterator::operator->() const {
-    return &current;
-}
-
-iterator& list<class T>::iterator::operator--() {
-    current = current->prev;
-    return *this;
-}
-
-iterator list<class T>::iterator::operator--(int) {
-    iterator old = *this;
-    current = current->prev;
-    return old;
-}
-
-bool list<class T>::iterator::operator==(iterator other) const {
-    return current == other->current ? true : false;
-}
-bool list<class T>::iterator::operator!=(iterator other) const {
-    return !((*this) == other);
-}
-
 /*********** list ***********/
 
 list<T>::list() {
@@ -187,43 +184,57 @@ list<T>::list() {
     tail = nullptr;
 }
 
-list(size_t count, const T& value);
-explicit list(size_t count);
-~list();
+list<T>::list(size_t count, const T& value) {
+    list();
+    for (size_t i = 0; i < count; i++) {
+        push_back(value);
+    }
+}
+explicit list<T>::list(size_t count) {
+    list(count, T())
+}
+list<T>::~list() {
+    while (head != nullptr) {
+        pop_back();
+    }
+}
 
-list(const list& other);
-list& operator=(const list& other);
+list<T>::list(const list& other);
+list<T>::list& operator=(const list& other);
 
-T& front() { return head; };
-const T& front() const { return head; };
+T& list<T>::front() { return head; };
+const T& list<T>::front() const { return head; };
 
-T& back() { return tail; };
-const T& back() const { return tail; };
-
-
-iterator begin() const;
-iterator end() const;
-
-const_iterator cbegin() const;
-const_iterator cend() const;
-
-reverse_iterator rbegin() const;
-reverse_iterator rend() const;
-
-const_reverse_iterator crbegin() const;
-const_reverse_iterator crend() const;
+T& list<T>::back() { return tail; };
+const T& list<T>::back() const { return tail; };
 
 
-bool empty() const;
-size_t size() const;
-size_t max_size() const;
-void clear();
+iterator list<T>::begin() const { return iterator(head); }
+iterator list<T>::end() const {return iterator(tail);}
 
-iterator insert(const_iterator pos, const T& value);
-iterator insert(const_iterator pos, size_t count, const T& value);
+const_iterator list<T>::cbegin() const { return const_iterator(head); }
+const_iterator list<T>::cend() const { return const_iterator(end); }
 
-iterator erase(const_iterator pos);
-iterator erase(const_iterator first, const_iterator last);
+reverse_iterator list<T>::rbegin() const { return reverse_iterator(head); }
+reverse_iterator list<T>::rend() const { return reverse_iterator(end); }
+
+const_reverse_iterator list<T>::crbegin() const { return const_reverse_iterator(head); }
+const_reverse_iterator list<T>::crend() const { return const_reverse_iterator(end); }
+
+
+bool list<T>::empty() const { return size == 0; }
+size_t list<T>::size() const { return size; }
+size_t list<T>::max_size() const { return 1000000; };
+void list<T>::clear();
+
+iterator list<T>::insert(const_iterator pos, const T& value) {
+    list_node *new_node = new list_node(value);
+    pos->current
+}
+iterator list<T>::insert(const_iterator pos, size_t count, const T& value);
+
+iterator list<T>::erase(const_iterator pos);
+iterator list<T>::erase(const_iterator first, const_iterator last);
 
 
 list<T>::push_back(const T& value) {
