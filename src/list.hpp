@@ -211,7 +211,7 @@ list<T>::list(const list& other) {
 };
 
 template<class T>
-list<T>::list& operator=(const list& other) {
+list<T>& list<T>::operator=(const list<T>& other) {
     *this = other;
 }
 
@@ -228,28 +228,28 @@ template<class T>
 const T& list<T>::back() const { return tail; };
 
 template<class T>
-iterator list<T>::begin() const { return iterator(head); }
+list<T>::iterator list<T>::begin() const { return iterator(head); }
 
 template<class T>
-iterator list<T>::end() const {return iterator(tail);}
+list<T>::iterator list<T>::end() const {return iterator(tail);}
 
 template<class T>
-const_iterator list<T>::cbegin() const { return const_iterator(head); }
+list<T>::const_iterator list<T>::cbegin() const { return const_iterator(head); }
 
 template<class T>
-const_iterator list<T>::cend() const { return const_iterator(end); }
+list<T>::const_iterator list<T>::cend() const { return const_iterator(end); }
 
 template<class T>
-reverse_iterator list<T>::rbegin() const { return reverse_iterator(head); }
+list<T>::reverse_iterator list<T>::rbegin() const { return reverse_iterator(head); }
 
 template<class T>
-reverse_iterator list<T>::rend() const { return reverse_iterator(end); }
+list<T>::reverse_iterator list<T>::rend() const { return reverse_iterator(end); }
 
 template<class T>
-const_reverse_iterator list<T>::crbegin() const { return const_reverse_iterator(head); }
+list<T>::const_reverse_iterator list<T>::crbegin() const { return const_reverse_iterator(head); }
 
 template<class T>
-const_reverse_iterator list<T>::crend() const { return const_reverse_iterator(end); }
+list<T>::const_reverse_iterator list<T>::crend() const { return const_reverse_iterator(end); }
 
 template<class T>
 bool list<T>::empty() const { return length == 0; }
@@ -264,22 +264,22 @@ template<class T>
 void list<T>::clear();
 
 template<class T>
-iterator list<T>::insert(const_iterator pos, const T& value) {
+list<T>::iterator list<T>::insert(const_iterator pos, const T& value) {
     list_node *new_node = new list_node(value);
     pos->current
 }
 
 template<class T>
-iterator list<T>::insert(const_iterator pos, size_t count, const T& value);
+list<T>::iterator list<T>::insert(const_iterator pos, size_t count, const T& value);
 
 template<class T>
-iterator list<T>::erase(const_iterator pos);
+list<T>::iterator list<T>::erase(const_iterator pos);
 
 template<class T>
-iterator list<T>::erase(const_iterator first, const_iterator last);
+list<T>::iterator list<T>::erase(const_iterator first, const_iterator last);
 
 template<class T>
-list<T>::push_back(const T& value) {
+void list<T>::push_back(const T& value) {
     if (head == nullptr) {
         head = new list_node(data);
         tail = head;
@@ -299,7 +299,7 @@ void list<T>::pop_back() {
 }
 
 template<class T>
-list<T>::push_front(const T& value) {
+void list<T>::push_front(const T& value) {
     if (head == nullptr) {
         head = new list_node(data);
         tail = head;
@@ -319,18 +319,23 @@ void list<T>::pop_front() {
 }
 
 template<class T>
-void resize(size_t count){return;};
-void swap(list& other){return;};
-
-
-void merge(list& other) {return;};
-void splice(const_iterator pos, list& other){return;};
+void list<T>::resize(size_t count){return;};
+template<class T>
+void list<T>::swap(list<T>& other){return;};
 
 template<class T>
-void remove(const T& value){return;};
-void reverse(){return;};
-void unique(){return;};
-void sort(){return;};
+void list<T>::merge(list<T>& other) {return;};
+template<class T>
+void list<T>::splice(const_iterator pos, list& other){return;};
+
+template<class T>
+void list<T>::remove(const T& value){return;};
+template<class T>
+void list<T>::reverse(){return;};
+template<class T>
+void list<T>::unique(){return;};
+template<class T>
+void list<T>::sort(){return;};
 
 
 
