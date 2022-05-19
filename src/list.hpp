@@ -13,15 +13,11 @@ protected:  // NOTE (Kirill Soloshenko) changed private to protected
     template<class U>
     class list_node {
         public:
+            U data;
             class list_node *next;
             class list_node *prev;
-            U data;
 
-            list_node(const U val=U(), list_node *next_node=nullptr, list_node *prev_node=nullptr) {
-                data = val;
-                next = next_node;
-                prev = prev_node;
-            }
+            list_node(U& val=U(), list_node *next_node=nullptr, list_node *prev_node=nullptr) : data(val), next(next_node), prev(prev_node) { }
         };
 
     list_node<T> *head;
@@ -41,12 +37,11 @@ public:
         using reference = T&;
         using iterator_category = std::bidirectional_iterator_tag;
 
-        iterator() { current = nullptr; }
+        iterator() { current = head; }
         iterator(const iterator &other) { *this = other; }
         iterator& operator=(const iterator &other) {
-            // iterator it = iterator();
-            // it.current = other.current;
-            // return it;
+            current = other.current;
+            return *this;
         }
 
         iterator& operator++() {
@@ -57,6 +52,12 @@ public:
             iterator old = *this;
             current = current->next;
             return old;
+        }
+        iterator& operator+(size_t val) {
+            for (size_t i = 0; i < val; i++) {
+                current = current->next;
+            }
+            return *this;
         }
         reference operator*() const { return current; }
         pointer operator->() const { return current; }
@@ -86,10 +87,12 @@ public:
         using reference = T&;
         using iterator_category = std::bidirectional_iterator_tag;
 
-        const_iterator() { current = nullptr; }
+        const_iterator() { current = head; }
         const_iterator(const const_iterator &other) { *this = other; }
-        const_iterator& operator=(const const_iterator &other) { return const_iterator(other); }
-
+        iterator& operator=(const iterator &other) {
+            current = other.current;
+            return *this;
+        }
         const_iterator& operator++() {
             current = current->next;
             return *this;
@@ -98,6 +101,12 @@ public:
             iterator old = *this;
             current = current->next;
             return old;
+        }
+        const_iterator& operator+(size_t val) {
+            for (size_t i = 0; i < val; i++) {
+                current = current->next;
+            }
+            return *this;
         }
         reference operator*() const { return current; }
         pointer operator->() const { return current; }
@@ -152,10 +161,13 @@ public:
     void clear();
 
     iterator insert(const_iterator pos, const T& value);
+    iterator insert(iterator pos, const T& value);
     iterator insert(const_iterator pos, size_t count, const T& value);
+    iterator insert(iterator pos, size_t count, const T& value);
 
     iterator erase(const_iterator pos);
     iterator erase(const_iterator first, const_iterator last);
+    iterator erase(iterator first, iterator last);
 
 
     void push_back(const T& value);
@@ -170,6 +182,7 @@ public:
 
     void merge(list& other);
     void splice(const_iterator pos, list& other);
+    void splice(iterator pos, list& other);
     void remove(const T& value);
     void reverse();
     void unique();
@@ -200,11 +213,12 @@ list<T>::~list() {
 
 template<class T>
 void list<T>::push_back(const T& value) {
+    T temp = value;
     if (head == nullptr) {
-        head = new list_node<T>(value);
+        head = new list_node<T>(temp);
         tail = head;
     } else {
-        tail->next = new list_node<T>(value, nullptr, tail);
+        tail->next = new list_node<T>(temp, nullptr, tail);
         tail = tail->next;
     }
 }
@@ -225,44 +239,47 @@ list<T>::list(const list& other) {
 
 template<class T>
 list<T>& list<T>::operator=(const list<T>& other) {
-    *this = other;
+    head = other.head;
+    tail = other.tail;
+    length = other.length;
+    return *this;
 }
 
 template<class T>
-T& list<T>::front() { return head; };
+T& list<T>::front() { return head->data; };
 
 template<class T>
-const T& list<T>::front() const { return head; };
+const T& list<T>::front() const { return head->data; };
 
 template<class T>
-T& list<T>::back() { return tail; };
+T& list<T>::back() { return tail->data; };
 
 template<class T>
-const T& list<T>::back() const { return tail; };
+const T& list<T>::back() const { return tail->data; };
 
 template<class T>
-typename list<T>::iterator list<T>::begin() const { return iterator(head); }
+typename list<T>::iterator list<T>::begin() const { return iterator(); }
 
 template<class T>
-typename list<T>::iterator list<T>::end() const {return iterator(tail);}
+typename list<T>::iterator list<T>::end() const {return iterator() + length;}
 
 template<class T>
-typename list<T>::const_iterator list<T>::cbegin() const { return const_iterator(head); }
+typename list<T>::const_iterator list<T>::cbegin() const { return const_iterator(); }
 
 template<class T>
-typename list<T>::const_iterator list<T>::cend() const { return const_iterator(end); }
+typename list<T>::const_iterator list<T>::cend() const { return const_iterator() + length; }
 
 template<class T>
-typename list<T>::reverse_iterator list<T>::rbegin() const { return reverse_iterator(head); }
+typename list<T>::reverse_iterator list<T>::rbegin() const { return reverse_iterator(); }
 
 template<class T>
-typename list<T>::reverse_iterator list<T>::rend() const { return reverse_iterator(end); }
+typename list<T>::reverse_iterator list<T>::rend() const { return reverse_iterator() + length; }
 
 template<class T>
-typename list<T>::const_reverse_iterator list<T>::crbegin() const { return const_reverse_iterator(head); }
+typename list<T>::const_reverse_iterator list<T>::crbegin() const { return const_reverse_iterator(); }
 
 template<class T>
-typename list<T>::const_reverse_iterator list<T>::crend() const { return const_reverse_iterator(end); }
+typename list<T>::const_reverse_iterator list<T>::crend() const { return const_reverse_iterator() + length; }
 
 template<class T>
 bool list<T>::empty() const { return length == 0; }
@@ -283,11 +300,12 @@ void list<T>::clear() {
 
 template<class T>
 void list<T>::push_front(const T& value) {
+    T temp = value;
     if (head == nullptr) {
-        head = new list_node<T>(value);
+        head = new list_node<T>(temp);
         tail = head;
     } else {
-        head->prev = new list_node<T>(value, head);
+        head->prev = new list_node<T>(temp, head);
         head = head->prev;
     }
 }
@@ -320,14 +338,25 @@ typename list<T>::iterator list<T>::insert(const_iterator pos, size_t count, con
     return pos;
 }
 
-// template<class T>
-// typename list<T>::iterator list<T>::insert(iterator pos, size_t count, const T& value) {
-//     const_iterator pos_next = pos + 1;
-//     for (size_t i = 0; i < count; i++) {
-//         pos = insert(pos, value);
-//     }
-//     return pos;
-// }
+template<class T>
+typename list<T>::iterator list<T>::insert(iterator pos, const T& value) {
+    T temp = value;
+    iterator pos_next = pos + 1;
+    list_node<T> new_node = list_node<T>(temp);
+    *pos->next = new_node;
+    pos_next.current->prev = new_node;
+    ++pos;
+    return pos;
+}
+
+template<class T>
+typename list<T>::iterator list<T>::insert(iterator pos, size_t count, const T& value) {
+    iterator pos_next = pos + 1;
+    for (size_t i = 0; i < count; i++) {
+        pos = insert(pos, value);
+    }
+    return pos;
+}
 
 template<class T>
 typename list<T>::iterator list<T>::erase(const_iterator pos) {
@@ -339,6 +368,14 @@ typename list<T>::iterator list<T>::erase(const_iterator pos) {
 
 template<class T>
 typename list<T>::iterator list<T>::erase(const_iterator first, const_iterator last) {
+    first.current->prev->next = last.current;
+    last.current->prev = first.current->prev;
+    --first;
+    return first;
+}
+
+template<class T>
+typename list<T>::iterator list<T>::erase(iterator first, iterator last) {
     first.current->prev->next = last.current;
     last.current->prev = first.current->prev;
     --first;
@@ -367,6 +404,8 @@ template<class T>
 void list<T>::merge(list<T>& other) {return;};
 template<class T>
 void list<T>::splice(const_iterator pos, list& other){return;};
+template<class T>
+void list<T>::splice(iterator pos, list& other){return;};
 
 template<class T>
 void list<T>::remove(const T& value){return;};
