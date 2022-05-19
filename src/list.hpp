@@ -17,7 +17,7 @@ protected:  // NOTE (Kirill Soloshenko) changed private to protected
             class list_node *prev;
             U data;
 
-            list_node(U val=U(), list_node *next_node=nullptr, list_node *prev_node=nullptr) {
+            list_node(const U val=U(), list_node *next_node=nullptr, list_node *prev_node=nullptr) {
                 data = val;
                 next = next_node;
                 prev = prev_node;
@@ -43,7 +43,11 @@ public:
 
         iterator() { current = nullptr; }
         iterator(const iterator &other) { *this = other; }
-        iterator& operator=(const iterator &other) { return iterator(other); }
+        iterator& operator=(const iterator &other) {
+            // iterator it = iterator();
+            // it.current = other.current;
+            // return it;
+        }
 
         iterator& operator++() {
             current = current->next;
@@ -66,7 +70,7 @@ public:
             return old;
         }
 
-        bool operator==(iterator other) const { return current == other->current}
+        bool operator==(iterator other) const { return current == other->current; }
         bool operator!=(iterator other) const { return !((*this) == other); }
 
     };
@@ -107,7 +111,7 @@ public:
             return old;
         }
 
-        bool operator==(const_iterator other) const { return current == other->current}
+        bool operator==(const_iterator other) const { return current == other->current; }
         bool operator!=(const_iterator other) const { return (*this) != other; }
     };
 
@@ -180,17 +184,14 @@ list<T>::list() {
 }
 
 template<class T>
-list<T>::list(size_t count, const T& value) {
-    list();
+list<T>::list(size_t count, const T& value) : list() {
     for (size_t i = 0; i < count; i++) {
         push_back(value);
     }
 }
 
 template<class T>
-list<T>::list(size_t count) {
-    list(count, T());
-}
+list<T>::list(size_t count) : list(count, T()) { }
 
 template<class T>
 list<T>::~list() {
@@ -306,7 +307,7 @@ typename list<T>::iterator list<T>::insert(const_iterator pos, const T& value) {
     list_node<T> new_node = new list_node<T>(value);
     pos.current->next = new_node;
     pos_next.current->prev = new_node;
-    pos++;
+    ++pos;
     return pos;
 }
 
@@ -319,11 +320,20 @@ typename list<T>::iterator list<T>::insert(const_iterator pos, size_t count, con
     return pos;
 }
 
+// template<class T>
+// typename list<T>::iterator list<T>::insert(iterator pos, size_t count, const T& value) {
+//     const_iterator pos_next = pos + 1;
+//     for (size_t i = 0; i < count; i++) {
+//         pos = insert(pos, value);
+//     }
+//     return pos;
+// }
+
 template<class T>
 typename list<T>::iterator list<T>::erase(const_iterator pos) {
     pos.current->prev->next = pos.current->next;
     pos.current->next->prev = pos.current->prev;
-    pos--;
+    --pos;
     return pos;
 }
 
@@ -331,7 +341,7 @@ template<class T>
 typename list<T>::iterator list<T>::erase(const_iterator first, const_iterator last) {
     first.current->prev->next = last.current;
     last.current->prev = first.current->prev;
-    first--;
+    --first;
     return first;
 }
 
