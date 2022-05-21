@@ -26,12 +26,12 @@ protected:  // NOTE (Kirill Soloshenko) changed private to protected
 
             void rlink(list_node<U> *node) {
                 next = node;
-                node->llink(this);
+                node->prev = this;
             }
             
             void llink(list_node<U> *node) {
                 prev = node;
-                node->rlink(this);
+                node->next = this;
             }
 
             void link(list_node<U> *left, list_node<U> *right) {
