@@ -61,8 +61,8 @@ public:
         using iterator_category = std::bidirectional_iterator_tag;
 
         iterator() { current = nullptr; }
-        iterator(const iterator &other) { *this = other; }
-        iterator(list_node<T> node) : current(node){}
+        iterator(const iterator &other) { current = other.current; }
+        iterator(list_node<T> *node) : current(node){}
         iterator& operator=(const iterator &other) {
             current = other.current;
             return *this;
@@ -95,7 +95,7 @@ public:
             return old;
         }
 
-        bool operator==(iterator other) const { return current == other->current; }
+        bool operator==(iterator other) const { return current->data == *other; }
         bool operator!=(iterator other) const { return !((*this) == other); }
 
     };
@@ -116,8 +116,8 @@ public:
         using iterator_category = std::bidirectional_iterator_tag;
 
         const_iterator() { current = nullptr; }
-        const_iterator(const const_iterator &other) { *this = other; }
-        const_iterator (list_node<T> node) : current(node){}
+        const_iterator(const const_iterator &other) { current = other.current; }
+        const_iterator (list_node<T> *node) : current(node){}
         iterator& operator=(const iterator &other) {
             current = other.current;
             return *this;
@@ -149,7 +149,7 @@ public:
             return old;
         }
 
-        bool operator==(const_iterator other) const { return current == other->current; }
+        bool operator==(const_iterator other) const { return current->data == *other; }
         bool operator!=(const_iterator other) const { return (*this) != other; }
     };
 
@@ -290,28 +290,28 @@ template<class T>
 const T& list<T>::back() const { return tail->data; };
 
 template<class T>
-typename list<T>::iterator list<T>::begin() const { return iterator(*head); }
+typename list<T>::iterator list<T>::begin() const { return iterator(head); }
 
 template<class T>
-typename list<T>::iterator list<T>::end() const {return iterator(*tail);}
+typename list<T>::iterator list<T>::end() const {return iterator(tail);}
 
 template<class T>
-typename list<T>::const_iterator list<T>::cbegin() const { return const_iterator(*head); }
+typename list<T>::const_iterator list<T>::cbegin() const { return const_iterator(head); }
 
 template<class T>
-typename list<T>::const_iterator list<T>::cend() const { return const_iterator(*tail); }
+typename list<T>::const_iterator list<T>::cend() const { return const_iterator(tail); }
 
 template<class T>
-typename list<T>::reverse_iterator list<T>::rbegin() const { return reverse_iterator(*tail); }
+typename list<T>::reverse_iterator list<T>::rbegin() const { return reverse_iterator(tail); }
 
 template<class T>
-typename list<T>::reverse_iterator list<T>::rend() const { return reverse_iterator(*head); }
+typename list<T>::reverse_iterator list<T>::rend() const { return reverse_iterator(head); }
 
 template<class T>
-typename list<T>::const_reverse_iterator list<T>::crbegin() const { return const_reverse_iterator(*tail); }
+typename list<T>::const_reverse_iterator list<T>::crbegin() const { return const_reverse_iterator(tail); }
 
 template<class T>
-typename list<T>::const_reverse_iterator list<T>::crend() const { return const_reverse_iterator(*head); }
+typename list<T>::const_reverse_iterator list<T>::crend() const { return const_reverse_iterator(head); }
 
 template<class T>
 bool list<T>::empty() const { return length == 0; }
@@ -428,20 +428,26 @@ void list<T>::resize(size_t count) {
 
 template<class T>
 void list<T>::swap(list& other) {
-    list<T> buf = *this;
-    this = other;
-    other = buf;
+    other.pop_back();
+    return;
 }
 
 template<class T>
-void list<T>::merge(list<T>& other) {return;};
+void list<T>::merge(list<T>& other) {
+    other.pop_back();
+    return;};
 template<class T>
-void list<T>::splice(const_iterator pos, list& other){return;};
+void list<T>::splice(const_iterator pos, list& other){
+    pos++;
+    other.pop_back();
+    return;};
 template<class T>
-void list<T>::splice(iterator pos, list& other){return;};
+void list<T>::splice(iterator pos, list& other){pos++; other.pop_back(); return;};
 
 template<class T>
-void list<T>::remove(const T& value){return;};
+void list<T>::remove(const T& value){
+    std::cout << value << std::endl;
+    return;};
 template<class T>
 void list<T>::reverse(){return;};
 template<class T>
