@@ -1,6 +1,5 @@
 #include <iterator>
 
-// wsl gcc test.hpp -std=c++17 -g -fdiagnostics-color -O0 -Wall -Wextra -Werror -I. 
 
 namespace task {
 
@@ -18,6 +17,28 @@ protected:  // NOTE (Kirill Soloshenko) changed private to protected
             class list_node *prev;
 
             list_node(U& val=U(), list_node *next_node=nullptr, list_node *prev_node=nullptr) : data(val), next(next_node), prev(prev_node) { }
+            ~list_node() { ~U(); }
+
+            void unlink() {
+                next->prev = prev;
+                prev->next = next;
+            }
+
+            void rlink(list_node<U> *node) {
+                next = node;
+                node->llink(this);
+            }
+            
+            void llink(list_node<U> *node) {
+                prev = node;
+                node->rlink(this);
+            }
+
+            void link(list_node<U> *left, list_node<U> *right) {
+                llink(left);
+                rlink(right);
+            }
+
         };
 
     list_node<T> *head;
@@ -26,18 +47,22 @@ protected:  // NOTE (Kirill Soloshenko) changed private to protected
 
 public:
     class iterator {
-
+        friend list<T>::iterator list<T>::insert(iterator pos, const T& value);
+        friend list<T>::iterator list<T>::erase(iterator first, iterator last);
     private:
         list_node<T> *current;
 
+
     public:
+        
+
         using difference_type = ptrdiff_t;
         using value_type = T;
         using pointer = T*;
         using reference = T&;
         using iterator_category = std::bidirectional_iterator_tag;
 
-        iterator() { current = head; }
+        iterator() { current = nullptr; }
         iterator(const iterator &other) { *this = other; }
         iterator& operator=(const iterator &other) {
             current = other.current;
@@ -59,8 +84,8 @@ public:
             }
             return *this;
         }
-        reference operator*() const { return current; }
-        pointer operator->() const { return current; }
+        reference operator*() const { return current->data; }
+        pointer operator->() const { return current->data; }
         iterator& operator--() {
             current = current->prev;
             return *this;
@@ -77,17 +102,21 @@ public:
     };
 
     class const_iterator {
+        friend list<T>::iterator list<T>::insert(iterator pos, const T& value);
+        friend list<T>::iterator list<T>::erase(iterator first, iterator last);
     private:
         list_node<T> *current;
 
     public:
+        // list_node<T> *current;
+
         using difference_type = ptrdiff_t;
         using value_type = T;
         using pointer = T*;
         using reference = T&;
         using iterator_category = std::bidirectional_iterator_tag;
 
-        const_iterator() { current = head; }
+        const_iterator() { current = nullptr; }
         const_iterator(const const_iterator &other) { *this = other; }
         iterator& operator=(const iterator &other) {
             current = other.current;
@@ -108,8 +137,8 @@ public:
             }
             return *this;
         }
-        reference operator*() const { return current; }
-        pointer operator->() const { return current; }
+        reference operator*() const { return current->data; }
+        pointer operator->() const { return current->data; }
         const_iterator& operator--() {
             current = current->prev;
             return *this;
@@ -218,17 +247,20 @@ void list<T>::push_back(const T& value) {
         head = new list_node<T>(temp);
         tail = head;
     } else {
-        tail->next = new list_node<T>(temp, nullptr, tail);
-        tail = tail->next;
+        tail->rlink(new list_node<T>(temp, nullptr, tail));
     }
+    ++length;
 }
 
 template<class T>
 void list<T>::pop_back() {
-    if (tail == nullptr) {
+    if (!length) {
         return;
     } else {
+        list_node<T> *temp = tail;
         tail = tail->prev;
+        delete temp;
+        --length;
     }
 }
 
@@ -261,25 +293,25 @@ template<class T>
 typename list<T>::iterator list<T>::begin() const { return iterator(); }
 
 template<class T>
-typename list<T>::iterator list<T>::end() const {return iterator() + length;}
+typename list<T>::iterator list<T>::end() const {return begin() + length;}
 
 template<class T>
 typename list<T>::const_iterator list<T>::cbegin() const { return const_iterator(); }
 
 template<class T>
-typename list<T>::const_iterator list<T>::cend() const { return const_iterator() + length; }
+typename list<T>::const_iterator list<T>::cend() const { return cbegin() + length; }
 
 template<class T>
 typename list<T>::reverse_iterator list<T>::rbegin() const { return reverse_iterator(); }
 
 template<class T>
-typename list<T>::reverse_iterator list<T>::rend() const { return reverse_iterator() + length; }
+typename list<T>::reverse_iterator list<T>::rend() const { return rbegin() + length; }
 
 template<class T>
 typename list<T>::const_reverse_iterator list<T>::crbegin() const { return const_reverse_iterator(); }
 
 template<class T>
-typename list<T>::const_reverse_iterator list<T>::crend() const { return const_reverse_iterator() + length; }
+typename list<T>::const_reverse_iterator list<T>::crend() const { return crbegin() + length; }
 
 template<class T>
 bool list<T>::empty() const { return length == 0; }
@@ -292,10 +324,7 @@ size_t list<T>::max_size() const { return 1000000; };
 
 template<class T>
 void list<T>::clear() {
-    while (head != nullptr) {
-        pop_back();
-    }
-    length = 0;
+    while (length) { pop_back(); }
 }
 
 template<class T>
@@ -342,16 +371,14 @@ template<class T>
 typename list<T>::iterator list<T>::insert(iterator pos, const T& value) {
     T temp = value;
     iterator pos_next = pos + 1;
-    list_node<T> new_node = list_node<T>(temp);
-    *pos->next = new_node;
-    pos_next.current->prev = new_node;
+    list_node<T> *new_node = new list_node<T>(temp);
+    new_node->link(pos.current, pos_next.current);
     ++pos;
     return pos;
 }
 
 template<class T>
 typename list<T>::iterator list<T>::insert(iterator pos, size_t count, const T& value) {
-    iterator pos_next = pos + 1;
     for (size_t i = 0; i < count; i++) {
         pos = insert(pos, value);
     }
