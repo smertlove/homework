@@ -25,8 +25,8 @@ bool TossCoin() {
 }
 
 
-template <class T>
-void RandomFill(T& container, size_t count, size_t max = -1) {
+template <class U>
+void RandomFill(U& container, size_t count, size_t max = -1) {
     while (count > 0) {
         container.push_back(RandomUInt(max));
         --count;
@@ -51,66 +51,134 @@ void FailWithMsg(const std::string& msg, int line) {
 
 
 int main() {
+    std::cout << "Start tests" << std::endl;
 
     {
         task::list<int> list;
+        std::cout << "1.1" << std::endl;
         list.push_back(42);
+        std::cout << "1.2" << std::endl;
         ASSERT_TRUE(list.size() == 1)
+        std::cout << "1.3" << std::endl;
         list.push_back(2);
+        std::cout << "1.4" << std::endl;
         list.pop_front();
+        std::cout << "1.5" << std::endl;
         ASSERT_TRUE(list.front() == 2)
+        std::cout << "1.6   " << list.size() << std::endl;
         list.pop_back();
+        std::cout << "1.7" << std::endl;
         ASSERT_TRUE(list.empty())
+        std::cout << "1.8: end 1st test" << std::endl;
     }
-
+    std::cout << "1: OK" << std::endl;
 
     {
         task::list<std::string> list;
+        std::cout << "2.1" << std::endl;
         list.push_front("test");
+        std::cout << "2.2" << std::endl;
         ASSERT_TRUE(!list.empty())
+        std::cout << "2.3" << std::endl;
         list.push_front("test2");
+        std::cout << "2.4" << std::endl;
         ASSERT_TRUE(list.back() == "test")
+        std::cout << "2.5   " << list.size() << std::endl;
         list.clear();
+        std::cout << "2.6   " << list.size() << std::endl;
         list.clear();
+        std::cout << "2.7" << std::endl;
         ASSERT_TRUE(list.size() == 0)
+        std::cout << "2.8" << std::endl;
         list.resize(10);
+        std::cout << "2.9" << std::endl;
         ASSERT_TRUE(list.size() == 10)
+        std::cout << "2.10" << std::endl;
         ASSERT_TRUE(list.back() == "")
+        std::cout << "2.11: finish test" << std::endl;
     }
-
+    std::cout << "2: OK" << std::endl;
     {
         const task::list<int> list(5);
+        std::cout << "3.1" << std::endl;
         ASSERT_TRUE(list.front() == int())
+        std::cout << "3.2" << std::endl;
         ASSERT_TRUE(list.back() == int())
+        std::cout << "3.3" << std::endl;
     }
-
+    std::cout << "3: OK" << std::endl;
     {
         task::list<size_t> list_task(10, 30);
+        std::cout << "3.4" << std::endl;
         std::list<size_t> list_std(10, 30);
+        std::cout << "3.5   " << list_std.size() << "  " << list_task.size() <<  std::endl;
+        std::cout << "3.5   " << list_std.front() << "  " << list_task.front() <<  std::endl;
+        for ( std::list<size_t>::iterator it = list_std.begin(); it != list_std.end(); ++it)
+        {
+            std::cout << *it << " ";
+        }
+        std::cout << std::endl;
+        for ( task::list<size_t>::iterator it = list_task.begin(); it != list_task.end(); ++it)
+        {
+            std::cout << *it << " ";
+        }
+                std::cout << std::endl;
+
+        
         ASSERT_EQUAL_MSG(list_task, list_std, "Count-value constructor")
+        std::cout << "3.6" << std::endl;
 
         list_task.insert(list_task.begin(), 20);
+        std::cout << "3.7" << std::endl;
         list_std.insert(list_std.begin(), 20);
+        std::cout << "3.8" << std::endl;
 
         list_task.insert(list_task.end(), 10, 20);
-        list_std.insert(list_std.end(), 10, 20);
+        std::cout << "3.9" << std::endl;
+        list_std.insert(list_std.end(), 10, 20);std::cout << "3.10" << std::endl;
+        for ( std::list<size_t>::iterator it = list_std.begin(); it != list_std.end(); ++it)
+        {
+            std::cout << *it << " ";
+        }
+        std::cout << std::endl;
+        for ( task::list<size_t>::iterator it = list_task.begin(); it != list_task.end(); ++it)
+        {
+            std::cout << *it << " ";
+        }
+                std::cout << std::endl;
 
         ASSERT_EQUAL_MSG(list_task, list_std, "list::insert")
+        std::cout << "3.11" << std::endl;
 
         list_task.erase(list_task.begin(), std::next(list_task.begin(), 5));
-        list_std.erase(list_std.begin(), std::next(list_std.begin(), 5));
+        std::cout << "3.12" << std::endl;
+        list_std.erase(list_std.begin(), std::next(list_std.begin(), 5));std::cout << "3.13" << std::endl;
 
-        list_task.erase(std::prev(list_task.end(), 5), list_task.end());
-        list_std.erase(std::prev(list_std.end(), 5), list_std.end());
-
-        ASSERT_EQUAL_MSG(list_task, list_std, "list::erase")
+        list_task.erase(std::prev(list_task.end(), 5), list_task.end());std::cout << "3.14" << std::endl;
+        list_std.erase(std::prev(list_std.end(), 5), list_std.end());std::cout << "3.15" << std::endl;
+for ( std::list<size_t>::iterator it = list_std.begin(); it != list_std.end(); ++it)
+        {
+            std::cout << *it << " ";
+        }
+        std::cout << std::endl;
+        for ( task::list<size_t>::iterator it = list_task.begin(); it != list_task.end(); ++it)
+        {
+            std::cout << *it << " ";
+        }
+                std::cout << std::endl;
+        ASSERT_EQUAL_MSG(list_task, list_std, "list::erase")std::cout << "3.16" << std::endl;
     }
-
+    std::cout << "4: OK" << std::endl;
 
     {
         task::list<size_t> list;
         RandomFill(list, RandomUInt(1000, 5000));
         list.sort();
+        for ( task::list<size_t>::iterator it = list.begin(); it != list.end(); ++it)
+        {
+            std::cout << *it << std::endl;
+        }
+        std::cout << std::endl;
         ASSERT_TRUE(std::is_sorted(list.begin(), list.end()))
 
         task::list<size_t> list2 = list;
@@ -133,7 +201,7 @@ int main() {
         list = list2 = list3;
         ASSERT_EQUAL_MSG(list, list3, "Assignment operator")
     }
-
+    std::cout << "5: OK" << std::endl;
 
     {
         task::list<size_t> list_task;

@@ -21,13 +21,13 @@ function check_log() {
     fi
 }
 
-print_header "RUN cppcheck"
-check_log "cppcheck src test --enable=all --inconclusive --error-exitcode=1 -I. --suppress=missingIncludeSystem --suppress=noExplicitConstructor --suppress=unmatchedSuppression" "\(information\)"
+# print_header "RUN cppcheck"
+# check_log "cppcheck src test --enable=all --inconclusive --error-exitcode=1 -I. --suppress=missingIncludeSystem --suppress=noExplicitConstructor --suppress=unmatchedSuppression" "\(information\)"
 
 print_header "RUN clang-tidy"
 check_log "clang-tidy src/* -warnings-as-errors=* -- -x c++ -I. -std=c++17" "Error (?:reading|while processing)"
 
-print_header "RUN cpplint"
-check_log "cpplint --extensions=cpp src/*" "Can't open for reading"
+# print_header "RUN cpplint"
+# check_log "cpplint --extensions=cpp src/*" "Can't open for reading"
 
 print_header "SUCCESS"
