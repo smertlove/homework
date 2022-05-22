@@ -174,6 +174,11 @@ for ( std::list<size_t>::iterator it = list_std.begin(); it != list_std.end(); +
         task::list<size_t> list;
         RandomFill(list, RandomUInt(1000, 5000));
         list.sort();
+        for ( task::list<size_t>::iterator it = list.begin(); it != list.end(); ++it)
+        {
+            std::cout << *it << std::endl;
+        }
+        std::cout << std::endl;
         ASSERT_TRUE(std::is_sorted(list.begin(), list.end()))
 
         task::list<size_t> list2 = list;

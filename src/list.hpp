@@ -22,14 +22,16 @@ protected:  // NOTE (Kirill Soloshenko) changed private to protected
             void unlink() {
                 if (next != nullptr) next->prev = prev;
                 if (prev != nullptr) prev->next = next;
+                next = nullptr;
+                prev = nullptr;
             }
 
             void rlink(list_node<U> *node) {
-                (*this).uio();
+                // (*this).uio();
                 next = node;
-                node->uio();
+                // node->uio();
                 node->prev = this;
-                                std::cout << "next linked to this" << std::endl;
+                                // std::cout << "next linked to this" << std::endl;
 
             }
             
@@ -39,11 +41,19 @@ protected:  // NOTE (Kirill Soloshenko) changed private to protected
             }
 
             void link(list_node<U> *left, list_node<U> *right) {
-                std::cout << "enter link" << std::endl;
+                // std::cout << "enter link" << std::endl;
                 llink(left);
-                std::cout << "llink OK" << std::endl;
+                // std::cout << "llink OK" << std::endl;
                 rlink(right);
-                std::cout << "rlink OK" << std::endl;
+                // std::cout << "rlink OK" << std::endl;
+            }
+
+            void swap(list_node<U> *other) {
+                list_node<U> *temp = other;
+                other->next = next;
+                other->prev = prev;
+                next = temp->next;
+                prev = temp->prev;
             }
 
             void uio() {
@@ -61,6 +71,7 @@ public:
         friend list<T>::iterator list<T>::insert(iterator pos, const T& value);
         friend list<T>::iterator list<T>::erase(iterator first, iterator last);
         friend list<T>::iterator list<T>::erase(iterator pos);
+        friend void list<T>::sort();
     private:
         list_node<T> *current;
 
@@ -116,6 +127,7 @@ public:
         friend list<T>::iterator list<T>::insert(iterator pos, const T& value);
         friend list<T>::iterator list<T>::erase(iterator first, iterator last);
         friend list<T>::iterator list<T>::erase(iterator pos);
+        friend void list<T>::sort();
     private:
         list_node<T> *current;
 
@@ -393,19 +405,19 @@ typename list<T>::iterator list<T>::insert(iterator pos, const T& value) {
         return pos;
     }
     list_node<T> *new_node = new list_node<T>(temp);
-    std::cout << "create node" << std::endl;
+    // std::cout << "create node" << std::endl;
     new_node->link(pos.current->prev, pos.current);
-    std::cout << "link new node" << std::endl;
+    // std::cout << "link new node" << std::endl;
     ++length;
     return pos;
 }
 
 template<class T>
 typename list<T>::iterator list<T>::insert(iterator pos, size_t count, const T& value) {
-    std::cout << "enter chad insert" << std::endl;
+    // std::cout << "enter chad insert" << std::endl;
     for (size_t i = 0; i < count; i++) {
         pos = insert(pos, value);
-        std::cout << i << std::endl;
+        // std::cout << i << std::endl;
     }
     return pos;
 }
@@ -444,10 +456,10 @@ typename list<T>::iterator list<T>::erase(iterator pos) {
 
 template<class T>
 typename list<T>::iterator list<T>::erase(iterator first, iterator last) {
-    std::cout << "enter erase" << std::endl;
+    // std::cout << "enter erase" << std::endl;
     do {
         first = erase(first);
-        std::cout << "- - - - -" << std::endl;
+        // std::cout << "- - - - -" << std::endl;
     } while (first != last);
     
     return first;
@@ -490,7 +502,29 @@ template<class T>
 void list<T>::reverse(){return;};
 template<class T>
 void list<T>::unique(){return;};
+
+// пацанская пузырьковая сортировка
 template<class T>
-void list<T>::sort(){return;};
+void list<T>::sort() {
+    bool unsorted = true;
+    T least = front();
+    while (unsorted) {
+        unsorted = false;
+        // std::cout << "startloop" << std::endl;
+        for (iterator iter = begin(); iter != end(); iter++) {
+            // std::cout << "123" << std::endl;
+            if (*iter < least) {
+                unsorted = true;
+                list_node<T> *temp = iter.current;
+                iter--;
+                temp->unlink();
+                temp->rlink(head);
+                head = temp;
+                least = front();
+            }
+        }
+        // std::cout << "loop" << std::endl;
+    }
+}
 
 }  // namespace task
