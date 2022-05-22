@@ -232,6 +232,8 @@ public:
     void sort();
 };
 
+/******** list constructors ********/
+
 template<class T>
 list<T>::list() : head(nullptr), tail(nullptr), length(0) { }
 
@@ -248,32 +250,6 @@ list<T>::list(size_t count) : list(count, T()) { }
 
 template<class T>
 list<T>::~list() { clear(); }
-
-template<class T>
-void list<T>::push_back(const T& value) {
-    T temp = value;
-    if (!length) {
-        head =  new list_node<T>(temp);
-        tail = head;
-    } else {
-        list_node<T> *new_node = new list_node<T>(temp, nullptr, tail);
-        tail->rlink(new_node);
-        tail = tail->next;
-    }
-    ++length;
-}
-
-template<class T>
-void list<T>::pop_back() {
-    if (length < 2){
-        head = tail = nullptr;
-        if (length == 1) --length;
-        return;
-    }
-    tail = tail->prev;
-    tail->next->unlink();
-    --length;
-}
 
 template<class T>
 list<T>::list(const list& other) {
@@ -336,6 +312,32 @@ size_t list<T>::max_size() const { return 1000000; };
 template<class T>
 void list<T>::clear() {
     while (length) { pop_back(); }
+}
+
+template<class T>
+void list<T>::push_back(const T& value) {
+    T temp = value;
+    if (!length) {
+        head =  new list_node<T>(temp);
+        tail = head;
+    } else {
+        list_node<T> *new_node = new list_node<T>(temp, nullptr, tail);
+        tail->rlink(new_node);
+        tail = tail->next;
+    }
+    ++length;
+}
+
+template<class T>
+void list<T>::pop_back() {
+    if (length < 2){
+        head = tail = nullptr;
+        if (length == 1) --length;
+        return;
+    }
+    tail = tail->prev;
+    tail->next->unlink();
+    --length;
 }
 
 template<class T>
@@ -426,21 +428,17 @@ typename list<T>::iterator list<T>::erase(const_iterator first, const_iterator l
 
 template<class T>
 typename list<T>::iterator list<T>::erase(iterator pos) {
-    std::cout << "1" << std::endl;
-    if (pos == begin()) {
-        std::cout << "2" << std::endl;
-        ++pos;
-        pop_front();
-        return pos; 
-    } else if (pos == end()) {
+    if (pos == end()) {
         --pos;
         pop_back();
-        return pos;
+    } else if (pos == begin()) {
+        ++pos;
+        pop_front();
+    } else {
+        ++pos;
+        --length;
+        pos.current->prev->unlink();
     }
-    std::cout << "3" << std::endl;
-    --pos;
-    pos.current->next->unlink();
-    --length;
     return pos;
 }
 
@@ -448,11 +446,11 @@ template<class T>
 typename list<T>::iterator list<T>::erase(iterator first, iterator last) {
     std::cout << "enter erase" << std::endl;
     do {
-        last = erase(last);
+        first = erase(first);
         std::cout << "- - - - -" << std::endl;
     } while (first != last);
-    erase(last);
-    return last;
+    
+    return first;
 }
 
 template<class T>
