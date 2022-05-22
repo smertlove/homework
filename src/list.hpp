@@ -20,8 +20,8 @@ protected:  // NOTE (Kirill Soloshenko) changed private to protected
             ~list_node() = default;
 
             void unlink() {
-                next->prev = prev;
-                prev->next = next;
+                if (next != nullptr) next->prev = prev;
+                if (prev != nullptr) prev->next = next;
             }
 
             void rlink(list_node<U> *node) {
@@ -37,6 +37,10 @@ protected:  // NOTE (Kirill Soloshenko) changed private to protected
             void link(list_node<U> *left, list_node<U> *right) {
                 llink(left);
                 rlink(right);
+            }
+
+            void uio() {
+                std::cout << (prev != nullptr ? "has prev; ": "no prev item; ") << " " << (next != nullptr ? "has next" : "no next item") << ";" << std::endl;
             }
 
         };
@@ -219,11 +223,7 @@ public:
 };
 
 template<class T>
-list<T>::list() {
-    length = 0;
-    head = nullptr;
-    tail = nullptr;
-}
+list<T>::list() : head(nullptr), tail(nullptr), length(0) { }
 
 template<class T>
 list<T>::list(size_t count, const T& value) : list() {
@@ -241,27 +241,26 @@ list<T>::~list() { clear(); }
 template<class T>
 void list<T>::push_back(const T& value) {
     T temp = value;
-    if (head == nullptr) {
-        // head = new list_node<T>(value);
-        head = new list_node<T>(temp);
-        tail = head;
+    if (!length) {
+        head = tail = new list_node<T>(temp);
     } else {
-        // tail->rlink(new list_node<T>(value, nullptr, tail));
-        tail->rlink(new list_node<T>(temp, nullptr, tail));
+        list_node<T> *new_node = new list_node<T>(temp, nullptr, tail);
+        tail->rlink(new_node);
+        tail = tail->next;
     }
     ++length;
 }
 
 template<class T>
 void list<T>::pop_back() {
-    if (!length) {
+    if (length < 2){
+        head = tail = nullptr;
+        if (length == 1) --length;
         return;
-    } else {
-        list_node<T> *temp = tail;
-        tail = tail->prev;
-        delete temp;
-        --length;
     }
+    tail = tail->prev;
+    tail->next->unlink();
+    --length;
 }
 
 template<class T>
@@ -330,24 +329,25 @@ void list<T>::clear() {
 template<class T>
 void list<T>::push_front(const T& value) {
     T temp = value;
-    if (head == nullptr) {
+    if (!length) {
         head = new list_node<T>(temp);
         tail = head;
     } else {
-        head->prev = new list_node<T>(temp, head);
-        head = head->prev;
+        list_node<T> *new_node = new list_node<T>(temp, head);
+        head->llink(new_node);
     }
     ++length;
 }
+
+
 
 template<class T>
 void list<T>::pop_front() {
     if (!length) {
         return;
     } else {
-        list_node<T> *temp = head;
         head = head->next;
-        delete temp;
+        head->prev->unlink();
         --length;
     }
 }
