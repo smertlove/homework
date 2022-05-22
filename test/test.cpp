@@ -111,7 +111,20 @@ int main() {
         task::list<size_t> list_task(10, 30);
         std::cout << "3.4" << std::endl;
         std::list<size_t> list_std(10, 30);
-        std::cout << "3.5" << std::endl;
+        std::cout << "3.5   " << list_std.size() << "  " << list_task.size() <<  std::endl;
+        std::cout << "3.5   " << list_std.front() << "  " << list_task.front() <<  std::endl;
+        for ( std::list<size_t>::iterator it = list_std.begin(); it != list_std.end(); ++it)
+        {
+            std::cout << *it << " ";
+        }
+        std::cout << std::endl;
+        for ( task::list<size_t>::iterator it = list_task.begin(); it != list_task.end(); ++it)
+        {
+            std::cout << *it << " ";
+        }
+                std::cout << std::endl;
+
+        
         ASSERT_EQUAL_MSG(list_task, list_std, "Count-value constructor")
         std::cout << "3.6" << std::endl;
 
@@ -123,6 +136,16 @@ int main() {
         list_task.insert(list_task.end(), 10, 20);
         std::cout << "3.9" << std::endl;
         list_std.insert(list_std.end(), 10, 20);std::cout << "3.10" << std::endl;
+        for ( std::list<size_t>::iterator it = list_std.begin(); it != list_std.end(); ++it)
+        {
+            std::cout << *it << " ";
+        }
+        std::cout << std::endl;
+        for ( task::list<size_t>::iterator it = list_task.begin(); it != list_task.end(); ++it)
+        {
+            std::cout << *it << " ";
+        }
+                std::cout << std::endl;
 
         ASSERT_EQUAL_MSG(list_task, list_std, "list::insert")
         std::cout << "3.11" << std::endl;
@@ -133,7 +156,16 @@ int main() {
 
         list_task.erase(std::prev(list_task.end(), 5), list_task.end());std::cout << "3.14" << std::endl;
         list_std.erase(std::prev(list_std.end(), 5), list_std.end());std::cout << "3.15" << std::endl;
-
+for ( std::list<size_t>::iterator it = list_std.begin(); it != list_std.end(); ++it)
+        {
+            std::cout << *it << " ";
+        }
+        std::cout << std::endl;
+        for ( task::list<size_t>::iterator it = list_task.begin(); it != list_task.end(); ++it)
+        {
+            std::cout << *it << " ";
+        }
+                std::cout << std::endl;
         ASSERT_EQUAL_MSG(list_task, list_std, "list::erase")std::cout << "3.16" << std::endl;
     }
     std::cout << "4: OK" << std::endl;
